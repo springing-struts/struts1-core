@@ -6,10 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.GET;
 
 /**
+ * ## struts-config.xml
  *   <plug-in
  *     className="org.apache.struts.validator.ValidatorPlugIn">
  *     <set-property
@@ -25,7 +28,21 @@ import static org.springframework.http.HttpMethod.GET;
  *       property="stopOnFirstError"
  *       value="true"
  *     />
+ * ## validation.xml
  *   </plug-in>
+ *       <form name="registrationForm">
+ *       <field property="firstName" depends="required,mask,minlength">
+ *         <arg key="registrationForm.firstname.displayname" position="0"/>
+ *         <arg name="minlength" key="${var:minlength}" resource="false" position="1"/>
+ *         <var>
+ *           <var-name>mask</var-name>
+ *           <var-value>^\w+$</var-value>
+ *         </var>
+ *         <var>
+ *           <var-name>minlength</var-name>
+ *           <var-value>5</var-value>
+ *         </var>
+ *       </field>
  */
 @WebMvcTest
 public class ValidatorPluginTest {
@@ -43,5 +60,12 @@ public class ValidatorPluginTest {
     var form = validatorResources.getForm(request.getLocale(), "registrationForm");
     assertNotNull(form);
     assertEquals("registrationForm", form.getName());
+    var firstNameField = form.getFieldByName("firstName");
+    assertEquals("firstName", firstNameField.getProperty());
+    assertThat(firstNameField.getDependencyList(), hasItems("required", "mask", "minlength"));
+    assertThat(
+      firstNameField.getArgs("minlength").stream().map(it -> it.getText()).toList(),
+      hasItems("First Name", "5")
+    );
   }
 }

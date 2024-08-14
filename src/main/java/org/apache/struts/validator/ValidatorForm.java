@@ -3,9 +3,7 @@ package org.apache.struts.validator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.validation.DataBinder;
-import springing.struts1.validator.FormBeanValidator;
+import springing.struts1.validator.ValidationUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,21 +26,7 @@ public class ValidatorForm extends ActionForm {
     ActionMapping mapping,
     HttpServletRequest request
   ) {
-    var formName = mapping.getName();
-    if (formName == null) {
-      return new ActionErrors();
-    }
-    var validator = FormBeanValidator.forName(formName);
-    if (validator == null) {
-      return new ActionErrors();
-    }
-    var binder = new DataBinder(this);
-    binder.setValidator(validator);
-    binder.bind(new MutablePropertyValues(request.getParameterMap()));
-    binder.validate();
-    var result = binder.getBindingResult();
-    request.setAttribute("org.springframework.validation.BindingResult." + formName, result);
-    return validator.getActionErrors();
+    return ValidationUtils.validate(mapping, request, this);
   }
 
   /**

@@ -11,6 +11,8 @@ import springing.struts1.taglib.MessagesAware;
 
 import java.util.List;
 
+import static org.apache.struts.util.MessageResources.getMessageResources;
+
 /**
  * Conditionally display a set of accumulated messages.
  * Displays a set of messages prepared by a business logic component and stored
@@ -91,9 +93,7 @@ public class MessagesTag extends ForEachSupport implements MessagesAware {
         if (actionMessage.isResource()) {
           return actionMessage.getKey();
         }
-        var basename = bundle != null ? bundle : ModuleUtils.getCurrent().getMessageResourcesBasename();
-        var messageResources = MessageResources.getMessageResources(basename);
-        return messageResources.getMessage(
+        return getMessageResources(bundle).getMessage(
           actionMessage.getKey(),
           actionMessage.getValues()
         );

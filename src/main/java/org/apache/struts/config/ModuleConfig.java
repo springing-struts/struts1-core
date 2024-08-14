@@ -61,7 +61,7 @@ public class ModuleConfig {
    * instances.
    */
   public String getActionFormBeanClass() {
-    return formBeans.getFormBeanClass().getCanonicalName();
+    return formBeans.getFormBeanConfigClass().getCanonicalName();
   }
 
   /**
@@ -176,7 +176,7 @@ public class ModuleConfig {
   @JacksonXmlElementWrapper(useWrapping = false)
   private List<MessageResourcesConfig> messageResourcesConfigs = new ArrayList<>();
 
-  public String getMessageResourcesBasename() {
+  private String getDefaultMessageResourceBundleBasename() {
     for (var config : messageResourcesConfigs) {
       if (config.getKey().isEmpty()) {
         return config.getConfig();

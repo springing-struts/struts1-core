@@ -31,7 +31,26 @@ public class StrutsModuleAwareMessageSource implements MessageSource {
   private final ModuleUtils moduleUtils;
   private final HttpServletRequest request;
 
-  public MessageSource getMessageSourceFor(String basename) {
+  public MessageSource getMessageSourceForCurrentModule(String key) {
+    var module = moduleUtils.getModuleConfig(request);
+    return forModule(module, key);
+  }
+
+  private MessageSource forModule(ModuleConfig module, String key) {
+    var configs = module.getMessageResourcesConfigs();
+    for (var config : configs) {
+      if (config.getKey().equals(key)) {
+        var basename = config.getConfig();
+        return loadMessageSource(basename);
+      }
+    }
+    throw new IllegalStateException(String.format(
+      "MessageResources with key [%s] is not defined for the module [%s].",
+      key, module.getPrefix()
+    ));
+  }
+
+  private MessageSource loadMessageSource(String basename) {
     return loadedMessageSource.computeIfAbsent(
         basename,
         (k) -> {
@@ -44,24 +63,6 @@ public class StrutsModuleAwareMessageSource implements MessageSource {
   private final ConcurrentMap<String, ResourceBundleMessageSource>
       loadedMessageSource = new ConcurrentHashMap<>();
 
-  private MessageSource forModule(ModuleConfig module, String key) {
-    var configs = module.getMessageResourcesConfigs();
-    for (var config : configs) {
-      if (config.getKey().equals(key)) {
-        var basename = config.getConfig();
-        return getMessageSourceFor(basename);
-      }
-    }
-    throw new IllegalStateException(String.format(
-      "MessageResources with key [%s] is not defined for the module [%s].",
-      key, module.getPrefix()
-    ));
-  }
-
-  private MessageSource getMessageSourceForCurrentModule(String key) {
-    var module = moduleUtils.getModuleConfig(request);
-    return forModule(module, key);
-  }
 
   @Override
   public @Nullable String getMessage(

@@ -5,15 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.beanutils.DynaProperty;
 import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.taglib.html.Constants;
+import org.apache.struts.validator.DynaValidatorForm;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.DataBinder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static springing.util.ObjectUtils.classFor;
 import static springing.util.ObjectUtils.createInstanceOf;
 
 /**
@@ -21,33 +28,35 @@ import static springing.util.ObjectUtils.createInstanceOf;
  * element in a Struts configuration file.
  */
 public class FormBeanConfig {
-  public FormBeanConfig(
-      @JacksonXmlProperty(localName = "name", isAttribute = true) String name,
-      @JacksonXmlProperty(localName = "type", isAttribute = true) String type
-  ) {
-    this.name = name;
-    this.type = type;
-  }
-
   @JsonBackReference
   private FormBeansConfig container;
 
-  public FormBeanConfig createActionFormBean() {
-    var config = MAPPER.convertValue(this, Map.class);
-    for (var prop : properties) {
-      config.put(prop.getProperty(), prop.getValue());
+  public FormBeanConfig createFormBeanConfig() {
+    try {
+      FormBeanConfig config = container.getFormBeanConfigClass()
+          .getDeclaredConstructor()
+          .newInstance();
+      Map<String, Object> props = new HashMap<>();
+      props.put("name", name);
+      props.put("type", type.getName());
+      props.put("formProperties", formPropertiesByName.values());
+      for (var prop : properties) {
+        props.put(prop.getProperty(), prop.getValue());
+      }
+      BeanUtils.copyProperties(props, config);
+      return config;
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+      throw new IllegalArgumentException(String.format(
+        "An error occurred while creating action form bean instance. name: [%s], type: [%s].",
+        name, type.getSimpleName()
+      ), e);
     }
-    return new ObjectMapper().convertValue(config, container.getFormBeanClass());
   }
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "set-property")
   private List<PropertyConfig> properties = new ArrayList<>();
-
-  protected FormBeanConfig() {
-    this("", "");
-  }
 
   /**
    * The unique identifier of this form bean, which is used to reference this
@@ -58,32 +67,51 @@ public class FormBeanConfig {
   public String getName() {
     return name;
   }
-  private final String name;
+  @JacksonXmlProperty(localName = "name", isAttribute = true)
+  private String name;
 
   /**
    * The fully qualified Java class name of the implementation class to be
    * used or generated.
    */
   public String getType() {
-    return type;
+    return type.getName();
   }
-  private final String type;
-
+  private Class<? extends ActionForm> type;
+  @JacksonXmlProperty(localName = "type", isAttribute = true)
+  private void setType(String type) {
+    this.type = classFor(type);
+  }
 
   /**
    * The set of FormProperty elements defining dynamic form properties for this
    * form bean, keyed by property name.
    */
+  public Map<String , DynaProperty<?>> getFormPropertiesByName() {
+    return formPropertiesByName;
+  }
+  private final Map<String, DynaProperty<?>> formPropertiesByName = new HashMap<>();
+
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "form-property")
-  private List<FormPropertyConfig> formProperties;
+  private void setFormProperties(List<FormPropertyConfig> formProperties) {
+    for (var p: formProperties) {
+      formPropertiesByName.put(p.getName(), p.getProperty());
+    }
+  }
 
   /**
    * Create and return an `ActionForm` instance appropriate to the information
    * in this `FormBeanConfig`.
    */
   public ActionForm createActionForm(Map<String, Object> props) {
-    return createInstanceOf(getType(), props);
+    if (type.equals(DynaActionForm.class)) {
+      return new DynaActionForm(this);
+    }
+    if (type.equals(DynaValidatorForm.class)) {
+      return new DynaValidatorForm(this);
+    }
+    return createInstanceOf(type, props);
   }
 
   /**
@@ -91,7 +119,7 @@ public class FormBeanConfig {
    * in this `FormBeanConfig`.
    */
   public ActionForm createActionForm() {
-    return createInstanceOf(getType());
+    return createActionForm(Map.of());
   }
 
   public ActionForm prepare(HttpServletRequest request) {

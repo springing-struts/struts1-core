@@ -41,7 +41,8 @@ public class StrutsDataBinding extends BindStatus {
     boolean awareNestedTag,
     @Nullable Function<Object, Object> valueProcessor
   ) {
-    var path = name + (propertyPath == null ? "" : "." + propertyPath);
+    var property = propertyPath == null ? "" : propertyPath;
+    var path = name + (name.isBlank() || property.isBlank() ? "" : ".") + property;
     return new StrutsDataBinding(
       pageContext,
       null,
@@ -68,11 +69,15 @@ public class StrutsDataBinding extends BindStatus {
     @Nullable Function<Object, Object> valueProcessor
   ) {
     if (name == null) {
-      var attr = (String) pageContext.getRequest().getAttribute(Constants.BEAN_KEY);
+      var attr = getFormBeanAttributeKey(pageContext);
       return new StrutsDataBinding(pageContext, attr, property, awareNestedTag, valueProcessor);
     }
     var path = name + "." + property;
     return new StrutsDataBinding(pageContext, null, path, awareNestedTag, valueProcessor);
+  }
+
+  private static @Nullable String getFormBeanAttributeKey(PageContext pageContext) {
+    return (String) pageContext.getRequest().getAttribute(Constants.BEAN_KEY);
   }
 
   public void setTag(AbstractDataBoundFormElementTag tag) {
@@ -96,16 +101,15 @@ public class StrutsDataBinding extends BindStatus {
   private StrutsDataBinding(
     PageContext pageContext,
     @Nullable String attributeName,
-    String relPath,
+    @Nullable String relPath,
     boolean awareNestedTag,
     @Nullable Function<Object, Object> valueProcessor
   ) throws IllegalStateException {
     super(
       new RequestContextWrapper(),
-      relPath,
+      relPath == null ? "" : relPath,
       false
     );
-    this.pageContext = pageContext;
     this.relPath = relPath;
     var value = resolveValueOnScope(
       attributeName, relPath, awareNestedTag, pageContext
@@ -116,7 +120,6 @@ public class StrutsDataBinding extends BindStatus {
   }
   private final String relPath;
   private final @Nullable Object value;
-  private final PageContext pageContext;
 
   @Override
   public @Nullable String getExpression() {

@@ -27,13 +27,13 @@ public class MessageResourcesConfiguration {
 
   private static @Nullable StrutsModuleAwareMessageSource MESSAGE_SOURCE;
 
-  public static MessageResources getMessageResources(String basename) {
+  public static MessageResources getMessageResources(String bundleName) {
     if (MESSAGE_SOURCE == null) throw new IllegalStateException(
       "MessageResourcesConfiguration must be initialized before accessing MessageResources."
     );
-    return new MessageResourcesWrapper(basename, MESSAGE_SOURCE.getMessageSourceFor(basename));
+    return new MessageResourcesWrapper(
+      bundleName,
+      MESSAGE_SOURCE.getMessageSourceForCurrentModule(bundleName)
+    );
   }
-
-
-
 }

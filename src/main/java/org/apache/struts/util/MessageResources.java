@@ -1,6 +1,8 @@
 package org.apache.struts.util;
 
+import org.springframework.lang.Nullable;
 import springing.struts1.configuration.MessageResourcesConfiguration;
+import springing.util.ServletRequestUtils;
 
 import java.util.Locale;
 
@@ -19,12 +21,18 @@ import java.util.Locale;
  * used in distributable application server environments.
  */
 public interface MessageResources {
+
   /**
    * Create and return an instance of `MessageResources` for the created by
    * the default `MessageResourcesFactory`
    */
-  static MessageResources getMessageResources(String config) {
-    return MessageResourcesConfiguration.getMessageResources(config);
+  static MessageResources getMessageResources(@Nullable String config) {
+    var bundleName = config == null ? "" : config;
+    return MessageResourcesConfiguration.getMessageResources(bundleName);
+  }
+
+  static MessageResources getMessageResources() {
+    return getMessageResources(null);
   }
 
   /**
@@ -39,7 +47,12 @@ public interface MessageResources {
    * property is set.  Otherwise, an appropriate error message will be
    * returned. This method must be implemented by a concrete subclass.
    */
-  String getMessage(Locale locale, String key, Object... args);
+  String getMessage(@Nullable Locale locale, String key, Object... args);
+
+  default String getMessageInLocale(@Nullable String locale, String key, Object... args) {
+    Locale localeObj = locale == null ? ServletRequestUtils.getCurrent().getLocale() : Locale.forLanguageTag(locale);
+    return getMessage(localeObj, key, args);
+  }
 
   /**
    * The configuration parameter used to initialize this MessageResources.

@@ -1,6 +1,7 @@
 package org.apache.struts.config;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.commons.beanutils.DynaProperty;
 import org.springframework.lang.Nullable;
 
 /**
@@ -13,16 +14,21 @@ public class FormPropertyConfig {
     @JacksonXmlProperty(localName = "name", isAttribute = true) String name,
     @JacksonXmlProperty(localName = "type", isAttribute = true) String type
   ) {
-    this.name = name;
-    this.type = type;
+    property = new DynaProperty<>(name, type);
+
   }
+
+  public DynaProperty<?> getProperty() {
+    return property;
+  }
+  private final DynaProperty<?> property;
+
   /**
    * The JavaBean property name of the property described by this element.
    */
   public String getName() {
-    return name;
+    return property.getName();
   }
-  private final String name;
 
   /**
    * The fully qualified Java class name of the implementation class of this
@@ -30,9 +36,8 @@ public class FormPropertyConfig {
    * is indexed.
    */
   public String getType() {
-    return type;
+    return property.getType().getSimpleName();
   }
-  private final String type;
 
   /**
    * String representation of the initial value for this property.

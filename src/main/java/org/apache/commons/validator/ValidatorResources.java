@@ -3,7 +3,9 @@ package org.apache.commons.validator;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
+import springing.util.ServletRequestUtils;
 
 import java.util.*;
 
@@ -64,6 +66,10 @@ public class ValidatorResources {
     another.validationFormSetList.forEach(it -> it.parent = this);
     globalDefinitions.constantMap.putAll(another.globalDefinitions.constantMap);
     globalDefinitions.validatorActionsByName.putAll(another.globalDefinitions.validatorActionsByName);
+  }
+
+  public @Nullable Form getForm(String formKey) {
+    return getForm(ServletRequestUtils.getCurrent().getLocale(), formKey);
   }
 
   /**

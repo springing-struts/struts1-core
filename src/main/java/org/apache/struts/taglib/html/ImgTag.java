@@ -108,9 +108,7 @@ public class ImgTag extends HtmlElementTagBase implements UrlBuilderBean {
    * The message resources key of the alternate text for this element.
    */
   public void setAltKey(String altKey) {
-    var basename = ModuleUtils.getCurrent().getMessageResourcesBasename();
-    var messageResources = MessageResources.getMessageResources(basename);
-    var message = messageResources.getMessage(altKey);
+    var message = MessageResources.getMessageResources().getMessage(altKey);
     attrs.put("alt", message);
   }
 

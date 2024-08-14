@@ -48,13 +48,13 @@ public class Form {
    */
   public List<Field> getFields() {
     if (commonSettings.isEmpty()) {
-      return fieldByPropertyName.values().stream().toList();
+      return fieldByName.values().stream().toList();
     }
     var fields = new HashMap<String, Field>();
     for (var commonSetting : commonSettings) {
-      fields.putAll(commonSetting.fieldByPropertyName);
+      fields.putAll(commonSetting.fieldByName);
     }
-    fields.putAll(fieldByPropertyName);
+    fields.putAll(fieldByName);
     return fields.values().stream().toList();
   }
 
@@ -62,12 +62,15 @@ public class Form {
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
   private void setFields(List<Field> fields) {
-    fieldByPropertyName.clear();
+    fieldByName.clear();
     for (var field : fields) {
-      fieldByPropertyName.put(field.getProperty(), field);
+      fieldByName.put(field.getProperty(), field);
     }
   }
-  private final Map<String, Field> fieldByPropertyName = new HashMap<>();
+  public Field getFieldByName(String name) {
+    return fieldByName.get(name);
+  }
+  private final Map<String, Field> fieldByName = new HashMap<>();
 
   public void setCommonSettings(Form... commonSettings) {
     commonSettings.clone();

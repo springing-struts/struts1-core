@@ -45,9 +45,7 @@ public class Var {
     if (!resource) {
       return field.interpolate(value);
     }
-    var basename = (bundle != null) ? bundle : ModuleUtils.getCurrent().getMessageResourcesBasename();
-    var messageResource = MessageResources.getMessageResources(basename);
-    return messageResource.getMessage(value);
+    return MessageResources.getMessageResources(bundle).getMessage(value);
   }
   /**
    * Whether the value is a resource key or literal value.

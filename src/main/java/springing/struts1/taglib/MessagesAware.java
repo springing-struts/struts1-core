@@ -29,9 +29,7 @@ public interface MessagesAware {
 
     @Nullable
     List<?> getMessages(PageContext pageContext) {
-      var messages = (name == null)
-        ? resolveValueOnScope(message ? Globals.MESSAGES_KEY : Globals.ERROR_KEY, property,  awareNestedTag, pageContext)
-        : resolveValueOnScope(null, name + "." + property, awareNestedTag, pageContext);
+      var messages = getMessagesFromScope(pageContext);
       if (messages == null) {
         setCount(0, pageContext);
         return null;
@@ -51,6 +49,15 @@ public interface MessagesAware {
       }
       setCount(1, pageContext);
       return List.of(messages);
+    }
+
+    private @Nullable Object getMessagesFromScope(PageContext pageContext) {
+      if  (name == null) {
+        var beanName = message ? Globals.MESSAGES_KEY : Globals.ERROR_KEY;
+        return resolveValueOnScope(beanName , property,  awareNestedTag, pageContext);
+      }
+      var path = name + "." + property;
+      return resolveValueOnScope(null, path, awareNestedTag, pageContext);
     }
 
     private void setCount(int numberOfMessages, PageContext pageContext) {

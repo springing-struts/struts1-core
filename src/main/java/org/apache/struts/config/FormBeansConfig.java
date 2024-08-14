@@ -19,7 +19,7 @@ public class FormBeansConfig {
     @Nullable String type
   ) throws ClassNotFoundException {
     this.type = type;
-    formBeanClass = (type == null) ? ActionFormBean.class : (Class<? extends ActionFormBean>) Class.forName(type);
+    formBeanConfigClass = (type == null) ? ActionFormBean.class : (Class<? extends ActionFormBean>) Class.forName(type);
   }
 
   /**
@@ -32,10 +32,10 @@ public class FormBeansConfig {
   }
   private final @Nullable String type;
 
-  public Class<? extends ActionFormBean> getFormBeanClass() {
-    return formBeanClass;
+  public Class<? extends ActionFormBean> getFormBeanConfigClass() {
+    return formBeanConfigClass;
   }
-  private final Class<? extends ActionFormBean> formBeanClass;
+  private final Class<? extends ActionFormBean> formBeanConfigClass;
 
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "form-bean")

@@ -1235,7 +1235,6 @@
       </description>
     </attribute>
   </tag>
-  <!--
   <tag>
     <name>errors</name>
     <tag-class>org.apache.struts.taglib.html.ErrorsTag</tag-class>
@@ -1386,7 +1385,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <!--
   <tag>
     <name>file</name>

@@ -26,10 +26,16 @@ public class ObjectUtils {
     return createInstanceOf(fqn, null);
   }
 
+  public static <T> T createInstanceOf(Class<T> clazz) {
+    return createInstanceOf(clazz, null);
+  }
+
   public static <T> T createInstanceOf(String fqn, @Nullable Map<String, ?> props) {
-    var classLoader = Thread.currentThread().getContextClassLoader();
+    return createInstanceOf(classFor(fqn), props);
+  }
+
+  public static <T> T createInstanceOf(Class<T> clazz, @Nullable Map<String, ?> props) {
     try {
-      var clazz = Class.forName(fqn, true, classLoader);
       var constructor = clazz.getDeclaredConstructor();
       constructor.setAccessible(true);
       var instance = (T) constructor.newInstance();
@@ -59,8 +65,17 @@ public class ObjectUtils {
         wrapper.setPropertyValues(declaredProps);
       }
       return instance;
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException |
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
              NoSuchMethodException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static <T> Class<T> classFor(String fqn) {
+    var classLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      return (Class<T>) Class.forName(fqn, true, classLoader);
+    } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }

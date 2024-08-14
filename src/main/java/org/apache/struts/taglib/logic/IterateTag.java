@@ -1,6 +1,5 @@
 package org.apache.struts.taglib.logic;
 
-import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
 import org.apache.taglibs.standard.tag.common.core.ForEachSupport;
 import org.springframework.lang.Nullable;

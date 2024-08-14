@@ -6,7 +6,7 @@ import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 
-import java.util.regex.Pattern;
+import static org.apache.struts.util.MessageResources.getMessageResources;
 
 /**
  * A default argument or an argument for a specific validator definition
@@ -71,20 +71,16 @@ public class Arg {
    * The resource bundle name that this Arg's key should be resolved in
    * (optional).
    */
-  public @Nullable String getBundle() {
+  public String getBundle() {
     return bundle;
   }
   @JacksonXmlProperty(isAttribute = true, localName = "bundle")
-  private @Nullable String bundle;
+  private String bundle = "";
 
   public String getText() {
     if (!resource) {
       return field.interpolate(key);
     }
-    var basename = bundle != null
-        ? bundle
-        : ModuleUtils.getCurrent().getMessageResourcesBasename();
-    var messageResource = MessageResources.getMessageResources(basename);
-    return messageResource.getMessage(key);
+    return getMessageResources(bundle).getMessage(key);
   }
 }

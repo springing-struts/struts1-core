@@ -28,7 +28,7 @@ public class Struts1ConfigurationTest {
     var formBeanConfigs = config.getFormBeanConfigs();
     assertEquals(1, formBeanConfigs.size());
     var formBeanConfig = formBeanConfigs.getFirst();
-    var formBean = formBeanConfig.createActionFormBean();
+    var formBean = formBeanConfig.createFormBeanConfig();
     assertEquals(CustomFormBean.class, formBean.getClass());
   }
 

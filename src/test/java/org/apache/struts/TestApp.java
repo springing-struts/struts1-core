@@ -76,6 +76,8 @@ public class TestApp {
     if (setup != null) setup.accept(mockRequest);
     ServletRequestUtils.initialize(mockRequest);
     request = wrap(mockRequest);
+    var requestAttributes = new ServletRequestAttributes(request);
+    RequestContextHolder.setRequestAttributes(requestAttributes);
     var mockResponse = pageContext.getResponse();
     mockResponse.setCharacterEncoding("UTF-8");
     response = wrap((jakarta.servlet.http.HttpServletResponse) mockResponse);
@@ -95,8 +97,6 @@ public class TestApp {
   ) throws Exception {
     var tag = clazz.getConstructor().newInstance();
     tag.setPageContext(pageContext);
-    var requestAttributes = new ServletRequestAttributes(request);
-    RequestContextHolder.setRequestAttributes(requestAttributes);
     if (actionPath != null) {
       var moduleConfig = ModuleUtils.getInstance().getModuleConfig(wrap(request));
       var actionConfig = moduleConfig.findActionConfig(actionPath);
