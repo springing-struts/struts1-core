@@ -6,6 +6,10 @@ import org.apache.struts.util.ModuleUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import springing.struts1.validator.ValidationUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -61,7 +65,7 @@ public class I18nValidationMessageTest {
   private TestApp app;
 
   @Test
-  void switchesMessageContentBasedOnTheCurrentLocale() {
+  void switchesMessageContentBasedOnTheCurrentLocale() throws Exception {
     app.createRequest(GET, "/validator/validateI18nExample");
     var form = ModuleUtils.getCurrent().getValidatorResources().getForm("i18nForm");
     assertNotNull(form);

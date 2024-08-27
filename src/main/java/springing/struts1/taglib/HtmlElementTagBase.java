@@ -9,6 +9,28 @@ import java.util.Map;
 
 public abstract class HtmlElementTagBase extends AbstractHtmlElementTag {
 
+  public HtmlElementTagBase() {
+    init();
+  }
+
+  @Override
+  public void release() {
+    super.release();
+    init();
+  }
+
+  private void init() {
+    tagWriter = null;
+    accesskey = null;
+    onblur = null;
+    onfocus = null;
+  }
+
+  private @Nullable TagWriter tagWriter;
+  private @Nullable String accesskey;
+  private @Nullable String onblur;
+  private @Nullable String onfocus;
+
   @Override
   protected int writeTagContent(TagWriter tagWriter) throws JspException {
     tagWriter.startTag(getTagName());
@@ -30,7 +52,6 @@ public abstract class HtmlElementTagBase extends AbstractHtmlElementTag {
     this.tagWriter = tagWriter;
     return EVAL_BODY_INCLUDE;
   }
-  private @Nullable TagWriter tagWriter;
 
   @Override
   public int doEndTag() throws JspException {
@@ -94,7 +115,6 @@ public abstract class HtmlElementTagBase extends AbstractHtmlElementTag {
   public void setAccesskey(String accesskey) {
     this.accesskey = accesskey;
   }
-  private @Nullable String accesskey;
 
   /**
    * avaScript event handler that is executed when this element loses input
@@ -103,7 +123,6 @@ public abstract class HtmlElementTagBase extends AbstractHtmlElementTag {
   public void setOnblur(String onblur) {
     this.onblur = onblur;
   }
-  private @Nullable String onblur;
 
   /**
    * JavaScript event handler that is executed when this element receives input
@@ -112,5 +131,4 @@ public abstract class HtmlElementTagBase extends AbstractHtmlElementTag {
   public void setOnfocus(String onfocus) {
     this.onfocus = onfocus;
   }
-  private @Nullable String onfocus;
 }

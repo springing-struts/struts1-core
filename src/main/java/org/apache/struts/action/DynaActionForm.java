@@ -1,9 +1,13 @@
 package org.apache.struts.action;
 
+import org.apache.commons.beanutils.DefaultDynaClass;
+import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.MapBackedDynaBean;
 import org.apache.struts.config.FormBeanConfig;
+import org.springframework.lang.Nullable;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,17 +36,22 @@ public class DynaActionForm extends ActionForm implements MapBackedDynaBean {
   private final ConcurrentMap<String, Object> values = new ConcurrentHashMap<>();
 
   @Override
-  public String getName() {
-    return config.getName();
+  public DynaClass getDynaClass() {
+    if (dynaClass == null) {
+      var properties = new ArrayList<DynaProperty<?>>();
+      for (var p : config.getFormProperties()) {
+        properties.add(new DynaProperty<>(p.getName(), p.getType()));
+      }
+      dynaClass = new DefaultDynaClass(
+        config.getName(), properties
+      );
+    }
+    return dynaClass;
   }
+  private @Nullable DynaClass dynaClass;
 
   @Override
-  public Map<String, DynaProperty<?>> getPropertiesByPropertyName() {
-    return config.getFormPropertiesByName();
-  }
-
-  @Override
-  public Map<String, Object> getValuesByPropertyName() {
+  public Map<String, Object> getValues() {
     return values;
   }
 }

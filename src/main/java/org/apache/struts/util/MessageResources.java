@@ -1,8 +1,8 @@
 package org.apache.struts.util;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import springing.struts1.configuration.MessageResourcesConfiguration;
-import springing.util.ServletRequestUtils;
 
 import java.util.Locale;
 
@@ -38,7 +38,7 @@ public interface MessageResources {
   /**
    * Returns a text message for the specified key, for the default Locale.
    */
-  String getMessage(String key, Object... args);
+  @Nullable String getMessage(String key, Object... args);
 
   /**
    * Returns a text message for the specified key, for the default Locale.
@@ -47,10 +47,11 @@ public interface MessageResources {
    * property is set.  Otherwise, an appropriate error message will be
    * returned. This method must be implemented by a concrete subclass.
    */
-  String getMessage(@Nullable Locale locale, String key, Object... args);
+  @Nullable String getMessage(@Nullable Locale locale, String key, Object... args);
 
-  default String getMessageInLocale(@Nullable String locale, String key, Object... args) {
-    Locale localeObj = locale == null ? ServletRequestUtils.getCurrent().getLocale() : Locale.forLanguageTag(locale);
+  default @Nullable String getMessageInLocale(@Nullable String locale, String key, Object... args) {
+    //Locale localeObj = locale == null ? ServletRequestUtils.getCurrent().getLocale() : Locale.forLanguageTag(locale);
+    Locale localeObj = locale != null ? Locale.forLanguageTag(locale) : LocaleContextHolder.getLocale();
     return getMessage(localeObj, key, args);
   }
 
@@ -58,4 +59,22 @@ public interface MessageResources {
    * The configuration parameter used to initialize this MessageResources.
    */
   String getConfig();
+
+  /**
+   * Returns `true` if there is a defined message for the specified key in the
+   * specified Locale.
+   */
+  default boolean isPresent(@Nullable Locale locale, String key) {
+    var message = getMessage(locale, key);
+    return message != null;
+  }
+
+  /**
+   * Returns `true` if there is a defined message for the specified key in the
+   * default Locale.
+   */
+  default boolean isPresent(String key) {
+    var message = getMessage(key);
+    return message != null;
+  }
 }

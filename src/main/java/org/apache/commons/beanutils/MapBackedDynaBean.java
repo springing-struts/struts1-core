@@ -5,15 +5,16 @@ import java.util.Map;
 
 public interface MapBackedDynaBean extends DynaBean {
 
-  String getName();
-  Map<String, DynaProperty<?>> getPropertiesByPropertyName();
-  Map<String, Object> getValuesByPropertyName();
 
-  private DynaProperty<?> propertyOf(String name) {
-    var prop = getPropertiesByPropertyName().get(name);
+  DynaClass getDynaClass();
+  Map<String, Object> getValues();
+
+  private DynaProperty<?> propertyOf(String propName) {
+    var clazz = getDynaClass();
+    var prop = clazz.getDynaPropertiesByName().get(propName);
     if (prop == null) throw new IllegalArgumentException(String.format(
         "Form bean [%s] does not have a property of name [%s].",
-        getName(), name
+        clazz.getName(), propName
     ));
     return prop;
   }
@@ -24,7 +25,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * of the specified name.
    */
   default boolean contains(String name, String key) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     return propertyOf(name).getKeyedValueFrom(values).containsKey(key);
   }
 
@@ -33,7 +34,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * exception is thrown if there is no property of the specified name.
    */
   default @Nullable Object get(String name) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     return propertyOf(name).getValueFrom(values);
   }
 
@@ -43,7 +44,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * specified name or the given index is out of the range of the property.
    */
   default @Nullable Object get(String name, int index) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     return propertyOf(name).getIndexedValueFrom(values).get(index);
   }
 
@@ -53,7 +54,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * there is no mapped property of the specified name.
    */
   default @Nullable Object get(String name, String key) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     return propertyOf(name).getKeyedValueFrom(values).get(key);
   }
 
@@ -63,7 +64,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * specified name.
    */
   default void remove(String name, String key) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     propertyOf(name).getKeyedValueFrom(values).remove(key);
   }
 
@@ -72,7 +73,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * exception is thrown if there is no property of the specified name.
    */
   default void set(String name, Object value) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     propertyOf(name).setValueTo(values, value);
   }
 
@@ -81,7 +82,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * exception is thrown if there is no indexed property of the specified name.
    */
   default void set(String name, int index, Object value) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     propertyOf(name).getIndexedValueFrom(values).set(index, value);
   }
 
@@ -90,7 +91,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * exception is thrown if there is no keyed property of the specified name.
    */
   default void set(String name,String key, Object value) {
-    var values = getValuesByPropertyName();
+    var values = getValues();
     propertyOf(name).getKeyedValueFrom(values).put(key, value);
   }
 }

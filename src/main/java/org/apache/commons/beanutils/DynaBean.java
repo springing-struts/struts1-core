@@ -10,6 +10,12 @@ import jakarta.annotation.Nullable;
  * setting property values.
  */
 public interface DynaBean {
+
+  /**
+   * Return the DynaClass instance that describes the set of properties
+   * available for this DynaBean.
+   */
+  DynaClass getDynaClass();
   /**
    * Returns true if the specified mapped property contains a value for the
    * specified key value. A runtime exception is thrown if there is no property
@@ -48,17 +54,17 @@ public interface DynaBean {
    * Set the value of a simple property with the specified name. A runtime
    * exception is thrown if there is no property of the specified name.
    */
-  void set(String name, Object value);
+  void set(String name, @Nullable Object value);
 
   /**
    * Set the value of an indexed property with the specified name. A runtime
    * exception is thrown if there is no indexed property of the specified name.
    */
-  void set(String name, int index, Object value);
+  void set(String name, int index, @Nullable Object value);
 
   /**
    * Set the value of a mapped property with the specified name. A runtime
    * exception is thrown if there is no keyed property of the specified name.
    */
-  void set(String name,String key, Object value);
+  void set(String name,String key, @Nullable Object value);
 }

@@ -1,6 +1,8 @@
 package springing.util;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.struts.action.ActionMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -84,6 +86,14 @@ public class ObjectUtils {
     @Nullable Object bean,
     @Nullable String propName
   ) {
+    return retrieveValue(bean, propName, true);
+  }
+
+  public static @Nullable Object retrieveValue(
+    @Nullable Object bean,
+    @Nullable String propName,
+    boolean evaluatesNestedProperties
+  ) {
     if (bean == null) {
       return null;
     }
@@ -91,6 +101,12 @@ public class ObjectUtils {
       return bean;
     }
     var obj = bean;
+    if (bean instanceof ActionMessages messages) {
+      return messages.get(propName);
+    }
+    if (!evaluatesNestedProperties) {
+      return getProp(obj, propName);
+    }
     for (var prop : propName.split("\\.")) {
       obj = getProp(obj, prop);
       if (obj == null) {
@@ -117,6 +133,9 @@ public class ObjectUtils {
     var name = isIndexed ? m.group(1) : prop;
     if (bean instanceof Map<?, ?> mapModel) {
       return getAt(mapModel.get(name), index);
+    }
+    if (bean instanceof DynaBean dynaBean) {
+      return isIndexed ? dynaBean.get(name, index) : dynaBean.get(name);
     }
     var propDesc = BeanUtils.getPropertyDescriptor(bean.getClass(), name);
     if (propDesc == null) {

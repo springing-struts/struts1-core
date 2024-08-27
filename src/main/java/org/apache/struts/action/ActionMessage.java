@@ -1,6 +1,10 @@
 package org.apache.struts.action;
 
+import org.springframework.lang.Nullable;
+
 import java.io.Serializable;
+
+import static org.apache.struts.util.MessageResources.getMessageResources;
 
 /**
  * An encapsulation of an individual message returned by the `validate`
@@ -17,7 +21,7 @@ public class ActionMessage implements Serializable {
   public ActionMessage(String key, Object... values) {
     this.key = key;
     this.values = values;
-    this.resource = false;
+    this.resource = true;
   }
 
   /**
@@ -53,4 +57,15 @@ public class ActionMessage implements Serializable {
     return resource;
   }
   private final boolean resource;
+
+  /**
+   * Returns the content of this message.
+   */
+  public String getText(@Nullable String bundle) {
+    if (!isResource()) {
+      return getKey();
+    }
+    var message = getMessageResources(bundle).getMessage(getKey(), getValues());
+    return (message == null) ? "" : message;
+  }
 }

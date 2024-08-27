@@ -1,5 +1,6 @@
 package springing.struts1.configuration;
 
+import org.apache.struts.Globals;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,4 +59,6 @@ public class Struts1Configuration {
     }
     return mappings;
   }
+
+
 }

@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.apache.struts.taglib.html.Constants.isReservedFormPropertyName;
 import static springing.util.ObjectUtils.*;
 
 public class ServletRequestUtils {
@@ -70,6 +71,9 @@ public class ServletRequestUtils {
     if (attributeName != null) {
       var bean = getAttributeFromScope(pageContext, attributeName);
       if (relPath == null) return bean;
+      if (isReservedFormPropertyName(relPath)) {
+        return retrieveValue(bean, relPath, false);
+      }
       return retrieveValue(bean, awareNestedTag ? resolveNestedPath(relPath, pageContext) : relPath);
     }
     if (relPath == null) {

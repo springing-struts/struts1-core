@@ -2,6 +2,7 @@ package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import org.apache.struts.action.ActionMessage;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.MessagesAware;
 
@@ -57,6 +58,7 @@ public class ErrorsTag extends TagSupport implements MessagesAware
     bundle = null;
     locale = null;
   }
+
   private MessagesReference ref;
   private String headerKey;
   private String footerKey;
@@ -82,14 +84,19 @@ public class ErrorsTag extends TagSupport implements MessagesAware
     String suffix = messageResources.getMessageInLocale(locale, suffixKey);
     String footer = messageResources.getMessageInLocale(locale, footerKey);
 
-    write(header);
+    if (header != null) write(header);
     for (var message : messages) {
       if (message == null) continue;
-      write(prefix);
-      write(message.toString());
-      write(suffix);
+      if (prefix != null) write(prefix);
+      if (message instanceof ActionMessage actionMessage) {
+        write(actionMessage.getText(bundle));
+      }
+      else {
+        write(message.toString());
+      }
+      if (suffix != null) write(suffix);
     }
-    write(footer);
+    if (footer != null) write(footer);
     return SKIP_BODY;
   }
 

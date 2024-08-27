@@ -2,6 +2,7 @@ package springing.struts1.message;
 
 import org.apache.struts.util.MessageResources;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import springing.util.ServletRequestUtils;
 
@@ -23,7 +24,7 @@ public class MessageResourcesWrapper implements MessageResources {
   /**
    * Returns a text message for the specified key, for the default Locale.
    */
-  public String getMessage(String key, Object... args) {
+  public @Nullable String getMessage(String key, Object... args) {
     return getMessage(null, key, args);
   }
 
@@ -34,11 +35,12 @@ public class MessageResourcesWrapper implements MessageResources {
    * property is set.  Otherwise, an appropriate error message will be
    * returned. This method must be implemented by a concrete subclass.
    */
-  public String getMessage(@Nullable Locale locale, String key, Object... args) {
+  public @Nullable String getMessage(@Nullable Locale locale, String key, Object... args) {
     return messageSource.getMessage(
       key,
       args,
-      locale != null ? locale : ServletRequestUtils.getCurrent().getLocale()
+      null,
+      locale != null ? locale : LocaleContextHolder.getLocale()
     );
   }
 

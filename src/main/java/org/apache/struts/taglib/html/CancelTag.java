@@ -3,6 +3,9 @@ package org.apache.struts.taglib.html;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.tags.form.InputTag;
 import springing.struts1.taglib.DelegatingHtmlInputElementTagBase;
+import springing.struts1.taglib.HtmlElementTagBase;
+
+import java.util.Map;
 
 /**
  * Render a Cancel Button
@@ -11,15 +14,9 @@ import springing.struts1.taglib.DelegatingHtmlInputElementTagBase;
  * the action servlet to bypass calling the associated form bean validate()
  * method. The action is called normally.
  */
-public class CancelTag extends DelegatingHtmlInputElementTagBase<InputTag> {
+public class CancelTag extends HtmlElementTagBase {
 
   public CancelTag() {
-    super(new InputTag() {
-      @Override
-      protected String getType() {
-        return "submit";
-      }
-    });
     init();
   }
 
@@ -30,25 +27,31 @@ public class CancelTag extends DelegatingHtmlInputElementTagBase<InputTag> {
   }
 
   public void init() {
-    setProperty(Constants.CANCEL_PROPERTY);
     value = null;
   }
-
   private @Nullable String value;
+
+  @Override
+  protected String getTagName() {
+    return "input";
+  }
+
+  @Override
+  protected Map<String, String> getAdditionalAttributes() {
+    return Map.of(
+      "type", "submit",
+      "name", Constants.CANCEL_PROPERTY,
+      "value", (value == null) ? DEFAULT_CANCEL_BUTTON_LABEL : value
+    );
+  }
+  private static final String DEFAULT_CANCEL_BUTTON_LABEL = "Cancel";
 
   /**
    * Value of the label to be placed on this button. This value will also be
    * submitted as the value of the specified request parameter.
    * [Body of this tag (if any), or "Cancel"]
    */
-  @Override
-  public void setValue(String value ) {
+  public void setValue(String value) {
     this.value = value;
   }
-
-  @Override
-  protected String processValue(@Nullable Object v) {
-    return (value == null) ? DEFAULT_CANCEL_BUTTON_LABEL : value;
-  }
-  private static final String DEFAULT_CANCEL_BUTTON_LABEL = "Cancel";
 }

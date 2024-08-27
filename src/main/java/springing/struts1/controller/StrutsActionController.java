@@ -10,11 +10,13 @@ import org.apache.struts.config.ActionConfig;
 import org.apache.struts.config.FormBeanConfig;
 import org.apache.struts.taglib.html.Constants;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import springing.util.ServletRequestUtils;
 import java.lang.reflect.Method;
 
+import static springing.struts1.validator.ValidationUtils.bindRequest;
 import static springing.util.ObjectUtils.createInstanceOf;
 
 public class StrutsActionController implements Controller {
@@ -44,7 +46,7 @@ public class StrutsActionController implements Controller {
     var form = prepareFormBean(req);
     if (form != null && actionMapping.getValidate()) {
       var errors = form.validate(actionMapping, req);
-      if (!errors.isEmpty()) {
+      if (errors != null && !errors.isEmpty()) {
         var input = actionMapping.getInputForward();
         if (input == null) throw new IllegalStateException(
           "The input property is required when form validation is enabled: " +
@@ -93,7 +95,16 @@ public class StrutsActionController implements Controller {
       }
       return (ActionForm) request.getAttribute(formBeanKey);
     }
-    return formBeanConfig.createActionForm();
+    var formBean = formBeanConfig.createActionForm();
+    try {
+      bindRequest(request, formBean);
+    } catch (BindException e) {
+      throw new IllegalArgumentException(String.format(
+        "Failed to bind the parameters of the request [%s] to the form bean [%s].",
+        actionMapping.getActionId(), actionMapping.getName()
+      ), e);
+    }
+    return formBean;
   }
 
   private ModelAndView toModelAndView(String viewName) {

@@ -1,14 +1,17 @@
 package org.apache.commons.beanutils;
 
+import org.springframework.beans.SimpleTypeConverter;
+import org.springframework.beans.TypeConverter;
 import org.springframework.lang.Nullable;
-import springing.util.ObjectUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static springing.util.ObjectUtils.classFor;
-import static springing.util.ObjectUtils.createInstanceOf;
 
 public class DynaProperty<T> {
 
@@ -52,12 +55,12 @@ public class DynaProperty<T> {
   }
 
   public @Nullable T getValueFrom(Map<String, Object> values) {
-    var value = (T) values.get(name);
-    if (value == null && (isKeyed() || isIndexed())) {
-      value = createInstanceOf(type);
-      setValueTo(values, value);
+    var value = values.get(name);
+    if (value == null) {
+      return null;
     }
-    return value;
+    TypeConverter converter = new SimpleTypeConverter();
+    return converter.convertIfNecessary(value, getType());
   }
 
   public List<Object> getIndexedValueFrom(Map<java.lang.String, Object> values) {
@@ -65,8 +68,17 @@ public class DynaProperty<T> {
         "%s (type: %s) is not a indexed property.", name, getType()
     ));
     T v = getValueFrom(values);
-    if (type.isArray()) {
-      return Arrays.asList(v);
+    if (v instanceof int[] array) {
+      return IntStream.of(array).boxed().map(it -> (Object) it).toList();
+    }
+    if (v instanceof long[] array) {
+      return LongStream.of(array).boxed().map(it -> (Object) it).toList();
+    }
+    if (v instanceof double[] array) {
+      return DoubleStream.of(array).boxed().map(it -> (Object) it).toList();
+    }
+    if (v instanceof Object[] array) {
+      return Arrays.asList(array);
     }
     return (List<Object>) v;
   }

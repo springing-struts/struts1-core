@@ -36,7 +36,7 @@ public class FormPropertyConfig {
    * is indexed.
    */
   public String getType() {
-    return property.getType().getSimpleName();
+    return property.getType().getName();
   }
 
   /**

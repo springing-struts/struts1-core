@@ -3,8 +3,6 @@ package org.apache.struts.taglib.html;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
 import org.apache.struts.action.ActionMessage;
-import org.apache.struts.util.MessageResources;
-import org.apache.struts.util.ModuleUtils;
 import org.apache.taglibs.standard.tag.common.core.ForEachSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.MessagesAware;
@@ -90,13 +88,7 @@ public class MessagesTag extends ForEachSupport implements MessagesAware {
         return text;
       }
       case ActionMessage actionMessage -> {
-        if (actionMessage.isResource()) {
-          return actionMessage.getKey();
-        }
-        return getMessageResources(bundle).getMessage(
-          actionMessage.getKey(),
-          actionMessage.getValues()
-        );
+        return actionMessage.getText(bundle);
       }
       default -> {
         return message.toString();

@@ -1,42 +1,34 @@
 package org.apache.commons.beanutils;
 
-
 import org.springframework.beans.BeanUtils;
 import springing.util.BeanMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class WrapDynaBean implements MapBackedDynaBean {
 
   public WrapDynaBean(Object bean) {
     var clazz = bean.getClass();
+    var className = clazz.getSimpleName();
+    var properties = new ArrayList<DynaProperty<?>>();
     for (var d : BeanUtils.getPropertyDescriptors(clazz)) {
-      propertiesByName.put(
-        d.getName(),
-        new DynaProperty<>(d.getName(), d.getPropertyType())
-      );
+      var prop = new DynaProperty<>(d.getName(), d.getPropertyType());
+      properties.add(prop);
     }
-    className = clazz.getSimpleName();
+    dynaClass = new DefaultDynaClass(className, properties);
     values = new BeanMap(bean);
   }
 
-  private final String className;
+  private final DynaClass dynaClass;
   private final BeanMap values;
-  private final Map<String, DynaProperty<?>> propertiesByName = new HashMap<>();
 
   @Override
-  public String getName() {
-    return className;
+  public DynaClass getDynaClass() {
+    return dynaClass;
   }
 
   @Override
-  public Map<String, DynaProperty<?>> getPropertiesByPropertyName() {
-    return propertiesByName;
-  }
-
-  @Override
-  public Map<String, Object> getValuesByPropertyName() {
+  public Map<String, Object> getValues() {
     return values;
   }
 }

@@ -2,6 +2,7 @@ package org.apache.struts.validator;
 
 import jakarta.annotation.Nullable;
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.WrapDynaBean;
 
 /**
@@ -31,6 +32,11 @@ public class BeanValidatorForm extends ValidatorForm implements DynaBean {
   }
 
   private final DynaBean bean;
+
+  @Override
+  public DynaClass getDynaClass() {
+    return bean.getDynaClass();
+  }
 
   @Override
   public boolean contains(String name, String key) {

@@ -87,9 +87,7 @@ public class ForwardConfig {
     if (moduleConfig != null) {
       return moduleConfig.getPrefix();
     }
-    throw new IllegalStateException(
-      "Failed to determine module config for the forward. path = [" + getPath() + "]"
-    );
+    return "/"; // Servlet context root.
   }
 
   /**

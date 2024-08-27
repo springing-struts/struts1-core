@@ -39,7 +39,7 @@ public class FormBeanConfig {
       Map<String, Object> props = new HashMap<>();
       props.put("name", name);
       props.put("type", type.getName());
-      props.put("formProperties", formPropertiesByName.values());
+      props.put("formProperties", formProperties);
       for (var prop : properties) {
         props.put(prop.getProperty(), prop.getValue());
       }
@@ -77,6 +77,9 @@ public class FormBeanConfig {
   public String getType() {
     return type.getName();
   }
+  public Class<? extends ActionForm> getFormClass() {
+    return type;
+  }
   private Class<? extends ActionForm> type;
   @JacksonXmlProperty(localName = "type", isAttribute = true)
   private void setType(String type) {
@@ -87,18 +90,12 @@ public class FormBeanConfig {
    * The set of FormProperty elements defining dynamic form properties for this
    * form bean, keyed by property name.
    */
-  public Map<String , DynaProperty<?>> getFormPropertiesByName() {
-    return formPropertiesByName;
+  public List<FormPropertyConfig> getFormProperties() {
+    return formProperties;
   }
-  private final Map<String, DynaProperty<?>> formPropertiesByName = new HashMap<>();
-
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "form-property")
-  private void setFormProperties(List<FormPropertyConfig> formProperties) {
-    for (var p: formProperties) {
-      formPropertiesByName.put(p.getName(), p.getProperty());
-    }
-  }
+  private List<FormPropertyConfig> formProperties = new ArrayList<>();
 
   /**
    * Create and return an `ActionForm` instance appropriate to the information

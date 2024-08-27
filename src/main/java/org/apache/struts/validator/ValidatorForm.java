@@ -26,7 +26,7 @@ public class ValidatorForm extends ActionForm {
     ActionMapping mapping,
     HttpServletRequest request
   ) {
-    return ValidationUtils.validate(mapping, request, this);
+    return ValidationUtils.validateRequest(mapping.getName(), request, this);
   }
 
   /**
