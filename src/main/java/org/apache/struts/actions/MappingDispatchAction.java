@@ -1,4 +1,12 @@
 package org.apache.struts.actions;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.springframework.lang.Nullable;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * An abstract `Action` that dispatches to a public method that is named by
  * the `parameter` attribute of the corresponding ActionMapping. This is
@@ -109,4 +117,13 @@ package org.apache.struts.actions;
  * @since Struts 1.2
  */
 public class MappingDispatchAction extends DispatchAction {
+  @Override
+  protected String getMethodName(
+    ActionMapping mapping,
+    @Nullable ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) {
+    return getActionMappingParameter(mapping);
+  }
 }

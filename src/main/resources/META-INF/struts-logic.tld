@@ -987,7 +987,6 @@
     </attribute>
   </tag>
   -->
-  <!--
   <tag>
     <name>messagesNotPresent</name>
     <tag-class>org.apache.struts.taglib.logic.MessagesNotPresentTag</tag-class>
@@ -1051,7 +1050,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <tag>
     <name>messagesPresent</name>
     <tag-class>org.apache.struts.taglib.logic.MessagesPresentTag</tag-class>

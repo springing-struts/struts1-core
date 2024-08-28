@@ -15,8 +15,15 @@ import springing.struts1.taglib.MessagesAware;
 public class MessagesPresentTag extends TagSupport implements MessagesAware {
 
   public MessagesPresentTag() {
+    this(false);
+  }
+
+  public MessagesPresentTag(boolean negate) {
+    this.negate = negate;
     init();
   }
+
+  private final boolean negate;
 
   @Override
   public void release() {
@@ -37,6 +44,8 @@ public class MessagesPresentTag extends TagSupport implements MessagesAware {
   @Override
   public int doStartTag() throws JspException {
     var messages = getMessages(pageContext);
-    return (messages == null || messages.isEmpty()) ? SKIP_BODY : EVAL_BODY_INCLUDE;
+    var hasMessages = messages == null || messages.isEmpty();
+    var evaluatesContent = negate ? !hasMessages : hasMessages;
+    return evaluatesContent ? SKIP_BODY : EVAL_BODY_INCLUDE;
   }
 }

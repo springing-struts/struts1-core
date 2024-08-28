@@ -6,6 +6,14 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.BaseAction;
+import org.springframework.beans.BeanUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * An abstract `Action` that dispatches to a public method that is named by
@@ -73,10 +81,79 @@ public abstract class DispatchAction extends BaseAction {
   @Override
   public ActionForward execute(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
   ) {
-    return null;
+    var dispatchTarget = getMethodName(mapping, form, request, response);
+    var method = findActionMethod(dispatchTarget);
+    if (method == null || method.getName().equals("execute")) throw new ResponseStatusException(
+      NOT_FOUND,
+      String.format(
+       "Failed to dispatch this request to action [%s] as the dispatch target [%s] is invalid.",
+       mapping.getPath(), dispatchTarget
+      )
+    );
+    try {
+      return (ActionForward) method.invoke(this, mapping, form, request, response);
+    } catch (IllegalAccessException e) {
+      throw new RuntimeException(String.format(
+        "Failed to dispatch the action [%s] to the method [%s].",
+        mapping.getPath(), dispatchTarget
+      ), e);
+    } catch (InvocationTargetException e) {
+      if (e.getCause() instanceof RuntimeException cause) {
+        throw cause;
+      }
+      throw new RuntimeException(String.format(
+        "An error occurred while dispatching the action [%s] to the method [%s].",
+        mapping.getPath(), dispatchTarget
+      ), e);
+    }
+  }
+
+  private @Nullable Method findActionMethod(String name) {
+    var method = BeanUtils.findDeclaredMethod(
+      getClass(),
+      name,
+      ActionMapping.class,
+      ActionForm.class,
+      HttpServletRequest.class,
+      HttpServletResponse.class
+    );
+    if (method != null) {
+      method.setAccessible(true);
+    }
+    return method;
+  }
+
+  /**
+   * Returns the method name, given a parameter's value.
+   */
+  protected String getMethodName(
+      ActionMapping mapping,
+      @Nullable ActionForm form,
+      HttpServletRequest request,
+      HttpServletResponse response
+  ) {
+    var dispatchKey = getActionMappingParameter(mapping);
+    var dispatchTarget = request.getParameter(dispatchKey);
+    if (dispatchTarget == null || dispatchTarget.isBlank()) throw new ResponseStatusException(
+      NOT_FOUND,
+      String.format(
+        "Failed to dispatch this request to action [%s] as the dispatch key [%s] was blank.",
+        mapping.getPath(), dispatchKey
+      )
+    );
+    return dispatchTarget;
+  }
+
+  protected String getActionMappingParameter(ActionMapping mapping) {
+    var param = mapping.getParameter();
+    if (param == null || param.isBlank()) throw new IllegalStateException(String.format(
+      "The parameter attribute of mapping [%s] required to determine dispatch method is missing.",
+      mapping.getPath()
+    ));
+    return param;
   }
 }

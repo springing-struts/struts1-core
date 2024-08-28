@@ -71,7 +71,8 @@ public class StrutsModuleAwareMessageSource implements MessageSource {
       @Nullable String defaultMessage,
       Locale locale
   ) {
-    var bundleKey = (String) args[5];
+    args = args == null ? new String[]{"", "", "", "", ""} : args;
+    var bundleKey = args.length < 6 ? "" : (String) args[5];
     var arguments = Arrays.copyOfRange(args, 0, 4);
     return getMessageSourceForCurrentModule(bundleKey).getMessage(code, arguments, defaultMessage, locale);
   }
@@ -82,7 +83,8 @@ public class StrutsModuleAwareMessageSource implements MessageSource {
       @Nullable Object[] args,
       Locale locale
   ) throws NoSuchMessageException {
-    var bundleKey = (String) args[5];
+    args = args == null ? new String[]{"", "", "", "", ""} : args;
+    var bundleKey = args.length < 6 ? "" : (String) args[5];
     var arguments = Arrays.copyOfRange(args, 0, 4);
     return getMessageSourceForCurrentModule(bundleKey).getMessage(code, arguments, locale);
   }

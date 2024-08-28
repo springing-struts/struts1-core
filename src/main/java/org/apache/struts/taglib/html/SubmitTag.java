@@ -1,5 +1,6 @@
 package org.apache.struts.taglib.html;
 
+import jakarta.servlet.jsp.JspException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.tags.form.InputTag;
 import springing.struts1.taglib.DelegatingHtmlInputElementTagBase;
@@ -30,6 +31,17 @@ public class SubmitTag extends DelegatingHtmlInputElementTagBase<InputTag> {
     value = null;
   }
   private @Nullable String value;
+
+  /**
+   * Overrides the `doStartTag()` method to allow this element to have child
+   * elements, even though the HTML specification does not allow `<input>`
+   * elements to have body content.
+   */
+  @Override
+  public int doStartTag() throws JspException {
+    super.doStartTag();
+    return EVAL_BODY_INCLUDE;
+  }
 
   /**
    * The value of the button label.

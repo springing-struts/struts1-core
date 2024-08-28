@@ -13,8 +13,8 @@ public interface MapBackedDynaBean extends DynaBean {
     var clazz = getDynaClass();
     var prop = clazz.getDynaPropertiesByName().get(propName);
     if (prop == null) throw new IllegalArgumentException(String.format(
-        "Form bean [%s] does not have a property of name [%s].",
-        clazz.getName(), propName
+      "Form bean [%s] does not have a property of name [%s].",
+      clazz.getName(), propName
     ));
     return prop;
   }
