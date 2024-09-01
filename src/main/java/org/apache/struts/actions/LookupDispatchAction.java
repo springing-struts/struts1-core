@@ -1,5 +1,18 @@
 package org.apache.struts.actions;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
+import org.apache.struts.util.ModuleUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 /**
  * An abstract `Action` that dispatches to the subclass mapped `execute()`
  * method. This is useful in cases where an HTML form has multiple submit
@@ -72,5 +85,37 @@ package org.apache.struts.actions;
  * (a `<html:cancel>` button was pressed), the custom handler `cancelled` will
  * be used instead.
  */
-public class LookupDispatchAction extends DispatchAction {
+public abstract class LookupDispatchAction extends DispatchAction {
+  @Override
+  protected String getMethodName(
+    ActionMapping mapping,
+    @Nullable ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) {
+    var key = getActionMappingParameter(mapping);
+    var submitButtonLabel = request.getParameter(key);
+    if (submitButtonLabel == null || submitButtonLabel.isBlank()) throw new ResponseStatusException(
+      NOT_FOUND,
+      String.format("Filed to dispatch request because the request parameter [%s] was blank.", key)
+    );
+    var messageResources = MessageResources.getMessageResources();
+    for (var entry : getKeyMethodMap().entrySet()) {
+      var buttonLabelKey = entry.getKey();
+      var methodName = entry.getValue();
+      var buttonLabel = messageResources.getMessage(buttonLabelKey);
+      if (submitButtonLabel.equals(buttonLabel)) {
+        return methodName;
+      }
+    }
+    throw new ResponseStatusException(NOT_FOUND, String.format(
+      "There is no dispatch target for the button with label [%s] in the mapping [%s].",
+      submitButtonLabel, mapping.getPath()
+    ));
+  }
+
+  /**
+   * Provides the mapping from resource key to method name.
+   */
+  protected abstract Map<String, String> getKeyMethodMap();
 }

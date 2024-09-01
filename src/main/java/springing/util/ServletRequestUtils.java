@@ -71,9 +71,7 @@ public class ServletRequestUtils {
     if (attributeName != null) {
       var bean = getAttributeFromScope(pageContext, attributeName);
       if (relPath == null) return bean;
-      if (isReservedFormPropertyName(relPath)) {
-        return retrieveValue(bean, relPath, false);
-      }
+
       return retrieveValue(bean, awareNestedTag ? resolveNestedPath(relPath, pageContext) : relPath);
     }
     if (relPath == null) {

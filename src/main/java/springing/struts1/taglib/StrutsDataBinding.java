@@ -118,7 +118,7 @@ public class StrutsDataBinding extends BindStatus {
         ? value
         : valueProcessor.apply(value);
   }
-  private final String relPath;
+  private final @Nullable String relPath;
   private final @Nullable Object value;
 
   @Override
