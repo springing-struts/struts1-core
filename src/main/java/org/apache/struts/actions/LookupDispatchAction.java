@@ -3,7 +3,6 @@ package org.apache.struts.actions;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
-import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -86,14 +85,28 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  * be used instead.
  */
 public abstract class LookupDispatchAction extends DispatchAction {
-  @Override
+  public LookupDispatchAction() {
+    dispatcher = new ActionDispatcher(this) {
+      @Override
+      protected String getMethodName(
+        ActionMapping mapping,
+        @Nullable ActionForm form,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        String parameter
+      ) throws Exception {
+        return LookupDispatchAction.this.getMethodName(mapping, form, request, response);
+      }
+    };
+  }
+
   protected String getMethodName(
     ActionMapping mapping,
     @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
-  ) {
-    var key = getActionMappingParameter(mapping);
+  ) throws Exception {
+    var key = dispatcher.getParameter(mapping, form, request, response);
     var submitButtonLabel = request.getParameter(key);
     if (submitButtonLabel == null || submitButtonLabel.isBlank()) throw new ResponseStatusException(
       NOT_FOUND,

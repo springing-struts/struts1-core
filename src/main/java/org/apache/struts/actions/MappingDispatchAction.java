@@ -116,14 +116,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Rev$ $Date$
  * @since Struts 1.2
  */
-public class MappingDispatchAction extends DispatchAction {
-  @Override
-  protected String getMethodName(
-    ActionMapping mapping,
-    @Nullable ActionForm form,
-    HttpServletRequest request,
-    HttpServletResponse response
-  ) {
-    return getActionMappingParameter(mapping);
+public abstract class MappingDispatchAction extends DispatchAction {
+  public MappingDispatchAction() {
+    dispatcher = new ActionDispatcher(this, ActionDispatcher.MAPPING_FLAVOR);
   }
 }

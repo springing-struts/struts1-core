@@ -1,12 +1,5 @@
 package org.apache.struts.actions;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.springframework.lang.Nullable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * An `Action` that dispatches to one of the public methods that are named in
  * the `parameter` attribute of the corresponding `ActionMapping` and matches
@@ -42,30 +35,9 @@ import javax.servlet.http.HttpServletResponse;
  * specified. If multiple buttons were accidentally submitted, the first match
  * in the list will be dispatched.
  */
-public class EventDispatchAction extends DispatchAction {
+public abstract class EventDispatchAction extends DispatchAction {
 
-  @Override
-  protected String getMethodName(
-    ActionMapping mapping,
-    @Nullable ActionForm form,
-    HttpServletRequest request,
-    HttpServletResponse response
-  ) {
-    var parameter = getActionMappingParameter(mapping);
-    var requestParams = request.getParameterMap();
-    String defaultMethodName = null;
-    for (var entry : parameter.split("\\s*,\\s*")) {
-      var keyAndName = entry.split("=");
-      var key = keyAndName[0];
-      var methodName = keyAndName.length > 1 ? keyAndName[1] : key;
-      if (key.equals("default")) {
-        defaultMethodName = methodName;
-        continue;
-      }
-      if (requestParams.containsKey(key)) {
-        return methodName;
-      }
-    }
-    return defaultMethodName != null ? defaultMethodName : "unspecified";
+  public EventDispatchAction() {
+    dispatcher = new EventActionDispatcher(this);
   }
 }

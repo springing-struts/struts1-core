@@ -5,7 +5,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.chain.contexts.ActionContext;
 import org.apache.struts.dispatcher.Dispatcher;
-import org.apache.struts.util.MessageResources;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -96,7 +95,7 @@ public class ActionDispatcher implements Dispatcher {
    */
   public ActionForward execute(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
   ) throws Exception {
@@ -108,20 +107,16 @@ public class ActionDispatcher implements Dispatcher {
     }
     var parameter = getParameter(mapping, form, request, response);
     var methodName = getMethodName(mapping, form, request, response, parameter);
-    var recursive = methodName.equals("execute") || methodName.equals("perform");
-    if (recursive) throw new ResponseStatusException(NOT_FOUND, String.format(
-      "Failed to dispatch the request for the path: [%s] (parameter: [%s], methodName: [%s]).",
-      mapping.getPath(), parameter, methodName
-    ));
+
     return dispatchMethod(mapping, form, request, response, methodName);
   }
 
   /**
    * Returns the method name, given a parameter's value.
    */
-  protected String getMethodName(
+  protected @Nullable String getMethodName(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response,
     String parameter
@@ -138,7 +133,7 @@ public class ActionDispatcher implements Dispatcher {
    */
   protected String getParameter(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
   ) throws Exception {
@@ -163,7 +158,7 @@ public class ActionDispatcher implements Dispatcher {
    */
   protected @Nullable ActionForward cancelled(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
   ) throws Exception {
@@ -178,7 +173,7 @@ public class ActionDispatcher implements Dispatcher {
    */
   protected ActionForward unspecified(
     ActionMapping mapping,
-    ActionForm form,
+    @Nullable ActionForm form,
     HttpServletRequest request,
     HttpServletResponse response
   ) throws Exception {
@@ -187,7 +182,7 @@ public class ActionDispatcher implements Dispatcher {
 
   private ActionForward dispatchMethod(
       ActionMapping mapping,
-      ActionForm form,
+      @Nullable ActionForm form,
       HttpServletRequest request,
       HttpServletResponse response,
       @Nullable String name
@@ -195,6 +190,11 @@ public class ActionDispatcher implements Dispatcher {
     if (name == null) {
       return unspecified(mapping, form, request, response);
     }
+    var recursive = name.equals("execute") || name.equals("perform");
+    if (recursive) throw new ResponseStatusException(NOT_FOUND, String.format(
+      "Failed to dispatch the request for the path: [%s] (methodName: [%s]).",
+      mapping.getPath(), name
+    ));
     var method = getMethod(name);
     if (method == null) throw new ResponseStatusException(NOT_FOUND, String.format(
       "Failed to dispatch the request [%s] because the given dispatch target [%s] is unknown.",
@@ -227,7 +227,7 @@ public class ActionDispatcher implements Dispatcher {
   }
 
   private @Nullable Method getMethod(String methodName) {
-    return ReflectionUtils.findMethod(
+    var method = ReflectionUtils.findMethod(
       actionClass,
       methodName,
       ActionMapping.class,
@@ -235,6 +235,10 @@ public class ActionDispatcher implements Dispatcher {
       HttpServletRequest.class,
       HttpServletResponse.class
     );
+    if (method != null) {
+      method.setAccessible(true);
+    }
+    return method;
   }
 
   @Override
