@@ -8,11 +8,14 @@ import org.apache.struts.dispatcher.Dispatcher;
 import org.apache.struts.util.MessageResources;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import static org.apache.struts.Globals.CANCEL_KEY;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
@@ -71,11 +74,6 @@ public class ActionDispatcher implements Dispatcher {
 
   public static final String EXECUTE_METHOD_NAME = "execute";
 
-  private static MessageResources messages =
-    MessageResources.getMessageResources(
-      "org.apache.struts.actions.LocalStrings"
-    );
-
   public ActionDispatcher(Action action, int flavor) {
     this.action = action;
     this.actionClass = action.getClass();
@@ -111,9 +109,10 @@ public class ActionDispatcher implements Dispatcher {
     var parameter = getParameter(mapping, form, request, response);
     var methodName = getMethodName(mapping, form, request, response, parameter);
     var recursive = methodName.equals("execute") || methodName.equals("perform");
-    if (recursive) throw new IllegalArgumentException(
-      messages.getMessage("dispatch.recursive", mapping.getPath())
-    );
+    if (recursive) throw new ResponseStatusException(NOT_FOUND, String.format(
+      "Failed to dispatch the request for the path: [%s] (parameter: [%s], methodName: [%s]).",
+      mapping.getPath(), parameter, methodName
+    ));
     return dispatchMethod(mapping, form, request, response, methodName);
   }
 
@@ -150,11 +149,11 @@ public class ActionDispatcher implements Dispatcher {
     if (flavor == DEFAULT_FLAVOR) {
       return "method";
     }
-    throw new IllegalArgumentException(
-      messages.getMessage("dispatch.handler", mapping.getPath())
-    );
+    throw new IllegalArgumentException(String.format(
+      "The parameter of the mapping [%s] is not defined, which is required to determine the dispatch target.",
+      mapping.getPath()
+    ));
   }
-
 
   /**
    * Dispatches to the target class' cancelled method, if present, otherwise
@@ -197,19 +196,21 @@ public class ActionDispatcher implements Dispatcher {
       return unspecified(mapping, form, request, response);
     }
     var method = getMethod(name);
-    if (method == null) throw new IllegalArgumentException(
-      messages.getMessage("dispatch.method", mapping.getPath(), name)
-    );
+    if (method == null) throw new ResponseStatusException(NOT_FOUND, String.format(
+      "Failed to dispatch the request [%s] because the given dispatch target [%s] is unknown.",
+      mapping.getPath(), name
+    ));
     try {
       return (ActionForward) method.invoke(action, mapping, form, request, response);
     } catch (InvocationTargetException e) {
-      if (e instanceof Exception cause) {
-        throw cause;
+      var cause = e.getCause();
+      if (cause instanceof Exception runtimeError) {
+        throw runtimeError;
       }
-      throw new IllegalStateException(
-        messages.getMessage("dispatch.error", mapping.getPath(), name),
-        e
-      );
+      throw new RuntimeException(String.format(
+        "An error occurred while invoking action method [%s] for the request [%s].",
+        name, mapping.getPath()
+      ), cause);
     }
   }
 
@@ -226,7 +227,14 @@ public class ActionDispatcher implements Dispatcher {
   }
 
   private @Nullable Method getMethod(String methodName) {
-    return ReflectionUtils.findMethod(actionClass, methodName);
+    return ReflectionUtils.findMethod(
+      actionClass,
+      methodName,
+      ActionMapping.class,
+      ActionForm.class,
+      HttpServletRequest.class,
+      HttpServletResponse.class
+    );
   }
 
   @Override
