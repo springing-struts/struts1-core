@@ -49,11 +49,12 @@
 
   ]]>
   </description>
-  <!--
   <tag>
     <name>cookie</name>
     <tag-class>org.apache.struts.taglib.bean.CookieTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.CookieTei</tei-class>
+    -->
     <body-content>empty</body-content>
     <description>
       <![CDATA[
@@ -121,12 +122,12 @@
       </description>
     </attribute>
   </tag>
-  -->
-  <!--
   <tag>
     <name>define</name>
     <tag-class>org.apache.struts.taglib.bean.DefineTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.DefineTei</tei-class>
+    -->
     <body-content>JSP</body-content>
     <description>
       <![CDATA[
@@ -292,7 +293,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <!--
   <tag>
     <name>header</name>

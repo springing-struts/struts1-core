@@ -1,10 +1,10 @@
 package springing.struts1.configuration;
 
-import org.apache.struts.Globals;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.apache.struts.config.ModuleConfig;
@@ -25,9 +25,16 @@ public class Struts1Configuration {
   public ModuleUtils moduleUtils(List<ModuleConfig> moduleConfigs,
                                  jakarta.servlet.http.HttpServletRequest request
   ) {
-    ServletRequestUtils.initialize(request);
     ModuleUtils.initialize(moduleConfigs);
     return ModuleUtils.getInstance();
+  }
+
+  @Bean
+  public ServletRequestUtils servletRequestUtils(
+    jakarta.servlet.http.HttpServletRequest request,
+    ConversionService conversionService
+  ) {
+    return new ServletRequestUtils(request, conversionService);
   }
 
   @Bean

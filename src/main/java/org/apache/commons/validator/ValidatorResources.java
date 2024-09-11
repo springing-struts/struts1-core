@@ -3,7 +3,6 @@ package org.apache.commons.validator;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.util.ServletRequestUtils;
 

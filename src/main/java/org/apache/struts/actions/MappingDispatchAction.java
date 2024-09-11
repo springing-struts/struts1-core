@@ -104,10 +104,7 @@ package org.apache.struts.actions;
  * various handlers, so you can combine actions in the
  * same class that, for example, differ in their use of forms or validation.
  * Also, a request parameter, which would be visible to the application user,
- * is not required to enable selection of the handler method. </p>
- *
- * @version $Rev$ $Date$
- * @since Struts 1.2
+ * is not required to enable selection of the handler method.
  */
 public abstract class MappingDispatchAction extends DispatchAction {
   public MappingDispatchAction() {

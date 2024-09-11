@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
 import jakarta.servlet.jsp.PageContext;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -23,23 +24,37 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.apache.struts.taglib.html.Constants.isReservedFormPropertyName;
 import static springing.util.ObjectUtils.*;
 
 public class ServletRequestUtils {
 
-  private ServletRequestUtils() {}
-
-  public static void initialize(jakarta.servlet.http.HttpServletRequest request) {
-    ServletRequestUtils.REQUEST = wrap(request);
+  public ServletRequestUtils(
+    jakarta.servlet.http.HttpServletRequest request,
+    ConversionService conversionService
+  ) {
+    this.request = wrap(request);
+    this.conversionService = conversionService;
+    INSTANCE = this;
   }
-  private static @Nullable HttpServletRequest REQUEST;
+
+  private final HttpServletRequest request;
+  private final ConversionService conversionService;
+
+  private static @Nullable ServletRequestUtils INSTANCE;
+
+  public static ServletRequestUtils getInstance() {
+    if (INSTANCE == null) throw new IllegalStateException(
+        "The ServletRequestUtils should be initialized before being used."
+    );
+    return INSTANCE;
+  }
 
   public static HttpServletRequest getCurrent() {
-    if (REQUEST == null) throw new IllegalStateException(
-      "The ServletRequestUtils should be initialized before being used."
-    );
-    return REQUEST;
+    return getInstance().request;
+  }
+
+  public static <T> @Nullable T convertValue(@Nullable Object value, Class<T> toType) {
+    return getInstance().conversionService.convert(value, toType);
   }
 
   public static @Nullable Object getAttributeFromScope(

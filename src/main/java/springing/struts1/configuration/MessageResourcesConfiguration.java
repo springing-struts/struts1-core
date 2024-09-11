@@ -3,8 +3,6 @@ package springing.struts1.configuration;
 import org.apache.struts.Globals;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
 public class Main {
+
   public static void main(String ...args) {
     SpringApplication.run(Main.class, args);
   }

@@ -22,7 +22,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import springing.struts1.configuration.MessageResourcesConfiguration;
 import springing.struts1.configuration.Struts1Configuration;
 import springing.struts1.configuration.WebMvcConfiguration;
-import springing.util.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +73,6 @@ public class TestApp {
     }
     mockRequest.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, webApplicationContext);
     if (setup != null) setup.accept(mockRequest);
-    ServletRequestUtils.initialize(mockRequest);
     request = wrap(mockRequest);
     var requestAttributes = new ServletRequestAttributes(request);
     RequestContextHolder.setRequestAttributes(requestAttributes);
