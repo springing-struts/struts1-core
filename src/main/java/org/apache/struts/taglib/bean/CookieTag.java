@@ -5,9 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.springframework.lang.Nullable;
-
 import java.util.Arrays;
-
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -75,7 +73,7 @@ public class CookieTag extends SetSupport {
    * will be retrieved as a value of type `Cookie`.
    */
   public void setMultiple(String multiple) {
-    this.multiple = !multiple.isBlank();
+    this.multiple = hasText(multiple);
   }
 
   /**

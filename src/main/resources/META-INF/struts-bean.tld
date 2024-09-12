@@ -293,11 +293,12 @@
       </description>
     </attribute>
   </tag>
-  <!--
   <tag>
     <name>header</name>
     <tag-class>org.apache.struts.taglib.bean.HeaderTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.HeaderTei</tei-class>
+    -->
     <body-content>empty</body-content>
     <description>
       <![CDATA[
@@ -366,12 +367,12 @@
       </description>
     </attribute>
   </tag>
-  -->
-  <!--
   <tag>
     <name>include</name>
     <tag-class>org.apache.struts.taglib.bean.IncludeTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.IncludeTei</tei-class>
+    -->
     <body-content>empty</body-content>
     <description>
       <![CDATA[
@@ -478,7 +479,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <tag>
     <name>message</name>
     <tag-class>org.apache.struts.taglib.bean.MessageTag</tag-class>
