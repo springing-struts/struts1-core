@@ -22,8 +22,9 @@ public class Struts1Configuration {
 
 
   @Bean
-  public ModuleUtils moduleUtils(List<ModuleConfig> moduleConfigs,
-                                 jakarta.servlet.http.HttpServletRequest request
+  public ModuleUtils moduleUtils(
+    List<ModuleConfig> moduleConfigs,
+    jakarta.servlet.http.HttpServletRequest request
   ) {
     ModuleUtils.initialize(moduleConfigs);
     return ModuleUtils.getInstance();

@@ -7,5 +7,5 @@ import org.springframework.core.Ordered;
 
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 5)
-@Import({MessageResourcesConfiguration.class, WebMvcConfiguration.class, Struts1Configuration.class})
+@Import({MessageResourcesConfiguration.class, WebAppConfiguration.class, WebMvcConfiguration.class, Struts1Configuration.class})
 public class Struts1AutoConfiguration {}

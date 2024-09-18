@@ -11,6 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.BindStatus;
 import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag;
+import springing.util.ServletRequestUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -128,7 +130,8 @@ public class StrutsDataBinding extends BindStatus {
 
   private static class RequestContextWrapper extends RequestContext{
     public RequestContextWrapper() {
-      super(((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest());
+      //super(((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest());
+      super(ServletRequestUtils.getCurrent());
     }
 
     @Nullable
