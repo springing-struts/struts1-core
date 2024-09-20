@@ -29,26 +29,24 @@ public interface JspVariableAware {
    * accessed (if `property` is specified).
    */
   default void setName(String name) {
-    if (!OBJECT_REFERENCE.asMatchPredicate().test(name)) throw new IllegalArgumentException(
+    if (!PROPERTY_PATH.asMatchPredicate().test(name)) throw new IllegalArgumentException(
         "Invalid object reference name: " + name
     );
     getReference().name = name;
   }
-  Pattern OBJECT_REFERENCE = Pattern.compile(
-    "^[_a-zA-Z][_a-zA-Z0-9]*(\\.[_a-zA-Z][_a-zA-Z0-9]*)*$"
-  );
 
   /**
    * The name of the bean property to be used as a variable.
    */
   default void setProperty(String property) {
-    if (!PROPERTY_NAME.asMatchPredicate().test(property)) throw new IllegalArgumentException(
+    if (!PROPERTY_PATH.asMatchPredicate().test(property)) throw new IllegalArgumentException(
         "Invalid object property name: " + property
     );
     getReference().property = property;
   }
-  Pattern PROPERTY_NAME = Pattern.compile(
-    "^[_a-zA-Z][_a-zA-Z0-9]*$"
+  String PROPERTY_NODE = "[_a-zA-Z][_a-zA-Z0-9]*(\\[(0|[1-9][0-9]*)])?";
+  Pattern PROPERTY_PATH = Pattern.compile(
+    "^" + PROPERTY_NODE + "(\\." + PROPERTY_NODE + ")*$"
   );
 
   /**

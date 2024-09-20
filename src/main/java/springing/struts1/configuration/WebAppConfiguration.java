@@ -22,10 +22,10 @@ public class WebAppConfiguration implements ServletContextInitializer {
     appContext.register(WebMvcConfiguration.class);
     appContext.setServletContext(servletContext);
 
-
     var dispatcher = servletContext.addServlet(
       "dispatcherServlet", new DispatcherServlet(appContext)
     );
+
     dispatcher.setLoadOnStartup(1);
     dispatcher.addMapping("/", "*.jsp");
 
@@ -35,9 +35,9 @@ public class WebAppConfiguration implements ServletContextInitializer {
     var jsp = servletContext.addServlet("jsp", JspServlet.class.getName());
     jsp.setLoadOnStartup(5);
     jsp.setInitParameters(Map.of(
-        "fork", "false",
-        "development", "false",
-        "strictGetProperty", "false"
+      "fork", "false",
+      "development", "false",
+      "strictGetProperty", "false"
     ));
     jsp.addMapping("*.jsp");
   }

@@ -681,11 +681,12 @@
     </attribute>
   </tag>
   -->
-  <!--
   <tag>
     <name>parameter</name>
     <tag-class>org.apache.struts.taglib.bean.ParameterTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.ParameterTei</tei-class>
+    -->
     <body-content>empty</body-content>
     <description>
       <![CDATA[
@@ -754,12 +755,12 @@
       </description>
     </attribute>
   </tag>
-  -->
-  <!--
   <tag>
     <name>resource</name>
     <tag-class>org.apache.struts.taglib.bean.ResourceTag</tag-class>
+    <!--
     <tei-class>org.apache.struts.taglib.bean.ResourceTei</tei-class>
+    -->
     <body-content>empty</body-content>
     <description>
       <![CDATA[
@@ -812,7 +813,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <!--
   <tag>
     <name>size</name>
