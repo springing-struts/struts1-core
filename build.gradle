@@ -1,0 +1,74 @@
+plugins {
+  id 'java-library'
+  id 'maven-publish'
+}
+
+group "springing-struts"
+version "1.0.0"
+
+
+repositories {
+  maven {
+    url =  uri("file:../mvn-repo")
+  }
+  mavenCentral()
+}
+
+dependencies {
+  api "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+  api "org.springframework.boot:spring-boot-starter-validation:${springBootVersion}"
+  api 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
+  implementation "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+  implementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0"
+  implementation "org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1"
+  implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+  implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+
+  testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
+  testImplementation "commons-beanutils:commons-beanutils:1.9.4"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+  withSourcesJar()
+  withJavadocJar()
+}
+
+/*
+tasks.register('sourceJar', Jar) {
+  from sourceSets.main.java
+  archiveClassifier.set('sources');
+}
+
+tasks.register('javadocJar', Jar) {
+  from javadoc.destinationDir
+  archiveClassifier.set('javadoc')
+}
+
+artifacts {
+  archives sourceJar
+  archives javadocJar
+}
+ */
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+//      artifact sourceJar
+//      artifact javadocJar
+    }
+  }
+  repositories {
+    maven {
+      url =  uri("file:../mvn-repo")
+    }
+  }
+}
+
+test {
+  useJUnitPlatform()
+}
