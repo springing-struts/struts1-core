@@ -1,0 +1,6 @@
+[tools]
+gradle = '8.13.0'
+java = 'zulu-21.40.17'
+node = '22.14.0'
+"npm:prettier" = '3.5.3'
+"npm:prettier-plugin-java" = '2.6.7'

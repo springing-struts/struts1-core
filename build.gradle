@@ -1,0 +1,94 @@
+plugins {
+  id 'java-library'
+  id 'maven-publish'
+  id 'cl.franciscosolis.sonatype-central-upload' version '1.0.3'
+}
+
+group "io.github.iwauo.springing-struts"
+version "0.0.2"
+
+repositories {
+  maven {
+    url =  uri("file:../mvn-repo")
+  }
+  mavenCentral()
+}
+
+dependencies {
+  api "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+  api "org.springframework.boot:spring-boot-starter-validation:${springBootVersion}"
+  api 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
+  implementation "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+  implementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0"
+  implementation "org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1"
+  implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+  implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+
+  testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
+  testImplementation "commons-beanutils:commons-beanutils:1.9.4"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+  withSourcesJar()
+  withJavadocJar()
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+      pom {
+        name.set(project.name)
+        description.set(
+          'An experimental project aimed at migrating a Struts1.x-based legacy' +
+          ' application to a Spring Boot architecture without any code change.'
+        )
+        url.set('https://github.com/springing-struts/struts1-core')
+        license {
+          name.set('MIT License')
+          url.set('https://github.com/springing-struts/struts1-core/blob/master/LICENSE')
+          distribution.set('repo')
+        }
+        developer {
+          id.set(System.getenv("DEVELOPER_ID"))
+          name.set(System.getenv("DEVELOPER_NAME"))
+          email.set(System.getenv("DEVELOPER_EMAIL"))
+        }
+        scm {
+          url.set('https://github.com/springing-struts/struts1-core')
+        }
+      }
+    }
+  }
+  repositories {
+    maven {
+      url =  uri("file:../mvn-repo")
+    }
+  }
+}
+
+sonatypeCentralUpload {
+  username = System.getenv("MAVEN_CENTRAL_USERNAME")
+  password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+
+  archives = files(
+    tasks.named('jar'),
+    tasks.named('sourcesJar'),
+    tasks.named('javadocJar'),
+  )
+
+  pom = file(
+    tasks.named("generatePomFileForMavenPublication").get().outputs.files.singleFile
+  )
+
+  signingKey = System.getenv("MAVEN_CENTRAL_PRIVATE_KEY")
+  signingKeyPassphrase = System.getenv("MAVEN_CENTRAL_PRIVATE_KEY_PASSPHRASE")
+}
+
+test {
+  useJUnitPlatform()
+}
