@@ -1,13 +1,14 @@
 package org.apache.struts.taglib.html;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.TestApp;
 import org.apache.struts.webapp.exercise.TestBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class HiddenTagTest {

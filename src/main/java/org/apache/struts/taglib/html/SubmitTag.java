@@ -1,13 +1,12 @@
 package org.apache.struts.taglib.html;
 
-import jakarta.servlet.jsp.JspException;
-import org.springframework.lang.Nullable;
-import springing.struts1.taglib.StrutsHtmlElementTagBase;
+import static org.springframework.util.StringUtils.hasText;
 
+import jakarta.servlet.jsp.JspException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.springframework.util.StringUtils.hasText;
+import org.springframework.lang.Nullable;
+import springing.struts1.taglib.StrutsHtmlElementTagBase;
 
 /**
  * Renders an HTML `input` element of type `submit`.
@@ -15,6 +14,7 @@ import static org.springframework.util.StringUtils.hasText;
  * `html:image` tag is more appropriate.
  */
 public class SubmitTag extends StrutsHtmlElementTagBase {
+
   public SubmitTag() {
     init();
   }
@@ -30,6 +30,7 @@ public class SubmitTag extends StrutsHtmlElementTagBase {
     value = null;
     property = null;
   }
+
   private @Nullable String value;
   private @Nullable String property;
 
@@ -65,9 +66,7 @@ public class SubmitTag extends StrutsHtmlElementTagBase {
       return value;
     }
     var content = readBodyContentAsText();
-    return content.isBlank()
-      ? getDefaultValue()
-      : content;
+    return content.isBlank() ? getDefaultValue() : content;
   }
 
   /**
@@ -81,5 +80,6 @@ public class SubmitTag extends StrutsHtmlElementTagBase {
   public String getDefaultValue() {
     return SUBMIT_BUTTON_DEFAULT_LABEL;
   }
+
   private static final String SUBMIT_BUTTON_DEFAULT_LABEL = "Submit";
 }

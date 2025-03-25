@@ -9,7 +9,6 @@ import java.io.InputStream;
  * directly by a Struts application.
  */
 public interface FormFile {
-
   /**
    * Returns the content type for this file.
    */
@@ -19,7 +18,6 @@ public interface FormFile {
    * Returns the size of this file in bytes.
    */
   long getFileLength();
-
 
   /**
    * Returns the size of this file, in bytes.

@@ -1,17 +1,17 @@
 package org.apache.struts.validator;
 
+import java.util.Locale;
 import org.apache.commons.validator.Arg;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.ValidatorAction;
 import org.apache.struts.util.MessageResources;
-
-import java.util.Locale;
 
 /**
  * This class helps provides some useful methods for retrieving objects from
  * different scopes of the application.
  */
 public class Resources {
+
   private Resources() {}
 
   /**

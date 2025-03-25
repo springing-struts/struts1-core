@@ -25,8 +25,7 @@ public class BeanValidatorForm extends ValidatorForm implements DynaBean {
   public BeanValidatorForm(Object bean) {
     if (bean instanceof DynaBean dynaBean) {
       this.bean = dynaBean;
-    }
-    else {
+    } else {
       this.bean = new WrapDynaBean(bean);
     }
   }

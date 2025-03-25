@@ -4,11 +4,10 @@ import java.io.IOException;
 
 public abstract class JspWriter extends jakarta.servlet.jsp.JspWriter {
 
-  public static JspWriter toJavaxNamespace(jakarta.servlet.jsp.JspWriter jakarta) {
-    return new JspWriter(
-      jakarta.getBufferSize(),
-      jakarta.isAutoFlush()
-    ) {
+  public static JspWriter toJavaxNamespace(
+    jakarta.servlet.jsp.JspWriter jakarta
+  ) {
+    return new JspWriter(jakarta.getBufferSize(), jakarta.isAutoFlush()) {
       @Override
       public void newLine() throws IOException {
         jakarta.newLine();

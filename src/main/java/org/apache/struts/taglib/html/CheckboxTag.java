@@ -1,9 +1,9 @@
 package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsInputElementTagBase;
-import java.util.Map;
 
 /**
  * Renders an HTML `input` element of type `checkbox`, populated from the

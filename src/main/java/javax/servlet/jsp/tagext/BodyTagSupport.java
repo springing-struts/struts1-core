@@ -1,10 +1,11 @@
 package javax.servlet.jsp.tagext;
 
+import javax.servlet.jsp.PageContext;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.jsp.PageContext;
-
-public class BodyTagSupport extends jakarta.servlet.jsp.tagext.BodyTagSupport implements Tag {
+public class BodyTagSupport
+  extends jakarta.servlet.jsp.tagext.BodyTagSupport
+  implements Tag {
 
   @Override
   public void setParent(Tag t) {

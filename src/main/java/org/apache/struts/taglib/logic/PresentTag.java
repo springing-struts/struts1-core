@@ -13,7 +13,10 @@ import springing.struts1.taglib.StrutsConditionalTagBase;
  * one occurrence of this tag, unless you use the `property` attribute, in
  * which case the `name` attribute is also required.
  */
-public class PresentTag extends StrutsConditionalTagBase implements JspVariableAware {
+public class PresentTag
+  extends StrutsConditionalTagBase
+  implements JspVariableAware {
+
   public PresentTag() {
     init();
   }
@@ -27,6 +30,7 @@ public class PresentTag extends StrutsConditionalTagBase implements JspVariableA
   private void init() {
     ref = JspVariableReference.create();
   }
+
   private JspVariableReference ref;
 
   @Override

@@ -9,6 +9,7 @@ package org.apache.struts.taglib.logic;
  * body content of this tag is evaluated.
  */
 public class NotMatchTag extends MatchTag {
+
   @Override
   protected boolean meetsCondition() {
     return !super.meetsCondition();

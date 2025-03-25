@@ -3,6 +3,7 @@ package javax.servlet;
 import java.util.EventObject;
 
 public class ServletContextEvent extends EventObject {
+
   public ServletContextEvent(ServletContext source) {
     super(source);
   }
@@ -12,7 +13,8 @@ public class ServletContextEvent extends EventObject {
   }
 
   static ServletContextEvent wrap(jakarta.servlet.ServletContextEvent orig) {
-    return new ServletContextEvent(ServletContext.toJavaxNamespace(orig.getServletContext())) {
-    };
+    return new ServletContextEvent(
+      ServletContext.toJavaxNamespace(orig.getServletContext())
+    ) {};
   }
 }

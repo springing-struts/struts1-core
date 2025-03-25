@@ -17,10 +17,7 @@ import org.springframework.validation.Validator;
  */
 public class FormBeanValidator implements Validator {
 
-  private FormBeanValidator(
-    Form form,
-    FormBeanConfig formBeanConfig
-  ) {
+  private FormBeanValidator(Form form, FormBeanConfig formBeanConfig) {
     this.form = form;
     this.formBeanConfig = formBeanConfig;
     this.actionErrors = new ActionErrors();
@@ -32,21 +29,28 @@ public class FormBeanValidator implements Validator {
   public ActionErrors getActionErrors() {
     return actionErrors;
   }
+
   private final ActionErrors actionErrors;
 
   public static @Nullable FormBeanValidator forName(String formBeanName) {
     var module = ModuleUtils.getCurrent();
     var validatorResources = module.getValidatorResources();
-    var form = validatorResources.getForm(LocaleContextHolder.getLocale(), formBeanName);
+    var form = validatorResources.getForm(
+      LocaleContextHolder.getLocale(),
+      formBeanName
+    );
     if (form == null) {
       return null;
     }
     var formBeanConfig = module.findFormBeanConfig(formBeanName);
-    if (formBeanConfig == null) throw new IllegalStateException(String.format(
-      "The formBeanName [%s] in the validation configuration" +
-      " is not defined in struts-config for the module [%s].",
-      formBeanName, module.getPrefix()
-    ));
+    if (formBeanConfig == null) throw new IllegalStateException(
+      String.format(
+        "The formBeanName [%s] in the validation configuration" +
+        " is not defined in struts-config for the module [%s].",
+        formBeanName,
+        module.getPrefix()
+      )
+    );
     return new FormBeanValidator(form, formBeanConfig);
   }
 
@@ -57,7 +61,10 @@ public class FormBeanValidator implements Validator {
 
   @Override
   public void validate(Object target, Errors errors) {
-    var actions = form.getFormSet().getValidatorResources().getValidatorActions();
+    var actions = form
+      .getFormSet()
+      .getValidatorResources()
+      .getValidatorActions();
     for (var field : form.getFields()) {
       var fieldErrors = field.validate(target, actions);
       fieldErrors.forEach((property, fieldError) -> {

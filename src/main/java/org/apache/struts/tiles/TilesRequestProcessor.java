@@ -1,12 +1,11 @@
 package org.apache.struts.tiles;
 
-import org.apache.struts.action.RequestProcessor;
-import org.apache.struts.config.ForwardConfig;
-
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.apache.struts.action.RequestProcessor;
+import org.apache.struts.config.ForwardConfig;
 
 /**
  * `RequestProcessor` contains the processing logic that the Struts controller
@@ -37,13 +36,16 @@ public class TilesRequestProcessor extends RequestProcessor {
     ForwardConfig forward
   ) throws IOException, ServletException {
     var forwardPath = forward.getPath();
-    var processedAsTilesRequest = processTilesDefinition(forwardPath, request, response);
+    var processedAsTilesRequest = processTilesDefinition(
+      forwardPath,
+      request,
+      response
+    );
     if (processedAsTilesRequest) {
       return;
     }
     super.processForwardConfig(request, response, forward);
   }
-
 
   @Override
   protected void internalModuleRelativeForward(
@@ -51,7 +53,11 @@ public class TilesRequestProcessor extends RequestProcessor {
     HttpServletRequest request,
     HttpServletResponse response
   ) throws IOException, ServletException {
-    var processedAsTilesRequest = processTilesDefinition(forwardPath, request, response);
+    var processedAsTilesRequest = processTilesDefinition(
+      forwardPath,
+      request,
+      response
+    );
     if (processedAsTilesRequest) {
       return;
     }
@@ -64,7 +70,11 @@ public class TilesRequestProcessor extends RequestProcessor {
     HttpServletRequest request,
     HttpServletResponse response
   ) throws IOException, ServletException {
-    var processedAsTilesRequest = processTilesDefinition(includePath, request, response);
+    var processedAsTilesRequest = processTilesDefinition(
+      includePath,
+      request,
+      response
+    );
     if (processedAsTilesRequest) {
       return;
     }

@@ -9,6 +9,7 @@ import org.apache.struts.taglib.logic.MessagesPresentTag;
  * its documentation for information on tag attributes and usage details.
  */
 public class NestedMessagesPresentTag extends MessagesPresentTag {
+
   @Override
   protected void init() {
     super.init();

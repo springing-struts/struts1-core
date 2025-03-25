@@ -19,12 +19,10 @@
  * under the License.
  */
 
-
 package org.apache.struts.apps.mailreader.dao.impl;
 
 import org.apache.struts.apps.mailreader.dao.Subscription;
 import org.apache.struts.apps.mailreader.dao.User;
-
 
 /**
  * <p>Concrete implementation of {@link AbstractSubscription}.</p>
@@ -35,148 +33,128 @@ import org.apache.struts.apps.mailreader.dao.User;
 
 public class AbstractSubscription implements Subscription {
 
+  // ----------------------------------------------------------- Constructors
 
-    // ----------------------------------------------------------- Constructors
+  /**
+   * <p>Construct a new Subscription associated with the specified
+   * {@link User}.
+   *
+   * @param user The user with which we are associated
+   * @param host The mail host for this subscription
+   */
+  public AbstractSubscription(User user, String host) {
+    super();
+    this.user = user;
+    this.host = host;
+  }
 
+  // ----------------------------------------------------- Instance Variables
 
-    /**
-     * <p>Construct a new Subscription associated with the specified
-     * {@link User}.
-     *
-     * @param user The user with which we are associated
-     * @param host The mail host for this subscription
-     */
-    public AbstractSubscription(User user, String host) {
+  /**
+   * The mail host for this subscription.
+   */
+  private String host = null;
 
-        super();
-        this.user = user;
-        this.host = host;
+  /**
+   * The {@link User} with which we are associated.
+   */
+  private User user = null;
 
+  // ------------------------------------------------------------- Properties
+
+  /**
+   * Should we auto-connect at startup time?
+   */
+  private boolean autoConnect = false;
+
+  public boolean getAutoConnect() {
+    return (this.autoConnect);
+  }
+
+  public void setAutoConnect(boolean autoConnect) {
+    this.autoConnect = autoConnect;
+  }
+
+  /**
+   * The mail host for this subscription.
+   */
+  public String getHost() {
+    return (this.host);
+  }
+
+  /**
+   * The password (in clear text) for this subscription.
+   */
+  private String password = null;
+
+  public String getPassword() {
+    return (this.password);
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  /**
+   * The subscription type ("imap" or "pop3").
+   */
+  private String type = "imap";
+
+  public String getType() {
+    return (this.type);
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  /**
+   * The User owning this Subscription.
+   */
+  public User getUser() {
+    return (this.user);
+  }
+
+  /**
+   * The username for this subscription.
+   */
+  private String username = null;
+
+  public String getUsername() {
+    return (this.username);
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  // --------------------------------------------------------- Public Methods
+
+  /**
+   * Return a String representation of this object.
+   */
+  public String toString() {
+    StringBuffer sb = new StringBuffer("<subscription host=\"");
+    sb.append(host);
+    sb.append("\" autoConnect=\"");
+    sb.append(autoConnect);
+    sb.append("\"");
+    if (password != null) {
+      sb.append(" password=\"");
+      sb.append(password);
+      sb.append("\"");
     }
-
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
-     * The mail host for this subscription.
-     */
-    private String host = null;
-
-
-    /**
-     * The {@link User} with which we are associated.
-     */
-    private User user = null;
-
-
-    // ------------------------------------------------------------- Properties
-
-
-    /**
-     * Should we auto-connect at startup time?
-     */
-    private boolean autoConnect = false;
-
-    public boolean getAutoConnect() {
-        return (this.autoConnect);
+    if (type != null) {
+      sb.append(" type=\"");
+      sb.append(type);
+      sb.append("\"");
     }
-
-    public void setAutoConnect(boolean autoConnect) {
-        this.autoConnect = autoConnect;
+    if (username != null) {
+      sb.append(" username=\"");
+      sb.append(username);
+      sb.append("\"");
     }
-
-
-    /**
-     * The mail host for this subscription.
-     */
-    public String getHost() {
-        return (this.host);
-    }
-
-
-    /**
-     * The password (in clear text) for this subscription.
-     */
-    private String password = null;
-
-    public String getPassword() {
-        return (this.password);
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    /**
-     * The subscription type ("imap" or "pop3").
-     */
-    private String type = "imap";
-
-    public String getType() {
-        return (this.type);
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-
-    /**
-     * The User owning this Subscription.
-     */
-    public User getUser() {
-        return (this.user);
-    }
-
-
-    /**
-     * The username for this subscription.
-     */
-    private String username = null;
-
-    public String getUsername() {
-        return (this.username);
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
-    // --------------------------------------------------------- Public Methods
-
-
-    /**
-     * Return a String representation of this object.
-     */
-    public String toString() {
-
-        StringBuffer sb = new StringBuffer("<subscription host=\"");
-        sb.append(host);
-        sb.append("\" autoConnect=\"");
-        sb.append(autoConnect);
-        sb.append("\"");
-        if (password != null) {
-            sb.append(" password=\"");
-            sb.append(password);
-            sb.append("\"");
-        }
-        if (type != null) {
-            sb.append(" type=\"");
-            sb.append(type);
-            sb.append("\"");
-        }
-        if (username != null) {
-            sb.append(" username=\"");
-            sb.append(username);
-            sb.append("\"");
-        }
-        sb.append(">");
-        return (sb.toString());
-
-    }
-
-
+    sb.append(">");
+    return (sb.toString());
+  }
 }

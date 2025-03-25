@@ -1,12 +1,13 @@
 package org.apache.struts.taglib.html;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.Globals;
 import org.apache.struts.TestApp;
 import org.apache.struts.action.ActionErrors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class MessagesTagTest {
@@ -32,8 +33,7 @@ public class MessagesTagTest {
         context.setAttribute(Globals.ERROR_KEY, errors);
         tag.setId("error");
       },
-      (content, bodyProcessed) -> {
-      }
+      (content, bodyProcessed) -> {}
     );
   }
 }

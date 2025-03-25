@@ -1,11 +1,10 @@
 package javax.servlet;
 
 import jakarta.servlet.ServletOutputStream;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
+import javax.servlet.http.HttpServletResponse;
 
 public interface ServletResponse extends jakarta.servlet.ServletResponse {
   default jakarta.servlet.ServletResponse unwrap() {
@@ -13,9 +12,11 @@ public interface ServletResponse extends jakarta.servlet.ServletResponse {
   }
 
   class Wrapper implements ServletResponse {
+
     public Wrapper(jakarta.servlet.ServletResponse response) {
       orig = response;
     }
+
     private final jakarta.servlet.ServletResponse orig;
 
     @Override

@@ -2,11 +2,11 @@ package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import java.io.IOException;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.MessagesAware;
-import java.io.IOException;
 
 /**
  * Conditionally display a set of accumulated error messages.
@@ -34,8 +34,7 @@ import java.io.IOException;
  * See the `messages` tag for an alternative to this tag that does not rely on
  * HTML in your `MessageResources`.
  */
-public class ErrorsTag extends TagSupport implements MessagesAware
-{
+public class ErrorsTag extends TagSupport implements MessagesAware {
 
   public ErrorsTag() {
     init();
@@ -88,8 +87,7 @@ public class ErrorsTag extends TagSupport implements MessagesAware
       if (prefix != null) write(prefix);
       if (message instanceof ActionMessage actionMessage) {
         write(actionMessage.getText(bundle));
-      }
-      else {
+      } else {
         write(message.toString());
       }
       if (suffix != null) write(suffix);
@@ -156,7 +154,7 @@ public class ErrorsTag extends TagSupport implements MessagesAware
    * The session attribute key for the Locale used to select messages to be
    * displayed. If not specified, defaults to the Struts standard value.
    */
-  public  void setLocale(String locale) {
-     this.locale = locale;
+  public void setLocale(String locale) {
+    this.locale = locale;
   }
 }

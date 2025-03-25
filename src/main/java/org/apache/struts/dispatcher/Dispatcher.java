@@ -17,5 +17,6 @@ public interface Dispatcher {
    *   `Void` if the executed method has no return signature
    * @throws Exception if an exception occurs
    */
-   @Nullable Object dispatch(ActionContext context) throws Exception;
+  @Nullable
+  Object dispatch(ActionContext context) throws Exception;
 }

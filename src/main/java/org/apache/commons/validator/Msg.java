@@ -11,11 +11,13 @@ import org.springframework.lang.Nullable;
  * `msg` xml element.
  */
 public class Msg {
+
   public Msg(
     @JacksonXmlProperty(isAttribute = true, localName = "key") String key
   ) {
     this.key = key;
   }
+
   private final String key;
 
   public String getKey() {
@@ -26,7 +28,7 @@ public class Msg {
     if (!resource) {
       return new ActionMessage(key, false);
     }
-    var message =  new ActionMessage(key, args);
+    var message = new ActionMessage(key, args);
     message.setBundle(bundle);
     return message;
   }
@@ -43,6 +45,7 @@ public class Msg {
    */
   @JacksonXmlProperty(isAttribute = true, localName = "name")
   private @Nullable String name;
+
   public @Nullable String getName() {
     return name;
   }

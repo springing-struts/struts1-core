@@ -1,17 +1,16 @@
 package org.apache.struts.actions;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * An abstract `Action` that dispatches to the subclass mapped `execute()`
@@ -86,6 +85,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
  * be used instead.
  */
 public abstract class LookupDispatchAction extends DispatchAction {
+
   public LookupDispatchAction() {
     dispatcher = new ActionDispatcher(this) {
       @Override
@@ -96,7 +96,12 @@ public abstract class LookupDispatchAction extends DispatchAction {
         HttpServletResponse response,
         String parameter
       ) throws Exception {
-        return LookupDispatchAction.this.getMethodName(mapping, form, request, response);
+        return LookupDispatchAction.this.getMethodName(
+            mapping,
+            form,
+            request,
+            response
+          );
       }
     };
   }
@@ -109,9 +114,14 @@ public abstract class LookupDispatchAction extends DispatchAction {
   ) throws Exception {
     var key = dispatcher.getParameter(mapping, form, request, response);
     var submitButtonLabel = request.getParameter(key);
-    if (submitButtonLabel == null || submitButtonLabel.isBlank()) throw new ResponseStatusException(
+    if (
+      submitButtonLabel == null || submitButtonLabel.isBlank()
+    ) throw new ResponseStatusException(
       NOT_FOUND,
-      String.format("Filed to dispatch request because the request parameter [%s] was blank.", key)
+      String.format(
+        "Filed to dispatch request because the request parameter [%s] was blank.",
+        key
+      )
     );
     var messageResources = ModuleUtils.getCurrent().getMessageResources();
     for (var entry : getKeyMethodMap().entrySet()) {
@@ -122,10 +132,14 @@ public abstract class LookupDispatchAction extends DispatchAction {
         return methodName;
       }
     }
-    throw new ResponseStatusException(NOT_FOUND, String.format(
-      "There is no dispatch target for the button with label [%s] in the mapping [%s].",
-      submitButtonLabel, mapping.getPath()
-    ));
+    throw new ResponseStatusException(
+      NOT_FOUND,
+      String.format(
+        "There is no dispatch target for the button with label [%s] in the mapping [%s].",
+        submitButtonLabel,
+        mapping.getPath()
+      )
+    );
   }
 
   /**

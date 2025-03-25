@@ -1,12 +1,11 @@
 package org.apache.struts.validator;
 
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.config.FormBeanConfig;
 import springing.struts1.validator.ValidationUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class extends `DynaActionForm` and provides basic field validation
@@ -32,6 +31,10 @@ public class DynaValidatorForm extends DynaActionForm {
     ActionMapping mapping,
     HttpServletRequest request
   ) {
-    return ValidationUtils.validateRequest(mapping.getName(request), request, this);
+    return ValidationUtils.validateRequest(
+      mapping.getName(request),
+      request,
+      this
+    );
   }
 }

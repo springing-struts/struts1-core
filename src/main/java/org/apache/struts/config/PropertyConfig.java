@@ -1,12 +1,11 @@
 package org.apache.struts.config;
 
+import static java.lang.String.format;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.lang.reflect.InvocationTargetException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.Nullable;
-
-import java.lang.reflect.InvocationTargetException;
-
-import static java.lang.String.format;
 
 /**
  * An arbitrary key/value pair which can be retrieved by a config class.
@@ -25,15 +24,21 @@ import static java.lang.String.format;
  * }</pre>
  */
 public class PropertyConfig {
+
   public PropertyConfig(
-    @JacksonXmlProperty(localName = "property", isAttribute = true)
-    @Nullable String property,
-    @JacksonXmlProperty(localName = "key", isAttribute = true)
-    @Nullable String key,
-    @JacksonXmlProperty(localName = "value", isAttribute = true)
-    String value
+    @JacksonXmlProperty(
+      localName = "property",
+      isAttribute = true
+    ) @Nullable String property,
+    @JacksonXmlProperty(
+      localName = "key",
+      isAttribute = true
+    ) @Nullable String key,
+    @JacksonXmlProperty(localName = "value", isAttribute = true) String value
   ) {
-    if (property != null && key != null || property == null && key == null) throw new IllegalArgumentException(
+    if (
+      (property != null && key != null) || (property == null && key == null)
+    ) throw new IllegalArgumentException(
       "Only one of the `property` or `key` can be used in the `set-property` element."
     );
     this.property = property;
@@ -44,16 +49,20 @@ public class PropertyConfig {
   public void applyTo(Object target) {
     var targetClass = target.getClass();
     var property = BeanUtils.getPropertyDescriptor(targetClass, getProperty());
-    if (property == null) throw new IllegalArgumentException(format(
-      "Unknown property [%s] of the target class [%s]",
-      getProperty(), targetClass.getName()
-    ));
+    if (property == null) throw new IllegalArgumentException(
+      format(
+        "Unknown property [%s] of the target class [%s]",
+        getProperty(),
+        targetClass.getName()
+      )
+    );
     var setter = property.getWriteMethod();
     try {
       setter.invoke(target, getValue());
     } catch (InvocationTargetException | IllegalAccessException e) {
       throw new RuntimeException(
-        "An error occurred while setting a action mapping property value.", e
+        "An error occurred while setting a action mapping property value.",
+        e
       );
     }
   }
@@ -64,6 +73,7 @@ public class PropertyConfig {
   public String getProperty() {
     return property;
   }
+
   private final String property;
 
   /**
@@ -77,6 +87,7 @@ public class PropertyConfig {
   public String getKey() {
     return key;
   }
+
   private final String key;
 
   /**
@@ -86,5 +97,6 @@ public class PropertyConfig {
   public String getValue() {
     return value;
   }
+
   private final String value;
 }

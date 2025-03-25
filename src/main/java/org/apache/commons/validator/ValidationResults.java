@@ -8,6 +8,7 @@ import java.util.Map;
  * JavaBean.
  */
 public class ValidationResults {
+
   public ValidationResults() {
     results = new HashMap<>();
   }
@@ -25,4 +26,3 @@ public class ValidationResults {
     });
   }
 }
-

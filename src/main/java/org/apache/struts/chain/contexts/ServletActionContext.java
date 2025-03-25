@@ -1,6 +1,15 @@
 package org.apache.struts.chain.contexts;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static springing.util.ObjectUtils.*;
+import static springing.util.ObjectUtils.retrieveValue;
+
 import jakarta.servlet.jsp.PageContext;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -14,21 +23,11 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.tags.NestedPathTag;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static springing.util.ObjectUtils.*;
-import static springing.util.ObjectUtils.retrieveValue;
-
 /**
  * Web-specific context information for actions.
  */
 public class ServletActionContext implements ActionContext {
+
   public ServletActionContext(
     ActionServlet actionServlet,
     ModuleConfigBean moduleConfig,
@@ -38,13 +37,16 @@ public class ServletActionContext implements ActionContext {
     this.moduleConfig = moduleConfig;
     this.conversionService = conversionService;
   }
+
   private final ActionServlet servlet;
   private final ConversionService conversionService;
 
   public static class Holder {
+
     public Holder(ServletActionContext instance) {
       INSTANCE = instance;
     }
+
     private static @Nullable ServletActionContext INSTANCE;
   }
 
@@ -69,6 +71,7 @@ public class ServletActionContext implements ActionContext {
       "This action context has not been initialized yet."
     );
   }
+
   private @Nullable HttpServletRequest currentRequest;
 
   /**
@@ -93,7 +96,8 @@ public class ServletActionContext implements ActionContext {
   @Override
   public Action getAction() {
     return requireNonNull(
-      action, "The action for the current action is not initialized."
+      action,
+      "The action for the current action is not initialized."
     );
   }
 
@@ -101,6 +105,7 @@ public class ServletActionContext implements ActionContext {
   public void setAction(Action action) {
     this.action = action;
   }
+
   private @Nullable Action action;
 
   @Override
@@ -112,6 +117,7 @@ public class ServletActionContext implements ActionContext {
   public void setActionForm(ActionForm actionForm) {
     this.actionForm = actionForm;
   }
+
   private @Nullable ActionForm actionForm;
 
   @Override
@@ -121,17 +127,23 @@ public class ServletActionContext implements ActionContext {
 
   @Override
   public void setActionConfig(ActionConfig actionConfig) {
-    if (!(actionConfig instanceof ActionMapping mapping)) throw new IllegalArgumentException(format(
-      "The given action config is an instance of [%s], which should be instance of [%s].",
-      actionConfig.getClass().getName(), ActionMapping.class.getName()
-    ));
+    if (
+      !(actionConfig instanceof ActionMapping mapping)
+    ) throw new IllegalArgumentException(
+      format(
+        "The given action config is an instance of [%s], which should be instance of [%s].",
+        actionConfig.getClass().getName(),
+        ActionMapping.class.getName()
+      )
+    );
     this.actionMapping = mapping;
   }
 
   @Override
   public ModuleConfigBean getModuleConfig() {
     return requireNonNull(
-      moduleConfig, "The module config for the current request is not initialized."
+      moduleConfig,
+      "The module config for the current request is not initialized."
     );
   }
 
@@ -139,6 +151,7 @@ public class ServletActionContext implements ActionContext {
   public void setModuleConfig(ModuleConfigBean moduleConfig) {
     this.moduleConfig = moduleConfig;
   }
+
   private @Nullable ModuleConfigBean moduleConfig;
 
   public TilesDefinition getTilesDefinition() {
@@ -154,10 +167,12 @@ public class ServletActionContext implements ActionContext {
   }
 
   public void setTilesDefinition(String tilesDefinitionName) {
-    var tilesDefinition = getModuleConfig().getTilesDefinitions().getTilesDefinitionByName(tilesDefinitionName);
-    if (tilesDefinition == null) throw new IllegalArgumentException(format(
-      "Unknown tiles definition name [%s].", tilesDefinitionName
-    ));
+    var tilesDefinition = getModuleConfig()
+      .getTilesDefinitions()
+      .getTilesDefinitionByName(tilesDefinitionName);
+    if (tilesDefinition == null) throw new IllegalArgumentException(
+      format("Unknown tiles definition name [%s].", tilesDefinitionName)
+    );
     this.tilesDefinition = tilesDefinition.copy();
   }
 
@@ -172,6 +187,7 @@ public class ServletActionContext implements ActionContext {
   public void setForwardConfig(ForwardConfig forwardConfig) {
     this.forwardConfig = forwardConfig;
   }
+
   private @Nullable ForwardConfig forwardConfig;
 
   public ActionMapping getActionMapping() {
@@ -184,6 +200,7 @@ public class ServletActionContext implements ActionContext {
   public void setActionMapping(ActionMapping actionMapping) {
     this.actionMapping = actionMapping;
   }
+
   private @Nullable ActionMapping actionMapping;
 
   public @Nullable String interpolatePathParams(@Nullable String str) {
@@ -198,21 +215,18 @@ public class ServletActionContext implements ActionContext {
    * response. The method determines whether to forward or include based on the value of the
    * `includes` parameter.
    */
-  public void forwardRequest(
-    String uri,
-    boolean includes
-  ) throws ServletException, IOException {
+  public void forwardRequest(String uri, boolean includes)
+    throws ServletException, IOException {
     var request = getRequest();
     var response = getResponse();
     var dispatcher = request.getRequestDispatcher(uri);
-    if (dispatcher == null) throw new ServletException(format(
-      "Failed to retrieve a RequestDispatcher for url [%s].", uri
-    ));
+    if (dispatcher == null) throw new ServletException(
+      format("Failed to retrieve a RequestDispatcher for url [%s].", uri)
+    );
     try {
       if (includes) {
         dispatcher.include(request.unwrap(), response.unwrap());
-      }
-      else {
+      } else {
         dispatcher.forward(request.unwrap(), response.unwrap());
       }
     } catch (jakarta.servlet.ServletException e) {
@@ -220,9 +234,7 @@ public class ServletActionContext implements ActionContext {
     }
   }
 
-  public void forwardRequest(
-    String uri
-  ) throws ServletException, IOException {
+  public void forwardRequest(String uri) throws ServletException, IOException {
     forwardRequest(uri, false);
   }
 
@@ -269,8 +281,7 @@ public class ServletActionContext implements ActionContext {
     }
     if (scope == null) {
       pageContext.setAttribute(key, value);
-    }
-    else {
+    } else {
       pageContext.setAttribute(key, value, scope);
     }
   }
@@ -282,7 +293,11 @@ public class ServletActionContext implements ActionContext {
     PageContext pageContext
   ) {
     return resolveValueOnScope(
-      attributeName, relPath, awareNestedTag, pageContext, null
+      attributeName,
+      relPath,
+      awareNestedTag,
+      pageContext,
+      null
     );
   }
 
@@ -298,7 +313,10 @@ public class ServletActionContext implements ActionContext {
       if (relPath == null) {
         return bean;
       }
-      return retrieveValue(bean, awareNestedTag ? resolveNestedPath(relPath, pageContext) : relPath);
+      return retrieveValue(
+        bean,
+        awareNestedTag ? resolveNestedPath(relPath, pageContext) : relPath
+      );
     }
     if (relPath == null) {
       return null;
@@ -316,11 +334,10 @@ public class ServletActionContext implements ActionContext {
     PageContext pageContext
   ) {
     var nestedPath = (String) pageContext.getAttribute(
-      NestedPathTag.NESTED_PATH_VARIABLE_NAME, PageContext.REQUEST_SCOPE
+      NestedPathTag.NESTED_PATH_VARIABLE_NAME,
+      PageContext.REQUEST_SCOPE
     );
     var path = (nestedPath == null ? "" : (nestedPath + ".")) + relPath;
-    return path
-      .replaceAll("(\\.{2,})", ".")
-      .replaceAll("\\.$", "");
+    return path.replaceAll("(\\.{2,})", ".").replaceAll("\\.$", "");
   }
 }

@@ -1,19 +1,18 @@
 package org.apache.struts.tiles.config;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
+import org.springframework.lang.Nullable;
 
 /**
  * The "definition" element describes a definition that can be inserted in a
@@ -22,9 +21,13 @@ import static java.util.Objects.requireNonNull;
  * jsp page.
  */
 public class TilesDefinition {
+
   public TilesDefinition(
     @JacksonXmlProperty(localName = "name", isAttribute = true) String name,
-    @JacksonXmlProperty(localName = "extends", isAttribute = true) @Nullable String inherits
+    @JacksonXmlProperty(
+      localName = "extends",
+      isAttribute = true
+    ) @Nullable String inherits
   ) {
     this.name = name;
     this.inherits = inherits;
@@ -63,13 +66,16 @@ public class TilesDefinition {
       return null;
     }
     var parent = getDefinitions().getTilesDefinitionByName(inherits);
-    if (parent == null) throw new IllegalStateException(format(
-      "Unknown tiles definition name [%s].", inherits
-    ));
+    if (parent == null) throw new IllegalStateException(
+      format("Unknown tiles definition name [%s].", inherits)
+    );
     return parent;
   }
 
-  private <T> @Nullable T getInheritedValue(Class<T> type, Function<TilesDefinition, T> getValue) {
+  private <T> @Nullable T getInheritedValue(
+    Class<T> type,
+    Function<TilesDefinition, T> getValue
+  ) {
     var parent = getParent();
     if (parent == null) {
       return getValue.apply(this);
@@ -94,7 +100,10 @@ public class TilesDefinition {
   public String getPath() {
     return requireNonNull(
       getInheritedValue(String.class, it -> it.path),
-      format("The path or page attribute is required to the tiles definition [%s].", getName())
+      format(
+        "The path or page attribute is required to the tiles definition [%s].",
+        getName()
+      )
     );
   }
 
@@ -103,6 +112,7 @@ public class TilesDefinition {
   public void setPath(String path) {
     this.path = path;
   }
+
   private @Nullable String path;
 
   public Map<String, TilesAttribute> getAttributes() {
@@ -118,6 +128,7 @@ public class TilesDefinition {
     }
     return attributeValuesByName;
   }
+
   private @Nullable Map<String, TilesAttribute> attributeValuesByName;
 
   @JacksonXmlProperty(localName = "put")

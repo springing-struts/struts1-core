@@ -1,7 +1,6 @@
 package springing.util;
 
-import org.apache.commons.beanutils.DynaProperty;
-import org.springframework.beans.BeanUtils;
+import static java.util.stream.Collectors.toSet;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +8,8 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import static java.util.stream.Collectors.toSet;
+import org.apache.commons.beanutils.DynaProperty;
+import org.springframework.beans.BeanUtils;
 
 public class BeanMap extends AbstractMap<String, Object> {
 
@@ -25,42 +25,55 @@ public class BeanMap extends AbstractMap<String, Object> {
 
   private final Object bean;
   private final Map<String, DynaProperty> propertiesByName = new HashMap<>();
-  private final Map<String, PropertyDescriptor> descriptorsByName = new HashMap<>();
+  private final Map<String, PropertyDescriptor> descriptorsByName =
+    new HashMap<>();
 
   @Override
   public Set<Entry<String, Object>> entrySet() {
-    return propertiesByName.keySet().stream().map(
-        name -> {
-          var descriptor = descriptorsByName.get(name);
-          try {
-            Object value = descriptor.getReadMethod().invoke(bean);
-            return new SimpleEntry<>(name, value);
-          } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(String.format(
+    return propertiesByName
+      .keySet()
+      .stream()
+      .map(name -> {
+        var descriptor = descriptorsByName.get(name);
+        try {
+          Object value = descriptor.getReadMethod().invoke(bean);
+          return new SimpleEntry<>(name, value);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+          throw new RuntimeException(
+            String.format(
               "An error occurred while reading the value from the property [%s] of the class [%s].",
-              name, bean.getClass().getSimpleName()
-            ), e);
-          }
+              name,
+              bean.getClass().getSimpleName()
+            ),
+            e
+          );
         }
-    ).collect(toSet());
+      })
+      .collect(toSet());
   }
 
   @Override
   public Object put(String key, Object value) {
     var descriptor = descriptorsByName.get(key);
-    if (descriptor == null) throw new IllegalArgumentException(String.format(
-      "Unknown property name [%s] for bean class [%s].",
-      key, bean.getClass().getSimpleName()
-    ));
+    if (descriptor == null) throw new IllegalArgumentException(
+      String.format(
+        "Unknown property name [%s] for bean class [%s].",
+        key,
+        bean.getClass().getSimpleName()
+      )
+    );
     try {
       var currentValue = descriptor.getReadMethod().invoke(bean);
       descriptor.getWriteMethod().invoke(bean, value);
       return currentValue;
     } catch (IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException(String.format(
-        "An error occurred while writing the value to the property [%s] of the class [%s].",
-        key, bean.getClass().getSimpleName()
-      ));
+      throw new RuntimeException(
+        String.format(
+          "An error occurred while writing the value to the property [%s] of the class [%s].",
+          key,
+          bean.getClass().getSimpleName()
+        )
+      );
     }
   }
 }

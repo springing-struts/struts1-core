@@ -1,26 +1,25 @@
 package org.apache.commons.beanutils;
 
-import jakarta.annotation.Nullable;
-import java.util.Map;
-
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
-public interface MapBackedDynaBean extends DynaBean {
+import jakarta.annotation.Nullable;
+import java.util.Map;
 
+public interface MapBackedDynaBean extends DynaBean {
   DynaClass getDynaClass();
   Map<String, Object> getValues();
 
   private DynaProperty propertyOf(String propName) {
-    return requireNonNull(
-      getDynaClass().getDynaProperty(propName),
-      () -> {
-        throw new IllegalArgumentException(format(
+    return requireNonNull(getDynaClass().getDynaProperty(propName), () -> {
+      throw new IllegalArgumentException(
+        format(
           "Form bean [%s] does not have a property of name [%s].",
-          getDynaClass().getName(), propName
-        ));
-      }
-    );
+          getDynaClass().getName(),
+          propName
+        )
+      );
+    });
   }
 
   /**
@@ -98,7 +97,7 @@ public interface MapBackedDynaBean extends DynaBean {
    * Set the value of a mapped property with the specified name. A runtime
    * exception is thrown if there is no keyed property of the specified name.
    */
-  default void set(String name,String key, @Nullable Object value) {
+  default void set(String name, String key, @Nullable Object value) {
     var values = getValues();
     propertyOf(name).getKeyedValueFrom(values).put(key, value);
   }

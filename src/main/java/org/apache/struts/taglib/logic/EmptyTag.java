@@ -1,11 +1,10 @@
 package org.apache.struts.taglib.logic;
 
+import static springing.util.ObjectUtils.isEmpty;
+
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
 import springing.struts1.taglib.StrutsConditionalTagBase;
-
-import static springing.util.ObjectUtils.isEmpty;
-
 
 /**
  * Evaluate the nested body content of this tag if the requested variable is
@@ -22,7 +21,10 @@ import static springing.util.ObjectUtils.isEmpty;
  * </c:if>
  * }</pre>
  */
-public class EmptyTag extends StrutsConditionalTagBase implements JspVariableAware {
+public class EmptyTag
+  extends StrutsConditionalTagBase
+  implements JspVariableAware {
+
   public EmptyTag() {
     init();
   }

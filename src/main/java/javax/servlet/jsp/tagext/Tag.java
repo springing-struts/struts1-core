@@ -4,7 +4,6 @@ import jakarta.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 public interface Tag extends jakarta.servlet.jsp.tagext.Tag {
-
   @Override
   Tag getParent();
 
@@ -19,6 +18,7 @@ public interface Tag extends jakarta.servlet.jsp.tagext.Tag {
   default void setPageContext(jakarta.servlet.jsp.PageContext pageContext) {
     setPageContext(PageContext.toJavaxNamespace(pageContext));
   }
+
   void setPageContext(PageContext pageContext);
 
   static Tag toJavaxNamespace(jakarta.servlet.jsp.tagext.Tag jakarta) {

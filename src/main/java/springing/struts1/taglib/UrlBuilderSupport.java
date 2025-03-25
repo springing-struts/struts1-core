@@ -3,7 +3,6 @@ package springing.struts1.taglib;
 import javax.servlet.jsp.PageContext;
 
 public interface UrlBuilderSupport {
-
   default String buildUrl(PageContext context) {
     return getUrlBuilder().buildUrl(context);
   }
@@ -207,5 +206,4 @@ public interface UrlBuilderSupport {
   }
 
   UrlBuilder getUrlBuilder();
-
 }

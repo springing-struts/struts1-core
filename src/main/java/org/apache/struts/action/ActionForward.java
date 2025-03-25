@@ -41,4 +41,3 @@ public class ActionForward extends ForwardConfig {
     super("", path);
   }
 }
-

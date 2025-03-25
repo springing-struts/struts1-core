@@ -1,12 +1,12 @@
 package org.apache.struts.taglib.bean;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import jakarta.servlet.jsp.JspException;
 import org.apache.struts.util.ModuleUtils;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.springframework.lang.Nullable;
 import springing.util.StringUtils;
-
-import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Load the response from a dynamic application request and make it available
@@ -64,28 +64,34 @@ public class IncludeTag extends ImportSupport {
     if (hasText(page) && !hasText(forward) && !hasText(href)) {
       var url = page.startsWith("/") ? page : (module.getPrefix() + "/" + page);
       this.url = StringUtils.normalizeForwardPath(url);
-    }
-    else if (!hasText(page) && hasText(forward) && !hasText(href)) {
+    } else if (!hasText(page) && hasText(forward) && !hasText(href)) {
       var forwardConfig = module.findForwardConfig(forward);
-      if (forwardConfig == null) throw new IllegalArgumentException(String.format(
-        "Unknown forward name [%s] for module [%s].", forward, module.getPrefix()
-      ));
+      if (forwardConfig == null) throw new IllegalArgumentException(
+        String.format(
+          "Unknown forward name [%s] for module [%s].",
+          forward,
+          module.getPrefix()
+        )
+      );
       this.url = forwardConfig.getUrl();
-    }
-    else if (!hasText(page) && !hasText(forward) && hasText(href)) {
+    } else if (!hasText(page) && !hasText(forward) && hasText(href)) {
       this.url = href;
-    }
-    else {
+    } else {
       conflictingProperties();
     }
     return super.doStartTag();
   }
 
   private void conflictingProperties() {
-    throw new IllegalArgumentException(String.format(
-      "The <bean:include> tag accepts only one of the following properties:" +
-      " href [%s], forward [%s], or page [%s].", href, forward, page
-    ));
+    throw new IllegalArgumentException(
+      String.format(
+        "The <bean:include> tag accepts only one of the following properties:" +
+        " href [%s], forward [%s], or page [%s].",
+        href,
+        forward,
+        page
+      )
+    );
   }
 
   /**

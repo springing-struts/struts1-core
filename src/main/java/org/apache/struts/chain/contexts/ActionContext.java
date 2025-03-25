@@ -28,7 +28,8 @@ public interface ActionContext {
    * Get the ActionForm instance which will carry any data submitted as part of
    * this request.
    */
-  @Nullable ActionForm getActionForm();
+  @Nullable
+  ActionForm getActionForm();
 
   /**
    * Set the ActionForm instance which will carry any data submitted as part of
@@ -52,7 +53,8 @@ public interface ActionContext {
    * Get the ForwardConfig which has been identified as the basis for
    * view-processing.
    */
-  @Nullable ForwardConfig getForwardConfig();
+  @Nullable
+  ForwardConfig getForwardConfig();
 
   /**
    * Set the ForwardConfig which should be used as the basis of the view

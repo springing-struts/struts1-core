@@ -3,7 +3,8 @@ package javax.servlet.jsp;
 import jakarta.el.ELContext;
 import jakarta.servlet.jsp.el.ExpressionEvaluator;
 import jakarta.servlet.jsp.el.VariableResolver;
-
+import java.io.IOException;
+import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
@@ -11,8 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Enumeration;
 
 public abstract class PageContext extends jakarta.servlet.jsp.PageContext {
 
@@ -39,7 +38,9 @@ public abstract class PageContext extends jakarta.servlet.jsp.PageContext {
   @Override
   public abstract ServletContext getServletContext();
 
-  public static PageContext toJavaxNamespace(jakarta.servlet.jsp.PageContext jakarta) {
+  public static PageContext toJavaxNamespace(
+    jakarta.servlet.jsp.PageContext jakarta
+  ) {
     if (jakarta instanceof PageContext pageContext) {
       return pageContext;
     }
@@ -55,8 +56,13 @@ public abstract class PageContext extends jakarta.servlet.jsp.PageContext {
         boolean autoFlush
       ) throws IOException, IllegalStateException, IllegalArgumentException {
         jakarta.initialize(
-          servlet, request, response,
-          errorPageURL, needsSession, bufferSize, autoFlush
+          servlet,
+          request,
+          response,
+          errorPageURL,
+          needsSession,
+          bufferSize,
+          autoFlush
         );
       }
 
@@ -101,27 +107,32 @@ public abstract class PageContext extends jakarta.servlet.jsp.PageContext {
       }
 
       @Override
-      public void forward(String relativeUrlPath) throws jakarta.servlet.ServletException, IOException {
+      public void forward(String relativeUrlPath)
+        throws jakarta.servlet.ServletException, IOException {
         jakarta.forward(relativeUrlPath);
       }
 
       @Override
-      public void include(String relativeUrlPath) throws jakarta.servlet.ServletException, IOException {
+      public void include(String relativeUrlPath)
+        throws jakarta.servlet.ServletException, IOException {
         jakarta.include(relativeUrlPath);
       }
 
       @Override
-      public void include(String relativeUrlPath, boolean flush) throws jakarta.servlet.ServletException, IOException {
+      public void include(String relativeUrlPath, boolean flush)
+        throws jakarta.servlet.ServletException, IOException {
         jakarta.include(relativeUrlPath, flush);
       }
 
       @Override
-      public void handlePageException(Exception e) throws jakarta.servlet.ServletException, IOException {
+      public void handlePageException(Exception e)
+        throws jakarta.servlet.ServletException, IOException {
         jakarta.handlePageException(e);
       }
 
       @Override
-      public void handlePageException(Throwable t) throws jakarta.servlet.ServletException, IOException {
+      public void handlePageException(Throwable t)
+        throws jakarta.servlet.ServletException, IOException {
         jakarta.handlePageException(t);
       }
 

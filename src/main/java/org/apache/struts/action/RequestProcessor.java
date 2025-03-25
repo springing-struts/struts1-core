@@ -1,5 +1,13 @@
 package org.apache.struts.action;
 
+import static java.util.Objects.*;
+import static springing.util.StringUtils.normalizeForwardPath;
+
+import java.io.IOException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.Globals;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.config.ForwardConfig;
@@ -13,15 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static java.util.Objects.*;
-import static springing.util.StringUtils.normalizeForwardPath;
-
 /**
  * `RequestProcessor` contains the processing logic that the `ActionServlet`
  * performs as it receives each servlet request from the container. You can
@@ -33,7 +32,8 @@ public class RequestProcessor implements ApplicationContextAware {
   /**
    * Initialize this request processor instance.
    */
-  public void init(ActionServlet servlet, ModuleConfig moduleConfig) throws ServletException {
+  public void init(ActionServlet servlet, ModuleConfig moduleConfig)
+    throws ServletException {
     this.servlet = servlet;
     this.moduleConfig = moduleConfig;
   }
@@ -44,6 +44,7 @@ public class RequestProcessor implements ApplicationContextAware {
       "This request processor has not been initialized yet."
     );
   }
+
   protected @Nullable ActionServlet servlet;
 
   protected ModuleConfigBean getModuleConfig() {
@@ -52,12 +53,14 @@ public class RequestProcessor implements ApplicationContextAware {
       "This request processor has not been initialized yet."
     );
   }
+
   protected @Nullable ModuleConfig moduleConfig;
 
   @Autowired
   public void setActionContext(ServletActionContext actionContext) {
     this.actionContext = actionContext;
   }
+
   private @Nullable ServletActionContext actionContext;
 
   public ServletActionContext getActionContext() {
@@ -78,16 +81,12 @@ public class RequestProcessor implements ApplicationContextAware {
 
   private @Nullable TagUtils tagUtils;
 
-
-
   /**
    * `Process` an `HttpServletRequest` and create the corresponding
    * `HttpServletResponse` or dispatch to another resource.
    */
-  public void process(
-    HttpServletRequest request,
-    HttpServletResponse response
-  ) throws IOException, ServletException {
+  public void process(HttpServletRequest request, HttpServletResponse response)
+    throws IOException, ServletException {
     String path = processPath(request, response);
     var mapping = processMapping(request, response, path);
     var form = processActionForm(request, response, mapping);
@@ -102,7 +101,12 @@ public class RequestProcessor implements ApplicationContextAware {
     }
     ActionForward forward;
     try {
-      var rejectedAsInvalid = !processValidate(request, response, form, mapping);
+      var rejectedAsInvalid = !processValidate(
+        request,
+        response,
+        form,
+        mapping
+      );
       if (rejectedAsInvalid) {
         return;
       }
@@ -131,9 +135,7 @@ public class RequestProcessor implements ApplicationContextAware {
     try {
       return action.execute(mapping, form, request, response);
     } catch (Exception e) {
-      return processException(
-        request, response, e, form, mapping
-      );
+      return processException(request, response, e, form, mapping);
     }
   }
 
@@ -197,7 +199,8 @@ public class RequestProcessor implements ApplicationContextAware {
     HttpServletResponse response,
     ActionMapping mapping
   ) throws IOException {
-    return getApplicationContext().getBean(mapping.getActionClass(getActionContext()));
+    return getApplicationContext()
+      .getBean(mapping.getActionClass(getActionContext()));
   }
 
   /**
@@ -368,7 +371,9 @@ public class RequestProcessor implements ApplicationContextAware {
   }
 
   private String toContextRelPath(String moduleRelPath) {
-    return normalizeForwardPath("/" + getModuleConfig().getPrefix() + "/" + moduleRelPath);
+    return normalizeForwardPath(
+      "/" + getModuleConfig().getPrefix() + "/" + moduleRelPath
+    );
   }
 
   /**
@@ -380,14 +385,17 @@ public class RequestProcessor implements ApplicationContextAware {
   }
 
   @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+  public void setApplicationContext(ApplicationContext applicationContext)
+    throws BeansException {
     this.applicationContext = applicationContext;
   }
+
   protected ApplicationContext getApplicationContext() {
     return requireNonNull(
       applicationContext,
       "This request processor has not been initialized yet."
     );
   }
+
   private @Nullable ApplicationContext applicationContext;
 }

@@ -1,11 +1,12 @@
 package springing.struts1.controller;
 
+import static springing.util.StringUtils.getExtensionOf;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import static springing.util.StringUtils.getExtensionOf;
 
 public class StrutsViewResolutionInterceptor implements HandlerInterceptor {
 

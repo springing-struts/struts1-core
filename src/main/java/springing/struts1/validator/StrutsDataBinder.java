@@ -6,6 +6,7 @@ import org.springframework.validation.AbstractPropertyBindingResult;
 import org.springframework.validation.DataBinder;
 
 public class StrutsDataBinder extends DataBinder {
+
   public StrutsDataBinder(Object target) {
     super(target);
   }

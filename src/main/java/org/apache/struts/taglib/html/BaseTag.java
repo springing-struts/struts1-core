@@ -1,8 +1,7 @@
 package org.apache.struts.taglib.html;
 
-import springing.struts1.taglib.StrutsHtmlElementTagBase;
-
 import java.util.Map;
+import springing.struts1.taglib.StrutsHtmlElementTagBase;
 
 /**
  *  Renders an HTML `base` element with an href attribute pointing to the
@@ -12,7 +11,6 @@ import java.util.Map;
  *  in a manner independent of the URL used to call the ActionServlet.
  */
 public class BaseTag extends StrutsHtmlElementTagBase {
-
 
   @Override
   protected String getTagName() {

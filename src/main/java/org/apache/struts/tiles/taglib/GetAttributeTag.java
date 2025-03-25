@@ -1,12 +1,12 @@
 package org.apache.struts.tiles.taglib;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+
 import jakarta.servlet.jsp.JspException;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.springframework.lang.Nullable;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
 
 /**
  *  Render the value of the specified `tile/component/template` attribute to
@@ -32,10 +32,13 @@ public class GetAttributeTag extends OutSupport {
   public int doStartTag() throws JspException {
     var tilesDefinition = ServletActionContext.current().getTilesDefinition();
     var attr = tilesDefinition.getAttributes().get(getName());
-    if (attr == null && !ignore) throw new IllegalArgumentException(format(
-      "The value of attribute [%s] of the current tiles definition [%s] was null.",
-      name, tilesDefinition.getName()
-    ));
+    if (attr == null && !ignore) throw new IllegalArgumentException(
+      format(
+        "The value of attribute [%s] of the current tiles definition [%s] was null.",
+        name,
+        tilesDefinition.getName()
+      )
+    );
     value = attr != null ? attr.getValue() : "";
     return super.doStartTag();
   }
@@ -44,6 +47,7 @@ public class GetAttributeTag extends OutSupport {
     name = null;
     ignore = false;
   }
+
   private @Nullable String name;
   private boolean ignore = false;
 
@@ -56,7 +60,8 @@ public class GetAttributeTag extends OutSupport {
 
   private String getName() {
     return requireNonNull(
-      name, "The name attribute of <tiles:getAsString> tag is required."
+      name,
+      "The name attribute of <tiles:getAsString> tag is required."
     );
   }
 

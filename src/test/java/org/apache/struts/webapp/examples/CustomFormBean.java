@@ -28,38 +28,28 @@ import org.apache.struts.config.FormBeanConfig;
 
 public final class CustomFormBean extends FormBeanConfig {
 
+  // --------------------------------------------------- Instance Variables
 
-    // --------------------------------------------------- Instance Variables
+  /**
+   * An example String property.
+   */
+  private String example = "";
 
+  // ----------------------------------------------------------- Properties
 
-    /**
-     * An example String property.
-     */
-    private String example = "";
+  /**
+   * Return the example String.
+   */
+  public String getExample() {
+    return (this.example);
+  }
 
-
-    // ----------------------------------------------------------- Properties
-
-
-    /**
-     * Return the example String.
-     */
-    public String getExample() {
-
-        return (this.example);
-
-    }
-
-
-    /**
-     * Set the example String.
-     *
-     * @param example The new example String.
-     */
-    public void setExample(String example) {
-
-        this.example = example;
-
-    }
-
+  /**
+   * Set the example String.
+   *
+   * @param example The new example String.
+   */
+  public void setExample(String example) {
+    this.example = example;
+  }
 }

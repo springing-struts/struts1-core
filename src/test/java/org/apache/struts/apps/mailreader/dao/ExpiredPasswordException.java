@@ -19,27 +19,21 @@
  * under the License.
  */
 
-
 package org.apache.struts.apps.mailreader.dao;
-
 
 /**
  * Example of an application-specific exception for which a handler
  * can be configured.
  */
 
-
 public class ExpiredPasswordException extends Exception {
 
-
-    /**
-     * Construct a new instance of this exception for the specified username.
-     *
-     * @param username Username whose password has expired
-     */
-    public ExpiredPasswordException(String username) {
-        super("Password for " + username + " has expired.");
-    }
-
-
+  /**
+   * Construct a new instance of this exception for the specified username.
+   *
+   * @param username Username whose password has expired
+   */
+  public ExpiredPasswordException(String username) {
+    super("Password for " + username + " has expired.");
+  }
 }

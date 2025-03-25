@@ -1,23 +1,24 @@
 package springing.struts1.taglib;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
+
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.tags.form.AbstractHtmlElementTag;
 import org.springframework.web.servlet.tags.form.TagWriter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
-
-public abstract class StrutsHtmlElementTagBase extends AbstractHtmlElementTag implements BodyTag {
+public abstract class StrutsHtmlElementTagBase
+  extends AbstractHtmlElementTag
+  implements BodyTag {
 
   public StrutsHtmlElementTagBase() {
     init();
@@ -45,8 +46,8 @@ public abstract class StrutsHtmlElementTagBase extends AbstractHtmlElementTag im
     onfocus = null;
     titleKey = null;
     bundle = null;
-
   }
+
   private boolean processesBodyContent;
   private boolean writesRawBodyContent;
   private @Nullable BodyContent bodyContent;
@@ -66,12 +67,7 @@ public abstract class StrutsHtmlElementTagBase extends AbstractHtmlElementTag im
   }
 
   protected StrutsDataBinding createBinding() {
-    return StrutsDataBinding.onScope(
-      getPageContext(),
-      "",
-      "",
-      false
-    );
+    return StrutsDataBinding.onScope(getPageContext(), "", "", false);
   }
 
   protected Object getBoundValueOrElse(Object defaultValue) {
@@ -148,7 +144,9 @@ public abstract class StrutsHtmlElementTagBase extends AbstractHtmlElementTag im
     }
     var bodyText = getBodyTextForOutput();
     if (bodyText != null) {
-      tagWriter.appendValue(writesRawBodyContent ? bodyText : getDisplayString(bodyText));
+      tagWriter.appendValue(
+        writesRawBodyContent ? bodyText : getDisplayString(bodyText)
+      );
     }
     tagWriter.forceBlock();
   }
@@ -229,7 +227,9 @@ public abstract class StrutsHtmlElementTagBase extends AbstractHtmlElementTag im
     if (titleKey == null) {
       return null;
     }
-    return ModuleUtils.getCurrent().getMessageResources(bundle).getMessage(titleKey);
+    return ModuleUtils.getCurrent()
+      .getMessageResources(bundle)
+      .getMessage(titleKey);
   }
 
   /**

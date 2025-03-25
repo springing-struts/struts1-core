@@ -1,29 +1,36 @@
 package javax.servlet.http;
 
 import jakarta.servlet.http.Cookie;
-import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import javax.servlet.ServletResponse;
 
-public interface HttpServletResponse extends ServletResponse, jakarta.servlet.http.HttpServletResponse {
-
+public interface HttpServletResponse
+  extends ServletResponse, jakarta.servlet.http.HttpServletResponse {
   default jakarta.servlet.http.HttpServletResponse unwrap() {
     throw new UnsupportedOperationException();
   }
 
-  static HttpServletResponse toJavaxNamespace(jakarta.servlet.ServletResponse response) {
-    if (response instanceof HttpServletResponse inJavaxNamespace && !Proxy.isProxyClass(response.getClass())) {
+  static HttpServletResponse toJavaxNamespace(
+    jakarta.servlet.ServletResponse response
+  ) {
+    if (
+      response instanceof HttpServletResponse inJavaxNamespace &&
+      !Proxy.isProxyClass(response.getClass())
+    ) {
       return inJavaxNamespace;
     }
     return new Wrapper((jakarta.servlet.http.HttpServletResponse) response);
   }
 
   class Wrapper extends ServletResponse.Wrapper implements HttpServletResponse {
+
     public Wrapper(jakarta.servlet.http.HttpServletResponse response) {
       super(response);
       orig = response;
     }
+
     private final jakarta.servlet.http.HttpServletResponse orig;
 
     @Override

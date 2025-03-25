@@ -1,10 +1,9 @@
 package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsInputElementTagBase;
-
-import java.util.Map;
 
 /**
  * Render A File Select Input Field.
@@ -55,7 +54,7 @@ public class FileTag extends StrutsInputElementTagBase {
 
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
-    var attrs =  super.getAdditionalAttributes();
+    var attrs = super.getAdditionalAttributes();
     attrs.put("accept", accept);
     attrs.put("maxlength", (maxlength == null) ? null : maxlength.toString());
     attrs.put("size", (size == null) ? null : size.toString());

@@ -1,15 +1,14 @@
 package org.apache.struts.taglib.bean;
 
-import jakarta.servlet.jsp.JspException;
-import org.apache.taglibs.standard.tag.common.core.SetSupport;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.lang.Nullable;
+import static org.springframework.util.StringUtils.hasText;
 
+import jakarta.servlet.jsp.JspException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import static org.springframework.util.StringUtils.hasText;
+import org.apache.taglibs.standard.tag.common.core.SetSupport;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.lang.Nullable;
 
 /**
  * Load a web application resource and make it available as a bean.
@@ -41,10 +40,12 @@ public class ResourceTag extends SetSupport {
 
   @Override
   public int doEndTag() throws JspException {
-
-    if (!hasText(name)) throw new IllegalStateException(String.format(
-      "The name property of this tag [%s] is required.", this.getClass().getName()
-    ));
+    if (!hasText(name)) throw new IllegalStateException(
+      String.format(
+        "The name property of this tag [%s] is required.",
+        this.getClass().getName()
+      )
+    );
 
     try (var in = new ClassPathResource(name).getInputStream()) {
       var buff = in.readAllBytes();
@@ -53,9 +54,13 @@ public class ResourceTag extends SetSupport {
       }
       value = new String(buff, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw new IllegalStateException(String.format(
-        "An error occurred while reading or closing the stream of resource at [%s].", name
-      ), e);
+      throw new IllegalStateException(
+        String.format(
+          "An error occurred while reading or closing the stream of resource at [%s].",
+          name
+        ),
+        e
+      );
     }
     return super.doEndTag();
   }

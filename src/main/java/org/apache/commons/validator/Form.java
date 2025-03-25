@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 /**
  * This contains a set of validation rules for a form/JavaBean. The information
@@ -17,6 +16,7 @@ import java.util.Map;
  * configured with a `form` xml element.
  */
 public class Form {
+
   public Form(
     @JacksonXmlProperty(isAttribute = true, localName = "name") String name
   ) {
@@ -26,6 +26,7 @@ public class Form {
   public FormSet getFormSet() {
     return formSet;
   }
+
   @JsonBackReference
   private FormSet formSet;
 
@@ -35,6 +36,7 @@ public class Form {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
@@ -67,15 +69,17 @@ public class Form {
       fieldByName.put(field.getProperty(), field);
     }
   }
+
   public @Nullable Field getFieldByName(String name) {
     return fieldByName.get(name);
   }
+
   private final Map<String, Field> fieldByName = new HashMap<>();
 
   public void setCommonSettings(Form... commonSettings) {
     //commonSettings.clone();
     this.commonSettings.clear();
-    for (var commonSetting: commonSettings) {
+    for (var commonSetting : commonSettings) {
       if (commonSetting == null) continue;
       if (commonSetting.baseFormName != null) {
         var baseForm = formSet.getForm(commonSetting.baseFormName);
@@ -92,5 +96,6 @@ public class Form {
       }
     }
   }
+
   private final List<Form> commonSettings = new ArrayList<>();
 }

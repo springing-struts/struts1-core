@@ -1,12 +1,13 @@
 package springing.struts1.taglib;
 
-import jakarta.servlet.jsp.JspException;
-import org.springframework.lang.Nullable;
-import java.util.Map;
-
 import static java.util.Objects.requireNonNullElse;
 
-public abstract class StrutsInputElementTagBase extends StrutsHtmlElementTagBase {
+import jakarta.servlet.jsp.JspException;
+import java.util.Map;
+import org.springframework.lang.Nullable;
+
+public abstract class StrutsInputElementTagBase
+  extends StrutsHtmlElementTagBase {
 
   public StrutsInputElementTagBase() {
     init();
@@ -30,7 +31,10 @@ public abstract class StrutsInputElementTagBase extends StrutsHtmlElementTagBase
     var attrs = super.getAdditionalAttributes();
     var type = getType();
     var value = getDisplayString(getBoundValue(), getPropertyEditor());
-    attrs.put("value", processFieldValue(getName(), value, requireNonNullElse(type, "text")));
+    attrs.put(
+      "value",
+      processFieldValue(getName(), value, requireNonNullElse(type, "text"))
+    );
     attrs.put("type", getType());
     attrs.put("alt", alt);
     attrs.put("readonly", readonly ? "readonly" : null);
@@ -52,6 +56,7 @@ public abstract class StrutsInputElementTagBase extends StrutsHtmlElementTagBase
     disabled = false;
     onchange = null;
   }
+
   private @Nullable String name;
   private @Nullable String defaultValue;
   private @Nullable String property;
@@ -114,9 +119,7 @@ public abstract class StrutsInputElementTagBase extends StrutsHtmlElementTagBase
    * of the `value` attribute before rendering the tag.
    */
   protected Object processBoundValue(@Nullable Object propertyValue) {
-    return requireNonNullElse(
-      propertyValue, getDefaultValue()
-    );
+    return requireNonNullElse(propertyValue, getDefaultValue());
   }
 
   @Override

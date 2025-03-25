@@ -1,14 +1,14 @@
 package org.apache.struts.taglib.html;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import org.apache.struts.TestApp;
 import org.apache.struts.webapp.exercise.TestBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 /**
  * <pre>
@@ -68,21 +68,21 @@ public class TextTagTest {
     app.createRequest(HttpMethod.POST, "/exercise/html-link-submit");
     app.setupActionForm("testbean", () -> {
       var testBean = new TestBean();
-      testBean.setStringArray(new String[]{"SPRING!!", "STRUTS!!"});
+      testBean.setStringArray(new String[] { "SPRING!!", "STRUTS!!" });
       return testBean;
     });
     app.assertTagContent(
-        "/html-link-submit",
-        TextTag.class,
-        (tag, context) -> {
-          tag.setProperty("stringArray[1]");
-        },
-        (content, processedBody) -> {
-          assertThat(content, containsString("<input"));
-          assertThat(content, containsString("type=\"text\""));
-          assertThat(content, containsString("name=\"stringArray[1]\""));
-          assertThat(content, containsString("value=\"STRUTS!!\""));
-        }
+      "/html-link-submit",
+      TextTag.class,
+      (tag, context) -> {
+        tag.setProperty("stringArray[1]");
+      },
+      (content, processedBody) -> {
+        assertThat(content, containsString("<input"));
+        assertThat(content, containsString("type=\"text\""));
+        assertThat(content, containsString("name=\"stringArray[1]\""));
+        assertThat(content, containsString("value=\"STRUTS!!\""));
+      }
     );
   }
 }

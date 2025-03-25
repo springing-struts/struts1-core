@@ -20,14 +20,11 @@
  */
 package org.apache.struts.apps.mailreader.dao.impl.memory;
 
-
-
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.apps.mailreader.dao.User;
 import org.apache.struts.apps.mailreader.dao.UserDatabase;
-
 
 /**
  * <p>Concrete implementation of {@link UserDatabase} for an in-memory
@@ -39,108 +36,87 @@ import org.apache.struts.apps.mailreader.dao.UserDatabase;
 
 public class MemoryUserDatabase implements UserDatabase {
 
+  // ----------------------------------------------------------- Constructors
 
-    // ----------------------------------------------------------- Constructors
+  // ----------------------------------------------------- Instance Variables
 
+  /**
+   * Logging output for this user database instance.
+   */
+  private Log log = LogFactory.getLog(this.getClass());
 
-    // ----------------------------------------------------- Instance Variables
+  /**
+   * The {@link User}s associated with this UserDatabase, keyed by username.
+   */
+  private HashMap users = new HashMap();
 
+  private boolean open = false;
 
-    /**
-     * Logging output for this user database instance.
-     */
-    private Log log = LogFactory.getLog(this.getClass());
+  // ------------------------------------------------------------- Properties
 
+  /**
+   * Absolute pathname to the persistent file we use for loading and storing
+   * persistent data.
+   */
+  private String pathname = null;
 
-    /**
-     * The {@link User}s associated with this UserDatabase, keyed by username.
-     */
-    private HashMap users = new HashMap();
+  private String pathnameOld = null;
 
-    private boolean open = false;
+  private String pathnameNew = null;
 
+  public String getPathname() {
+    return (this.pathname);
+  }
 
-    // ------------------------------------------------------------- Properties
+  public void setPathname(String pathname) {
+    this.pathname = pathname;
+    pathnameOld = pathname + ".old";
+    pathnameNew = pathname + ".new";
+  }
 
+  // --------------------------------------------------------- Public Methods
 
-    /**
-     * Absolute pathname to the persistent file we use for loading and storing
-     * persistent data.
-     */
-    private String pathname = null;
+  // See interface for Javadoc
+  public void close() throws Exception {
+    save();
+    this.open = false;
+  }
 
-    private String pathnameOld = null;
-
-    private String pathnameNew = null;
-
-    public String getPathname() {
-        return (this.pathname);
+  // See interface for Javadoc
+  public User createUser(String username) {
+    synchronized (users) {
+      if (users.get(username) != null) {
+        throw new IllegalArgumentException("Duplicate user '" + username + "'");
+      }
+      if (log.isTraceEnabled()) {
+        log.trace("Creating user '" + username + "'");
+      }
+      MemoryUser user = new MemoryUser(this, username);
+      synchronized (users) {
+        users.put(username, user);
+      }
+      return (user);
     }
+  }
 
-    public void setPathname(String pathname) {
-        this.pathname = pathname;
-        pathnameOld = pathname + ".old";
-        pathnameNew = pathname + ".new";
+  // See interface for Javadoc
+  public User findUser(String username) {
+    synchronized (users) {
+      return ((User) users.get(username));
     }
+  }
 
-
-    // --------------------------------------------------------- Public Methods
-
-
-    // See interface for Javadoc
-    public void close() throws Exception {
-
-        save();
-        this.open = false;
-
+  // See interface for Javadoc
+  public User[] findUsers() {
+    synchronized (users) {
+      User results[] = new User[users.size()];
+      return ((User[]) users.values().toArray(results));
     }
+  }
 
-
-    // See interface for Javadoc
-    public User createUser(String username) {
-
-        synchronized (users) {
-            if (users.get(username) != null) {
-                throw new IllegalArgumentException("Duplicate user '" +
-                                                   username + "'");
-            }
-            if (log.isTraceEnabled()) {
-                log.trace("Creating user '" + username + "'");
-            }
-            MemoryUser user = new MemoryUser(this, username);
-            synchronized (users) {
-                users.put(username, user);
-            }
-            return (user);
-        }
-
-    }
-
-
-    // See interface for Javadoc
-    public User findUser(String username)  {
-
-        synchronized (users) {
-            return ((User) users.get(username));
-        }
-
-    }
-
-
-    // See interface for Javadoc
-    public User[] findUsers() {
-
-        synchronized (users) {
-            User results[] = new User[users.size()];
-            return ((User[]) users.values().toArray(results));
-        }
-
-    }
-
-
-    // See interface for Javadoc
-    public void open() throws Exception {
-/*
+  // See interface for Javadoc
+  public void open() throws Exception {
+    /*
         FileInputStream fis = null;
         BufferedInputStream bis = null;
 
@@ -190,29 +166,26 @@ public class MemoryUserDatabase implements UserDatabase {
 
         }
     */
+  }
+
+  // See interface for Javadoc
+  public void removeUser(User user) {
+    if (!(this == user.getDatabase())) {
+      throw new IllegalArgumentException(
+        "User not associated with this database"
+      );
     }
-
-
-    // See interface for Javadoc
-    public void removeUser(User user) {
-
-        if (!(this == user.getDatabase())) {
-            throw new IllegalArgumentException
-                ("User not associated with this database");
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("Removing user '" + user.getUsername() + "'");
-        }
-        synchronized (users) {
-            users.remove(user.getUsername());
-        }
-
+    if (log.isTraceEnabled()) {
+      log.trace("Removing user '" + user.getUsername() + "'");
     }
+    synchronized (users) {
+      users.remove(user.getUsername());
+    }
+  }
 
-    // See interface for Javadoc
-    public void save() throws Exception {
-
-/*
+  // See interface for Javadoc
+  public void save() throws Exception {
+    /*
         if (log.isDebugEnabled()) {
             log.debug("Saving database to '" + pathname + "'");
         }
@@ -290,19 +263,12 @@ public class MemoryUserDatabase implements UserDatabase {
         }
         fileOld.delete();
  */
-    }
+  }
 
-    public boolean isOpen() {
-        return this.open;
-    }
-
-
-
-
+  public boolean isOpen() {
+    return this.open;
+  }
 }
-
-
-
 /**
  * Digester object creation factory for subscription instances.
  */
@@ -341,8 +307,6 @@ class MemorySubscriptionCreationFactory implements ObjectCreationFactory {
 
 }
  */
-
-
 /**
  * Digester object creation factory for user instances.
  */

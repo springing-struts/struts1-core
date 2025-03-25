@@ -1,10 +1,9 @@
 package org.apache.struts.plugins;
 
+import javax.servlet.ServletException;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-
-import javax.servlet.ServletException;
 
 /**
  * Convenient implementation of {@link PlugIn} that performs as many
@@ -18,12 +17,9 @@ import javax.servlet.ServletException;
 public class ModuleConfigVerifier implements PlugIn {
 
   @Override
-  public void destroy() {
-
-  }
+  public void destroy() {}
 
   @Override
-  public void init(ActionServlet servlet, ModuleConfig config) throws ServletException {
-
-  }
+  public void init(ActionServlet servlet, ModuleConfig config)
+    throws ServletException {}
 }

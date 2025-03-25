@@ -2,11 +2,11 @@ package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
+import java.util.List;
 import org.apache.struts.action.ActionMessage;
 import org.apache.taglibs.standard.tag.common.core.ForEachSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.MessagesAware;
-import java.util.List;
 
 /**
  * Conditionally display a set of accumulated messages.
@@ -66,6 +66,7 @@ public class MessagesTag extends ForEachSupport implements MessagesAware {
       public boolean hasNext() throws JspTagException {
         return iterator.hasNext();
       }
+
       @Override
       public Object next() throws JspTagException {
         var message = iterator.next();

@@ -1,6 +1,10 @@
 package org.apache.struts.taglib.logic;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpMethod.GET;
+
 import jakarta.servlet.jsp.PageContext;
+import java.util.ArrayList;
 import org.apache.struts.Globals;
 import org.apache.struts.TestApp;
 import org.apache.struts.action.ActionErrors;
@@ -8,9 +12,6 @@ import org.apache.struts.action.ActionMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import java.util.ArrayList;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class MessagesPresentTagTest {
@@ -42,8 +43,7 @@ public class MessagesPresentTagTest {
     app.assertTagContent(
       "/welcome",
       MessagesPresentTag.class,
-      (tag, context) -> {
-      },
+      (tag, context) -> {},
       (content, processedBody) -> {
         assertFalse(processedBody);
       }
@@ -75,6 +75,5 @@ public class MessagesPresentTagTest {
         assertEquals(2, count);
       }
     );
-
   }
 }

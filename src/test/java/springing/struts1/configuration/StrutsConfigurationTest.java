@@ -1,14 +1,14 @@
 package springing.struts1.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.ModuleConfigBean;
 import org.apache.struts.webapp.examples.CustomActionMapping;
 import org.apache.struts.webapp.examples.CustomFormBean;
 import org.junit.jupiter.api.Test;
-import org.apache.struts.config.ModuleConfig;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class StrutsConfigurationTest {
 
@@ -37,22 +37,34 @@ public class StrutsConfigurationTest {
 
   @Test
   void testItParsesStrutsConfigContainingFormBeanDefinitions() {
-    var config = ModuleConfigBean.loadFrom("/WEB-INF/exercise/struts-config.xml", "exercise");
+    var config = ModuleConfigBean.loadFrom(
+      "/WEB-INF/exercise/struts-config.xml",
+      "exercise"
+    );
     assertNotNull(config);
   }
 
   @Test
   void testItParsesStrutsConfigContainingUploadRelatedSettings() {
-    var config = ModuleConfigBean.loadFrom("/WEB-INF/upload/struts-config.xml", "upload");
+    var config = ModuleConfigBean.loadFrom(
+      "/WEB-INF/upload/struts-config.xml",
+      "upload"
+    );
     assertNotNull(config);
   }
 
   @Test
   void testItParsesStrutsConfigContainingValidationSettings() {
-    var baseConfig = ModuleConfigBean.loadFrom("/WEB-INF/validator/struts-config.xml", "validator");
+    var baseConfig = ModuleConfigBean.loadFrom(
+      "/WEB-INF/validator/struts-config.xml",
+      "validator"
+    );
     assertNotNull(baseConfig);
 
-    var bundleConfig = ModuleConfigBean.loadFrom("/WEB-INF/validator/struts-config-bundles.xml", "validator");
+    var bundleConfig = ModuleConfigBean.loadFrom(
+      "/WEB-INF/validator/struts-config-bundles.xml",
+      "validator"
+    );
     assertNotNull(bundleConfig);
   }
 }

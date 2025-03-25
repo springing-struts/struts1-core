@@ -1,13 +1,13 @@
 package org.apache.struts.taglib.bean;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.TestApp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class MessageTagTest {
@@ -28,12 +28,13 @@ public class MessageTagTest {
    * </pre>
    */
   @Test
-  void testItShowsMessageFromMessageResourceBundleConfiguredInModule() throws Exception {
+  void testItShowsMessageFromMessageResourceBundleConfiguredInModule()
+    throws Exception {
     app.createRequest(GET, "/validator/welcome");
     app.assertTagContent(
       "/welcome",
       MessageTag.class,
-      (tag, context)  -> {
+      (tag, context) -> {
         tag.setKey("index.title");
       },
       (content, processedBody) -> {
@@ -54,7 +55,7 @@ public class MessageTagTest {
   @Test
   void testItCanShowLocalizedMessages() throws Exception {
     app.createRequest(GET, "/validator/welcome", request -> {
-      request.addHeader( "Accept-Language", "ja");
+      request.addHeader("Accept-Language", "ja");
     });
     app.assertTagContent(
       "/welcome",

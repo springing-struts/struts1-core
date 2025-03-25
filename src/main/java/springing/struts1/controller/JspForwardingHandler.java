@@ -1,26 +1,28 @@
 package springing.struts1.controller;
 
+import static jakarta.servlet.DispatcherType.INCLUDE;
+import static java.util.Objects.requireNonNull;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.apache.catalina.Globals;
 import org.apache.catalina.core.RequestWrapper;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
-import java.io.IOException;
-
-import static jakarta.servlet.DispatcherType.INCLUDE;
-import static java.util.Objects.requireNonNull;
-
 public class JspForwardingHandler implements HttpRequestHandler {
 
-  public JspForwardingHandler(ResourceHttpRequestHandler staticResourceHandler) {
+  public JspForwardingHandler(
+    ResourceHttpRequestHandler staticResourceHandler
+  ) {
     this.staticResourceHandler = staticResourceHandler;
   }
+
   private final ResourceHttpRequestHandler staticResourceHandler;
 
   @Override
@@ -36,14 +38,12 @@ public class JspForwardingHandler implements HttpRequestHandler {
     }
     if (request.getDispatcherType() == INCLUDE) {
       handleInclude(request, response);
-    }
-    else {
+    } else {
       handleForward(request, response);
     }
   }
 
   private RequestDispatcher getDispatcher(HttpServletRequest request) {
-
     return requireNonNull(
       request.getServletContext().getNamedDispatcher("jsp"),
       "A RequestDispatcher could not be located for the default servlet: jsp."

@@ -1,17 +1,15 @@
 package org.apache.struts.taglib.logic;
 
-import org.apache.struts.chain.contexts.ServletActionContext;
-import org.apache.struts.util.ModuleUtils;
-import org.springframework.lang.Nullable;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.StringUtils.hasText;
 
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import java.io.IOException;
-
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.StringUtils.hasText;
+import org.apache.struts.chain.contexts.ServletActionContext;
+import org.apache.struts.util.ModuleUtils;
+import org.springframework.lang.Nullable;
 
 /**
  * Forward control to the page specified by the specified ActionForward.
@@ -43,9 +41,9 @@ public class ForwardTag extends TagSupport {
       "The logic:forward tag requires the `name` property."
     );
     var forwardConfig = ModuleUtils.getCurrent().findForwardConfig(name);
-    if (forwardConfig == null) throw new IllegalArgumentException(String.format(
-      "Unknown forward name: [%s].", name
-    ));
+    if (forwardConfig == null) throw new IllegalArgumentException(
+      String.format("Unknown forward name: [%s].", name)
+    );
     var forwardPath = forwardConfig.getUrl();
     try {
       ServletActionContext.current().forwardRequest(forwardPath);

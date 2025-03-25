@@ -1,9 +1,8 @@
 package org.apache.commons.beanutils;
 
-import org.springframework.lang.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 public class DefaultDynaClass implements DynaClass {
 
@@ -11,7 +10,11 @@ public class DefaultDynaClass implements DynaClass {
     this(name, false, properties);
   }
 
-  public DefaultDynaClass(String name, boolean isLazy, DynaProperty... properties) {
+  public DefaultDynaClass(
+    String name,
+    boolean isLazy,
+    DynaProperty... properties
+  ) {
     this.name = name;
     this.lazy = isLazy;
     dynaPropertiesByName = new HashMap<>();
@@ -24,6 +27,7 @@ public class DefaultDynaClass implements DynaClass {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   private final boolean lazy;
@@ -31,11 +35,12 @@ public class DefaultDynaClass implements DynaClass {
   public Map<String, DynaProperty> getDynaPropertiesByName() {
     return dynaPropertiesByName;
   }
+
   private final Map<String, DynaProperty> dynaPropertiesByName;
 
   @Override
   public DynaProperty[] getDynaProperties() {
-    return getDynaPropertiesByName().values().toArray(new DynaProperty[]{});
+    return getDynaPropertiesByName().values().toArray(new DynaProperty[] {});
   }
 
   @Override

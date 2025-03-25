@@ -1,5 +1,16 @@
 package springing.struts1.taglib;
 
+import static java.util.Objects.requireNonNullElse;
+import static org.apache.struts.chain.contexts.ServletActionContext.resolveNestedPath;
+import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 import org.apache.struts.taglib.html.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.Nullable;
@@ -9,23 +20,12 @@ import org.springframework.web.servlet.support.BindStatus;
 import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.Objects.requireNonNullElse;
-import static org.apache.struts.chain.contexts.ServletActionContext.resolveNestedPath;
-import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
-
 /**
  * Another implementation of BindStatus that allows binding form fields to
  * 'type-less' objects, such as Map or Struts' DynaBean.
  */
 public class StrutsDataBinding extends BindStatus {
+
   /**
    * Creates a binding to a property of the bean with the given name in the
    * scope.
@@ -57,7 +57,10 @@ public class StrutsDataBinding extends BindStatus {
     @Nullable Function<Object, Object> valueProcessor
   ) {
     var property = propertyPath == null ? "" : propertyPath;
-    var path = beanName + (beanName.isBlank() || property.isBlank() ? "" : ".") + property;
+    var path =
+      beanName +
+      (beanName.isBlank() || property.isBlank() ? "" : ".") +
+      property;
     return new StrutsDataBinding(
       pageContext,
       null,
@@ -73,10 +76,10 @@ public class StrutsDataBinding extends BindStatus {
    * @param property The path of the property that this binding targets.
    */
   public static StrutsDataBinding onForm(
-      PageContext pageContext,
-      @Nullable String name,
-      boolean awareNestedTag,
-      String property
+    PageContext pageContext,
+    @Nullable String name,
+    boolean awareNestedTag,
+    String property
   ) {
     return onForm(pageContext, name, property, awareNestedTag, null);
   }
@@ -99,13 +102,27 @@ public class StrutsDataBinding extends BindStatus {
   ) {
     if (formName == null) {
       var attr = getFormBeanAttributeKey(pageContext);
-      return new StrutsDataBinding(pageContext, attr, property, awareNestedTag, valueProcessor);
+      return new StrutsDataBinding(
+        pageContext,
+        attr,
+        property,
+        awareNestedTag,
+        valueProcessor
+      );
     }
     var path = formName + "." + property;
-    return new StrutsDataBinding(pageContext, null, path, awareNestedTag, valueProcessor);
+    return new StrutsDataBinding(
+      pageContext,
+      null,
+      path,
+      awareNestedTag,
+      valueProcessor
+    );
   }
 
-  public static @Nullable String getFormBeanAttributeKey(PageContext pageContext) {
+  public static @Nullable String getFormBeanAttributeKey(
+    PageContext pageContext
+  ) {
     return (String) pageContext.getRequest().getAttribute(Constants.BEAN_KEY);
   }
 
@@ -118,9 +135,11 @@ public class StrutsDataBinding extends BindStatus {
   }
 
   private static final Field BIND_STATUS_FIELD;
+
   static {
     try {
-      BIND_STATUS_FIELD = AbstractDataBoundFormElementTag.class.getDeclaredField("bindStatus");
+      BIND_STATUS_FIELD =
+        AbstractDataBoundFormElementTag.class.getDeclaredField("bindStatus");
       BIND_STATUS_FIELD.setAccessible(true);
     } catch (NoSuchFieldException e) {
       throw new IllegalStateException(e);
@@ -145,6 +164,7 @@ public class StrutsDataBinding extends BindStatus {
     this.awareNestedTag = awareNestedTag;
     this.valueProcessor = valueProcessor;
   }
+
   private final PageContext pageContext;
   private final @Nullable String relPath;
   private final @Nullable String attributeName;
@@ -164,7 +184,10 @@ public class StrutsDataBinding extends BindStatus {
   @Override
   public @Nullable Object getValue() {
     var value = resolveValueOnScope(
-      attributeName, relPath, awareNestedTag, pageContext
+      attributeName,
+      relPath,
+      awareNestedTag,
+      pageContext
     );
     return (valueProcessor == null) ? value : valueProcessor.apply(value);
   }
@@ -181,10 +204,7 @@ public class StrutsDataBinding extends BindStatus {
     var props = BeanUtils.getPropertyDescriptors(value.getClass());
     for (var prop : props) {
       try {
-        result.put(
-          prop.getName(),
-          prop.getReadMethod().invoke(value)
-        );
+        result.put(prop.getName(), prop.getReadMethod().invoke(value));
       } catch (IllegalAccessException | InvocationTargetException e) {
         throw new RuntimeException(e);
       }
@@ -196,7 +216,7 @@ public class StrutsDataBinding extends BindStatus {
   public @Nullable Class<?> getValueType() {
     var value = getValue();
     return value == null ? null : value.getClass();
- }
+  }
 
   @Nullable
   @Override
@@ -225,6 +245,7 @@ public class StrutsDataBinding extends BindStatus {
   }
 
   private static class RequestContextWrapper extends RequestContext {
+
     public RequestContextWrapper(HttpServletRequest request) {
       super(request);
     }

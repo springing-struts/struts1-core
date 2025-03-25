@@ -21,8 +21,7 @@ public class CancelTag extends SubmitTag {
     init();
   }
 
-  public void init() {
-  }
+  public void init() {}
 
   @Override
   protected Map<String, String> getAdditionalAttributes() {

@@ -1,8 +1,7 @@
 package org.apache.struts.taglib.html;
 
-import springing.struts1.taglib.StrutsHtmlElementTagBase;
-
 import java.util.Map;
+import springing.struts1.taglib.StrutsHtmlElementTagBase;
 
 /*
  * Renders an HTML <html> element with appropriate language attributes if

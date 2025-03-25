@@ -1,14 +1,16 @@
 package springing.util;
 
-import org.springframework.lang.Nullable;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.springframework.lang.Nullable;
 
 public class StringUtils {
 
-  public static String defaultIfEmpty(@Nullable String value, String defaultValue) {
+  public static String defaultIfEmpty(
+    @Nullable String value,
+    String defaultValue
+  ) {
     return (value == null || value.isEmpty()) ? defaultValue : value;
   }
 
@@ -43,7 +45,10 @@ public class StringUtils {
     }
     return prefix + buff;
   }
-  private static final Pattern HAS_PRIVATE_MEMBER_PREFIX = Pattern.compile("^\\s*(_+).*$");
+
+  private static final Pattern HAS_PRIVATE_MEMBER_PREFIX = Pattern.compile(
+    "^\\s*(_+).*$"
+  );
 
   public static List<String> tokenizeIdentifier(@Nullable String token) {
     if (token == null || token.isBlank()) {
@@ -51,16 +56,16 @@ public class StringUtils {
     }
     return Arrays.stream(TOKEN_SEPARATOR.split(token)).toList();
   }
+
   private static final Pattern TOKEN_SEPARATOR = Pattern.compile(
     "([-_\\s]+|(?<=[-_a-z0-9])(?=[A-Z]))"
   );
 
   public static String normalizeForwardPath(@Nullable String path) {
-    return ("/" + (path == null ? "" : path))
-      .replaceAll("/+", "/");
-//      .replaceAll("/$", "");
-//      .replaceAll("\\?.+", "")
-//      .replaceAll("(.)/$", "$1");
+    return ("/" + (path == null ? "" : path)).replaceAll("/+", "/");
+    //      .replaceAll("/$", "");
+    //      .replaceAll("\\?.+", "")
+    //      .replaceAll("(.)/$", "$1");
   }
 
   public static String getExtensionOf(@Nullable String path) {
@@ -73,7 +78,8 @@ public class StringUtils {
     }
     return m.group(1);
   }
+
   private static final Pattern EXTENSION_IN_PATH = Pattern.compile(
-      "^.*\\.([0-9a-zA-Z]{1,9})(\\?[^?]+)?$"
+    "^.*\\.([0-9a-zA-Z]{1,9})(\\?[^?]+)?$"
   );
 }

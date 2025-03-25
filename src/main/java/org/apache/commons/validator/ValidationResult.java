@@ -1,9 +1,8 @@
 package org.apache.commons.validator;
 
-import org.springframework.lang.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 /**
  * This contains the results of a set of validation rules processed on a
@@ -11,12 +10,11 @@ import java.util.Map;
  */
 public class ValidationResult {
 
-  public ValidationResult(
-    Field field
-  ) {
+  public ValidationResult(Field field) {
     this.field = field;
     results = new HashMap<>();
   }
+
   private final Map<String, ResultStatus> results;
 
   /**
@@ -29,7 +27,11 @@ public class ValidationResult {
   /**
    * Add the result of a validator action.
    */
-  public void add(String validatorName, boolean result, @Nullable Object value) {
+  public void add(
+    String validatorName,
+    boolean result,
+    @Nullable Object value
+  ) {
     results.put(validatorName, new ResultStatus(result, value));
   }
 
@@ -43,16 +45,15 @@ public class ValidationResult {
   public Field getField() {
     return field;
   }
+
   private final Field field;
 
   /**
    * Contains the status of the validation.
    */
   public static class ResultStatus {
-    public ResultStatus(
-      boolean valid,
-      @Nullable Object result
-    ) {
+
+    public ResultStatus(boolean valid, @Nullable Object result) {
       this.valid = valid;
       this.result = result;
     }
@@ -63,6 +64,7 @@ public class ValidationResult {
     public boolean isValid() {
       return valid;
     }
+
     private final boolean valid;
 
     /**
@@ -71,6 +73,7 @@ public class ValidationResult {
     public @Nullable Object getResult() {
       return result;
     }
+
     private final @Nullable Object result;
   }
 }

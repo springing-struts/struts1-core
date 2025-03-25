@@ -1,13 +1,13 @@
 package springing.struts1.message;
 
+import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.apache.struts.util.MessageResources;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
-import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * A thin wrapper that provides a Spring MessageSource as a Struts
@@ -36,8 +36,10 @@ public class ResourceBundleMessageResources extends MessageResources {
   private final ResourceBundleMessageSource messageSource;
   private final String bundleName;
 
-  private static final ConcurrentMap<String, ResourceBundleMessageResources>
-    loadedMessageResourcesByBundleName = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<
+    String,
+    ResourceBundleMessageResources
+  > loadedMessageResourcesByBundleName = new ConcurrentHashMap<>();
 
   /**
    * Returns a text message for the specified key, for the default Locale.
@@ -47,7 +49,9 @@ public class ResourceBundleMessageResources extends MessageResources {
    * returned. This method must be implemented by a concrete subclass.
    */
   public @Nullable String getMessage(
-    @Nullable Locale locale, String key, Object... args
+    @Nullable Locale locale,
+    String key,
+    Object... args
   ) {
     return messageSource.getMessage(
       key,

@@ -7,13 +7,14 @@ import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoC
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {
-    DispatcherServletAutoConfiguration.class,
-    ErrorMvcAutoConfiguration.class
-})
+@EnableAutoConfiguration(
+  exclude = {
+    DispatcherServletAutoConfiguration.class, ErrorMvcAutoConfiguration.class,
+  }
+)
 public class Main {
 
-  public static void main(String ...args) {
+  public static void main(String... args) {
     SpringApplication.run(Main.class, args);
   }
 }

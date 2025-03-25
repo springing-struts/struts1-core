@@ -1,15 +1,14 @@
 package org.apache.struts.tiles.taglib;
 
+import static java.lang.String.format;
+
 import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.tiles.config.TilesDefinition;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableReference;
-
-import javax.servlet.jsp.PageContext;
-
-import static java.lang.String.format;
 
 /**
  * Insert a tiles/component/template with the possibility to pass parameters
@@ -86,11 +85,16 @@ public class InsertTag extends ImportSupport {
     if (ignore) {
       return SKIP_BODY;
     }
-    throw new JspException(format(
-      "Failed to determine the resource url to include." +
-      " attribute:[%s], template/component/page:[%s], definition:[%s], beanName:[%s].",
-      attribute, tilesTemplatePath, tilesDefinitionName, ref.getName()
-    ));
+    throw new JspException(
+      format(
+        "Failed to determine the resource url to include." +
+        " attribute:[%s], template/component/page:[%s], definition:[%s], beanName:[%s].",
+        attribute,
+        tilesTemplatePath,
+        tilesDefinitionName,
+        ref.getName()
+      )
+    );
   }
 
   private @Nullable String getUrlFromTilesDefinition() {
@@ -114,7 +118,7 @@ public class InsertTag extends ImportSupport {
       return context.getTilesDefinition();
     }
     if (tilesTemplatePath != null) {
-      var definition = new TilesDefinition(tilesTemplatePath, null) ;
+      var definition = new TilesDefinition(tilesTemplatePath, null);
       definition.setPath(tilesTemplatePath);
       context.setTilesDefinition(definition);
       return definition;

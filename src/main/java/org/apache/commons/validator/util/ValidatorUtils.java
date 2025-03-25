@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
  *   release.
  */
 public class ValidatorUtils {
+
   private ValidatorUtils() {}
 
   /**
@@ -17,7 +18,8 @@ public class ValidatorUtils {
   public static @Nullable String replace(
     @Nullable String value,
     @Nullable String key,
-    @Nullable String replaceValue) {
+    @Nullable String replaceValue
+  ) {
     if (value == null || key == null || replaceValue == null) {
       return value;
     }

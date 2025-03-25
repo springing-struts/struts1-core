@@ -15,12 +15,12 @@ public class FormPropertyConfig {
     @JacksonXmlProperty(localName = "type", isAttribute = true) String type
   ) {
     property = new DynaProperty(name, type);
-
   }
 
   public DynaProperty getProperty() {
     return property;
   }
+
   private final DynaProperty property;
 
   /**
@@ -45,6 +45,7 @@ public class FormPropertyConfig {
   public @Nullable String getInitial() {
     return initial;
   }
+
   private @Nullable String initial;
 
   /**
@@ -56,6 +57,7 @@ public class FormPropertyConfig {
   public @Nullable String getReset() {
     return reset;
   }
+
   private @Nullable String reset;
 
   /**
@@ -65,5 +67,6 @@ public class FormPropertyConfig {
   public int getSize() {
     return size;
   }
+
   private int size = 0;
 }

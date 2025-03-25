@@ -1,8 +1,23 @@
 package org.apache.struts.config;
 
+import static java.lang.String.format;
+import static java.util.Objects.*;
+import static org.springframework.util.StringUtils.hasText;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static springing.struts1.validator.ValidationUtils.bindRequest;
+import static springing.util.ObjectUtils.classFor;
+import static springing.util.StringUtils.normalizeForwardPath;
+
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.*;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.taglib.html.Constants;
@@ -16,22 +31,6 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import springing.struts1.controller.JspForwardingHandler;
 import springing.struts1.controller.StrutsRequestHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
-import static java.lang.String.format;
-import static java.util.Objects.*;
-import static org.springframework.util.StringUtils.hasText;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static springing.struts1.validator.ValidationUtils.bindRequest;
-import static springing.util.ObjectUtils.classFor;
-import static springing.util.StringUtils.normalizeForwardPath;
 
 /**
  * A JavaBean representing the configuration information of an `action`
@@ -50,9 +49,11 @@ public class ActionConfig {
   public ModuleConfigBean getModuleConfig() {
     return requireNonNull(moduleConfig);
   }
+
   void setModuleConfig(ModuleConfigBean config) {
     moduleConfig = config;
   }
+
   private @Nullable ModuleConfigBean moduleConfig;
 
   /**
@@ -63,9 +64,11 @@ public class ActionConfig {
   public String getPath() {
     return normalizeForwardPath(path);
   }
+
   public void setPath(String path) {
     this.path = path;
   }
+
   @JacksonXmlProperty(localName = "path", isAttribute = true)
   private String path;
 
@@ -83,9 +86,11 @@ public class ActionConfig {
   public @Nullable String getName() {
     return getInheritedProperty(String.class, it -> it.name);
   }
+
   public @Nullable String getName(HttpServletRequest request) {
     return interpolatePathParams(getName(), request);
   }
+
   @JacksonXmlProperty(localName = "name", isAttribute = true)
   private @Nullable String name;
 
@@ -96,6 +101,7 @@ public class ActionConfig {
   public @Nullable String getActionId() {
     return actionId;
   }
+
   @JacksonXmlProperty(localName = "actionId", isAttribute = true)
   private @Nullable String actionId;
 
@@ -110,7 +116,9 @@ public class ActionConfig {
    * Returns a FormBeanConfig associated with this Action.
    */
   @JsonIgnore
-  public @Nullable FormBeanConfig getFormBeanConfig(HttpServletRequest request) {
+  public @Nullable FormBeanConfig getFormBeanConfig(
+    HttpServletRequest request
+  ) {
     var formName = getName(request);
     if (formName == null) {
       return null;
@@ -120,11 +128,15 @@ public class ActionConfig {
         return formBeanConfig;
       }
     }
-    throw new IllegalStateException(format(
-      "Unknown form bean name [%s] is referred from the action [%s]." +
-      " Please check the configuration files at [%s].",
-      formName, getActionUrl(), getModuleConfig().getConfigFilePaths()
-    ));
+    throw new IllegalStateException(
+      format(
+        "Unknown form bean name [%s] is referred from the action [%s]." +
+        " Please check the configuration files at [%s].",
+        formName,
+        getActionUrl(),
+        getModuleConfig().getConfigFilePaths()
+      )
+    );
   }
 
   /**
@@ -135,6 +147,7 @@ public class ActionConfig {
   public @Nullable String getParameter() {
     return getInheritedProperty(String.class, it -> it.parameter);
   }
+
   @JacksonXmlProperty(localName = "parameter", isAttribute = true)
   private @Nullable String parameter;
 
@@ -163,9 +176,11 @@ public class ActionConfig {
   public @Nullable String getForwardPath() {
     return forwardPath;
   }
+
   public @Nullable String getForwardPath(HttpServletRequest request) {
     return interpolatePathParams(forwardPath, request);
   }
+
   @JacksonXmlProperty(localName = "forward-path", isAttribute = true)
   private @Nullable String forwardPath;
 
@@ -176,12 +191,13 @@ public class ActionConfig {
   public @Nullable String getInclude() {
     return include;
   }
+
   public @Nullable String getInclude(HttpServletRequest request) {
     return interpolatePathParams(include, request);
   }
+
   @JacksonXmlProperty(localName = "include", isAttribute = true)
   private @Nullable String include;
-
 
   /**
    * Return all forward configurations for this module. If there are none, a
@@ -190,13 +206,16 @@ public class ActionConfig {
   public ForwardConfig[] findForwardConfigs() {
     return localForwards.toArray(new ForwardConfig[0]);
   }
+
   @JacksonXmlProperty(localName = "forward")
   @JacksonXmlElementWrapper(useWrapping = false)
   private void setLocalForwards(List<ActionForward> localForwards) {
     localForwards.forEach(it -> it.setActionConfig(this));
     this.localForwards = localForwards;
   }
+
   private List<ActionForward> localForwards = new ArrayList<>();
+
   public List<ActionForward> getLocalForwards() {
     var parentConfig = getParentConfig();
     if (parentConfig == null) {
@@ -215,6 +234,7 @@ public class ActionConfig {
   public ExceptionConfig[] findExceptionConfigs() {
     return localExceptionHandlers.toArray(new ExceptionConfig[0]);
   }
+
   @JacksonXmlProperty(localName = "exception")
   @JacksonXmlElementWrapper(useWrapping = false)
   private List<ExceptionConfig> localExceptionHandlers = new ArrayList<>();
@@ -237,7 +257,8 @@ public class ActionConfig {
   private @Nullable String type;
 
   private <T> @Nullable T getInheritedProperty(
-    Class<T> propType, Function<ActionConfig, T> getProp
+    Class<T> propType,
+    Function<ActionConfig, T> getProp
   ) {
     var selfValue = getProp.apply(this);
     if (selfValue != null) {
@@ -259,10 +280,13 @@ public class ActionConfig {
         return mapping;
       }
     }
-    throw new IllegalArgumentException(format(
-      "Failed to determine the parent action config [%s] of the action config [%s].",
-      inherit, path
-    ));
+    throw new IllegalArgumentException(
+      format(
+        "Failed to determine the parent action config [%s] of the action config [%s].",
+        inherit,
+        path
+      )
+    );
   }
 
   private boolean containsPlaceholder(@Nullable String prop) {
@@ -273,7 +297,10 @@ public class ActionConfig {
     return m.find();
   }
 
-  public @Nullable String interpolatePathParams(@Nullable String str, HttpServletRequest request) {
+  public @Nullable String interpolatePathParams(
+    @Nullable String str,
+    HttpServletRequest request
+  ) {
     if (str == null) {
       return null;
     }
@@ -281,19 +308,25 @@ public class ActionConfig {
       return str;
     }
     var i = new AtomicInteger(0);
-    var template = Pattern.compile("\\*(?!\\*)").matcher(path).replaceAll(m -> {
-      i.addAndGet(1);
-      return "{" + i + "}";
-    });
+    var template = Pattern.compile("\\*(?!\\*)")
+      .matcher(path)
+      .replaceAll(m -> {
+        i.addAndGet(1);
+        return "{" + i + "}";
+      });
     var prefix = moduleConfig.getPrefix();
-    var relPath = normalizeForwardPath(request.getRequestURI().substring(prefix.length()));
-    var pathParams = new AntPathMatcher().extractUriTemplateVariables(template, relPath);
+    var relPath = normalizeForwardPath(
+      request.getRequestURI().substring(prefix.length())
+    );
+    var pathParams = new AntPathMatcher()
+      .extractUriTemplateVariables(template, relPath);
     var interpolated = PATH_PARAMETER_REFERENCES.matcher(str).replaceAll(m -> {
       var paramName = m.group(1);
       return pathParams.get(paramName).replaceAll("\\.[0-9a-zA-Z]+$", "");
     });
     return interpolated;
   }
+
   private static final Pattern PATH_PARAMETER_REFERENCES = Pattern.compile(
     "(?!\\\\)\\{([0-9]+)}"
   );
@@ -306,15 +339,18 @@ public class ActionConfig {
     return resolvedActionClass;
   }
 
-  public Class<? extends Action> getActionClass(ServletActionContext actionContext) {
-    return doGetActionClass(interpolatePathParams(getType(), actionContext.getRequest()));
+  public Class<? extends Action> getActionClass(
+    ServletActionContext actionContext
+  ) {
+    return doGetActionClass(
+      interpolatePathParams(getType(), actionContext.getRequest())
+    );
   }
 
   private Class<? extends Action> doGetActionClass(@Nullable String type) {
-    if (type == null) throw new IllegalStateException(format(
-      "Failed to determine action class for action mapping [%s].",
-      path
-    ));
+    if (type == null) throw new IllegalStateException(
+      format("Failed to determine action class for action mapping [%s].", path)
+    );
     return classFor(type);
   }
 
@@ -331,7 +367,10 @@ public class ActionConfig {
     doRegisterAction(context, getActionClass());
   }
 
-  public void registerAction(GenericApplicationContext context, ServletActionContext actionContext) {
+  public void registerAction(
+    GenericApplicationContext context,
+    ServletActionContext actionContext
+  ) {
     var type = getType();
     if (type == null) {
       return;
@@ -343,7 +382,8 @@ public class ActionConfig {
   }
 
   private void doRegisterAction(
-    GenericApplicationContext context, Class<? extends Action> actionClass
+    GenericApplicationContext context,
+    Class<? extends Action> actionClass
   ) {
     var actions = context.getBeansOfType(actionClass);
     if (!actions.isEmpty()) {
@@ -361,24 +401,30 @@ public class ActionConfig {
   ) {
     registerAction(applicationContext);
     var actionUrl = getActionUrl().replaceAll("\\*", "{param:[-_a-zA-Z0-9]+}");
-    var mapping = RequestMappingInfo
-      .paths(actionUrl, actionUrl + ".do")
+    var mapping = RequestMappingInfo.paths(actionUrl, actionUrl + ".do")
       .methods(GET, POST)
       .produces(DEFAULT_RESPONSE_CONTENT_TYPES)
       .build();
 
-    mappings.registerMapping(mapping, new StrutsRequestHandler(
-      this,
-      requireNonNull(moduleConfig),
-      actionContext,
-      requestProcessor,
-      jspResourceHandler,
-      applicationContext
-    ), StrutsRequestHandler.HANDLE_REQUEST);
+    mappings.registerMapping(
+      mapping,
+      new StrutsRequestHandler(
+        this,
+        requireNonNull(moduleConfig),
+        actionContext,
+        requestProcessor,
+        jspResourceHandler,
+        applicationContext
+      ),
+      StrutsRequestHandler.HANDLE_REQUEST
+    );
   }
 
   private static final String[] DEFAULT_RESPONSE_CONTENT_TYPES = new String[] {
-    "text/html", "application/xhtml+xml", "application/xml", "text/plain"
+    "text/html",
+    "application/xhtml+xml",
+    "application/xml",
+    "text/plain",
   };
 
   /**
@@ -386,17 +432,20 @@ public class ActionConfig {
    * accessed, if any.
    */
   public String getScope() {
-    return requireNonNull(getInheritedProperty(String.class, it -> {
-      if (scope == null) {
-        return "request";
-      }
-      var isValidScope = "request".equals(scope) || "session".equals(scope);
-      if (!isValidScope) throw new IllegalArgumentException(
-        "Invalid scope name: "  + scope
-      );
-      return scope;
-    }));
+    return requireNonNull(
+      getInheritedProperty(String.class, it -> {
+        if (scope == null) {
+          return "request";
+        }
+        var isValidScope = "request".equals(scope) || "session".equals(scope);
+        if (!isValidScope) throw new IllegalArgumentException(
+          "Invalid scope name: " + scope
+        );
+        return scope;
+      })
+    );
   }
+
   @JacksonXmlProperty(localName = "scope", isAttribute = true)
   private @Nullable String scope;
 
@@ -407,6 +456,7 @@ public class ActionConfig {
   public boolean getValidate() {
     return validate != null && validate;
   }
+
   @JacksonXmlProperty(localName = "validate", isAttribute = true)
   private @Nullable Boolean validate;
 
@@ -416,9 +466,9 @@ public class ActionConfig {
    * specified and the input bean returns validation errors.
    */
   public @Nullable String getInput() {
-    return getInheritedProperty(
-      String.class, it -> it.input);
+    return getInheritedProperty(String.class, it -> it.input);
   }
+
   @JacksonXmlProperty(localName = "input", isAttribute = true)
   private @Nullable String input;
 
@@ -430,6 +480,7 @@ public class ActionConfig {
   public @Nullable String getAttribute() {
     return attribute == null ? name : attribute;
   }
+
   @JacksonXmlProperty(localName = "attribute", isAttribute = true)
   private @Nullable String attribute;
 
@@ -443,6 +494,7 @@ public class ActionConfig {
   public boolean isCancellable() {
     return cancellable != null && cancellable;
   }
+
   private @Nullable Boolean cancellable;
 
   @JacksonXmlElementWrapper(useWrapping = false)
@@ -474,22 +526,36 @@ public class ActionConfig {
     try {
       bindRequest(request, formBean);
     } catch (BindException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format(
-        "Failed to bind the parameters of the request for [%s] to the form bean [%s].",
-        getActionUrl(), getName(request)
-      ), e);
+      throw new ResponseStatusException(
+        HttpStatus.BAD_REQUEST,
+        format(
+          "Failed to bind the parameters of the request for [%s] to the form bean [%s].",
+          getActionUrl(),
+          getName(request)
+        ),
+        e
+      );
     }
     return formBean;
   }
 
-  private @Nullable ActionForm findForm(HttpServletRequest request, String name, String scope) {
+  private @Nullable ActionForm findForm(
+    HttpServletRequest request,
+    String name,
+    String scope
+  ) {
     if (scope.equals("session")) {
       return (ActionForm) request.getSession().getAttribute(name);
     }
     return (ActionForm) request.getAttribute(name);
   }
 
-  private void saveForm(HttpServletRequest request, String name, String scope, ActionForm bean) {
+  private void saveForm(
+    HttpServletRequest request,
+    String name,
+    String scope,
+    ActionForm bean
+  ) {
     request.setAttribute(Constants.BEAN_KEY, name);
     if (scope.equals("session")) {
       request.getSession().setAttribute(name, bean);

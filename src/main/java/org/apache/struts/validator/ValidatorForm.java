@@ -1,12 +1,11 @@
 package org.apache.struts.validator;
 
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.lang.Nullable;
 import springing.struts1.validator.ValidationUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *  This class extends `ActionForm` and provides basic field validation based
@@ -27,7 +26,11 @@ public class ValidatorForm extends ActionForm {
     ActionMapping mapping,
     HttpServletRequest request
   ) {
-    return ValidationUtils.validateRequest(mapping.getName(request), request, this);
+    return ValidationUtils.validateRequest(
+      mapping.getName(request),
+      request,
+      this
+    );
   }
 
   /**
@@ -36,8 +39,10 @@ public class ValidatorForm extends ActionForm {
   public @Nullable Integer getPage() {
     return page;
   }
+
   public void setPage(@Nullable Integer page) {
     this.page = page;
   }
+
   private @Nullable Integer page;
 }

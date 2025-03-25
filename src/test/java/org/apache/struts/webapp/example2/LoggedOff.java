@@ -19,9 +19,7 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,45 +30,37 @@ import org.apache.commons.logging.LogFactory;
 
 public class LoggedOff {
 
+  // ------------------------------------------------------ Instance Variables
 
-    // ------------------------------------------------------ Instance Variables
+  private static final Log log = LogFactory.getLog(LoggedOff.class);
 
+  // ----------------------------------------------------------------- Actions
 
-    private static final Log log = LogFactory.getLog(LoggedOff.class);
-
-
-    // ----------------------------------------------------------------- Actions
-
-
-    /**
-     * <p>Begin the process of registering a new user.</p>
-     */
-    public String register() {
-
-        /*
+  /**
+   * <p>Begin the process of registering a new user.</p>
+   */
+  public String register() {
+    /*
         FacesContext context = FacesContext.getCurrentInstance();
         if (log.isDebugEnabled()) {
             log.debug("register(" + context + ")");
         }
         forward(context, "/editRegistration.do?action=Create");
          */
-        return (null);
+    return (null);
+  }
 
-    }
-
-
-    /**
-     * <p>Begin the process of logging on.</p>
-     */
-    public String logon() {
-        /*
+  /**
+   * <p>Begin the process of logging on.</p>
+   */
+  public String logon() {
+    /*
         FacesContext context = FacesContext.getCurrentInstance();
         if (log.isDebugEnabled()) {
             log.debug("logon(" + context + ")");
         }
         forward(context, "/editLogon.do");
          */
-        return (null);
-
-    }
+    return (null);
+  }
 }

@@ -26,5 +26,4 @@ public interface PlugIn {
    * Receive notification that the specified module is being started up.
    */
   void init(ActionServlet servlet, ModuleConfig config) throws ServletException;
-
 }

@@ -1,15 +1,15 @@
 package org.apache.struts.taglib.html;
 
-import jakarta.servlet.jsp.JspException;
-import org.springframework.lang.Nullable;
-import springing.struts1.taglib.StrutsInputElementTagBase;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Collections.emptyIterator;
 import static org.springframework.util.StringUtils.hasText;
 import static springing.util.ObjectUtils.asIterator;
+
+import jakarta.servlet.jsp.JspException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.springframework.lang.Nullable;
+import springing.struts1.taglib.StrutsInputElementTagBase;
 
 /**
  * Renders an HTML input element of type checkbox, whose "checked" status is
@@ -63,15 +63,21 @@ public class MultiboxTag extends StrutsInputElementTagBase {
   }
 
   private boolean isChecked(@Nullable Object propertyValue) {
-    Iterator<?> iterator =
-      (propertyValue == null) ? emptyIterator() :
-      (propertyValue instanceof String str) ? List.of(str).iterator() :
-      (propertyValue instanceof List<?> list) ? list.iterator() :
-      propertyValue.getClass().isArray() ? asIterator(propertyValue) : null;
-    if (iterator == null) throw new IllegalStateException(String.format(
-      "The value of bounded property for the multibox tag should be an Array or List or String. but was [%s]",
-      propertyValue.getClass().getName()
-    ));
+    Iterator<?> iterator = (propertyValue == null)
+      ? emptyIterator()
+      : (propertyValue instanceof String str)
+        ? List.of(str).iterator()
+        : (propertyValue instanceof List<?> list)
+          ? list.iterator()
+          : propertyValue.getClass().isArray()
+            ? asIterator(propertyValue)
+            : null;
+    if (iterator == null) throw new IllegalStateException(
+      String.format(
+        "The value of bounded property for the multibox tag should be an Array or List or String. but was [%s]",
+        propertyValue.getClass().getName()
+      )
+    );
     var itemValue = getValue();
     while (iterator.hasNext()) {
       var item = iterator.next();
@@ -93,6 +99,7 @@ public class MultiboxTag extends StrutsInputElementTagBase {
     }
     return DEFAULT_VALUE_STRING;
   }
+
   private static final String DEFAULT_VALUE_STRING = "on";
 
   @Override

@@ -1,10 +1,10 @@
 package org.apache.struts.taglib.bean;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.lang.Nullable;
-import springing.struts1.taglib.SetTagBase;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.lang.Nullable;
+import springing.struts1.taglib.SetTagBase;
 
 /**
  * Define a scripting variable based on the value(s) of the specified request
@@ -21,14 +21,21 @@ public class HeaderTag extends SetTagBase<String> {
   private @Nullable String defaultValue;
 
   @Override
-  protected List<String> retrieveValues(HttpServletRequest request, String name) {
+  protected List<String> retrieveValues(
+    HttpServletRequest request,
+    String name
+  ) {
     var headers = request.getHeaders(name);
     if (headers == null) return List.of();
     return Collections.list(headers);
   }
 
   @Override
-  protected String getDefaultValue(HttpServletRequest request, String name, String defaultValueString) {
+  protected String getDefaultValue(
+    HttpServletRequest request,
+    String name,
+    String defaultValueString
+  ) {
     return defaultValueString;
   }
 }

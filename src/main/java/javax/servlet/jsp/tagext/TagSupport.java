@@ -1,11 +1,12 @@
 package javax.servlet.jsp.tagext;
 
-import org.springframework.lang.Nullable;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import org.springframework.lang.Nullable;
 
-public class TagSupport extends jakarta.servlet.jsp.tagext.TagSupport implements Tag {
+public class TagSupport
+  extends jakarta.servlet.jsp.tagext.TagSupport
+  implements Tag {
 
   public int doEndTag() throws JspException {
     try {

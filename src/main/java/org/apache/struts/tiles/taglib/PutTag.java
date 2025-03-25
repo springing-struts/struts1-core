@@ -1,19 +1,16 @@
 package org.apache.struts.tiles.taglib;
 
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.StringUtils.hasText;
 
 import jakarta.servlet.jsp.JspException;
+import java.util.Objects;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.tiles.config.TilesAttribute;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableReference;
-
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
-
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Put an attribute into tile/component/template context.
@@ -54,12 +51,11 @@ public class PutTag extends TagSupport {
   private @Nullable String value;
   private JspVariableReference ref;
 
-
   @Override
   public int doStartTag() throws JspException {
     var tilesDefinition = ServletActionContext.current().getTilesDefinition();
     var attribute = new TilesAttribute(getAttributeName(), getValue());
-    tilesDefinition.getAttributes().put(attribute.getName(),  attribute);
+    tilesDefinition.getAttributes().put(attribute.getName(), attribute);
     return super.doStartTag();
   }
 
@@ -78,8 +74,7 @@ public class PutTag extends TagSupport {
   }
 
   public String getValue() {
-    var v = (ref.getName() != null) ? ref.resolve(getPageContext())
-          : value;
+    var v = (ref.getName() != null) ? ref.resolve(getPageContext()) : value;
     return Objects.toString(v, "");
   }
 
@@ -100,7 +95,7 @@ public class PutTag extends TagSupport {
    * Content that's put into tile scope.
    * Synonym to value. Attribute added for compatibility with JSP Template.
    */
-  public void setContent(String content)  {
+  public void setContent(String content) {
     setValue(content);
   }
 
@@ -123,9 +118,7 @@ public class PutTag extends TagSupport {
    *     {@code <tiles:insert attribute="attributeName" />} tag, where
    *     'attributeName' is the name used for this tag.
    */
-  public void setType(String type) {
-
-  }
+  public void setType(String type) {}
 
   /**
    * Name of the bean used as value. Bean is retrieved from specified context,

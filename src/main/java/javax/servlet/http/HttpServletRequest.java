@@ -4,17 +4,17 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.lang.Nullable;
-
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.lang.Nullable;
 
-public interface HttpServletRequest extends javax.servlet.ServletRequest, jakarta.servlet.http.HttpServletRequest {
-
+public interface HttpServletRequest
+  extends
+    javax.servlet.ServletRequest, jakarta.servlet.http.HttpServletRequest {
   @Override
   HttpSession getSession();
 
@@ -25,24 +25,35 @@ public interface HttpServletRequest extends javax.servlet.ServletRequest, jakart
     throw new UnsupportedOperationException();
   }
 
-  static HttpServletRequest toJavaxNamespace(jakarta.servlet.ServletRequest request) {
-    if (request instanceof HttpServletRequest inJavaxNamespace && !Proxy.isProxyClass(request.getClass())) {
+  static HttpServletRequest toJavaxNamespace(
+    jakarta.servlet.ServletRequest request
+  ) {
+    if (
+      request instanceof HttpServletRequest inJavaxNamespace &&
+      !Proxy.isProxyClass(request.getClass())
+    ) {
       return inJavaxNamespace;
     }
     return new Wrapper((jakarta.servlet.http.HttpServletRequest) request);
   }
 
-  class Wrapper extends javax.servlet.ServletRequest.JavaxNamespaceWrapper implements HttpServletRequest {
+  class Wrapper
+    extends javax.servlet.ServletRequest.JavaxNamespaceWrapper
+    implements HttpServletRequest {
+
     public Wrapper(jakarta.servlet.http.HttpServletRequest request) {
       super(request);
       orig = request;
     }
+
     private final jakarta.servlet.http.HttpServletRequest orig;
 
     @Override
     public jakarta.servlet.http.HttpServletRequest unwrap() {
       if (Proxy.isProxyClass(orig.getClass())) {
-        return (jakarta.servlet.http.HttpServletRequest) AopProxyUtils.getSingletonTarget(orig);
+        return (jakarta.servlet.http.HttpServletRequest) AopProxyUtils.getSingletonTarget(
+          orig
+        );
       }
       return orig;
     }
@@ -174,7 +185,9 @@ public interface HttpServletRequest extends javax.servlet.ServletRequest, jakart
     }
 
     @Override
-    public boolean authenticate(jakarta.servlet.http.HttpServletResponse httpServletResponse) throws IOException, ServletException {
+    public boolean authenticate(
+      jakarta.servlet.http.HttpServletResponse httpServletResponse
+    ) throws IOException, ServletException {
       return orig.authenticate(httpServletResponse);
     }
 
@@ -199,7 +212,8 @@ public interface HttpServletRequest extends javax.servlet.ServletRequest, jakart
     }
 
     @Override
-    public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass) throws IOException, ServletException {
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass)
+      throws IOException, ServletException {
       return orig.upgrade(aClass);
     }
   }

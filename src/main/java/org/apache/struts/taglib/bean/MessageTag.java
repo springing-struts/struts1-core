@@ -9,7 +9,8 @@ import springing.struts1.taglib.DelegatingTagBase;
  * object stored as a context attribute by our associated `ActionServlet`
  * implementation.
  */
-public class MessageTag extends DelegatingTagBase<org.springframework.web.servlet.tags.MessageTag> {
+public class MessageTag
+  extends DelegatingTagBase<org.springframework.web.servlet.tags.MessageTag> {
 
   public MessageTag() {
     super(new org.springframework.web.servlet.tags.MessageTag());

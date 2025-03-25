@@ -1,13 +1,11 @@
 package springing.struts1.controller;
 
-import org.apache.struts.Globals;
-import org.springframework.lang.Nullable;
-
-import javax.servlet.http.HttpServletRequest;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts.Globals;
+import org.springframework.lang.Nullable;
 
 public class RequestTokenManager {
 

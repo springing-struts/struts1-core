@@ -4,7 +4,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.descriptor.JspConfigDescriptor;
-
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,9 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ServletContext extends jakarta.servlet.ServletContext {
-  static ServletContext toJavaxNamespace(jakarta.servlet.ServletContext jakarta) {
+  static ServletContext toJavaxNamespace(
+    jakarta.servlet.ServletContext jakarta
+  ) {
     return new ServletContext() {
-
       @Override
       public String getContextPath() {
         return jakarta.getContextPath();
@@ -138,27 +138,40 @@ public interface ServletContext extends jakarta.servlet.ServletContext {
       }
 
       @Override
-      public ServletRegistration.Dynamic addServlet(String servletName, String className) {
+      public ServletRegistration.Dynamic addServlet(
+        String servletName,
+        String className
+      ) {
         return jakarta.addServlet(servletName, className);
       }
 
       @Override
-      public ServletRegistration.Dynamic addServlet(String servletName, Servlet servlet) {
+      public ServletRegistration.Dynamic addServlet(
+        String servletName,
+        Servlet servlet
+      ) {
         return jakarta.addServlet(servletName, servlet);
       }
 
       @Override
-      public ServletRegistration.Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
+      public ServletRegistration.Dynamic addServlet(
+        String servletName,
+        Class<? extends Servlet> servletClass
+      ) {
         return jakarta.addServlet(servletName, servletClass);
       }
 
       @Override
-      public ServletRegistration.Dynamic addJspFile(String jspName, String jspFile) {
+      public ServletRegistration.Dynamic addJspFile(
+        String jspName,
+        String jspFile
+      ) {
         return jakarta.addJspFile(jspName, jspFile);
       }
 
       @Override
-      public <T extends Servlet> T createServlet(Class<T> c) throws ServletException {
+      public <T extends Servlet> T createServlet(Class<T> c)
+        throws ServletException {
         return jakarta.createServlet(c);
       }
 
@@ -168,27 +181,40 @@ public interface ServletContext extends jakarta.servlet.ServletContext {
       }
 
       @Override
-      public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+      public Map<
+        String,
+        ? extends ServletRegistration
+      > getServletRegistrations() {
         return jakarta.getServletRegistrations();
       }
 
       @Override
-      public FilterRegistration.Dynamic addFilter(String filterName, String className) {
+      public FilterRegistration.Dynamic addFilter(
+        String filterName,
+        String className
+      ) {
         return jakarta.addFilter(filterName, className);
       }
 
       @Override
-      public FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
+      public FilterRegistration.Dynamic addFilter(
+        String filterName,
+        Filter filter
+      ) {
         return jakarta.addFilter(filterName, filter);
       }
 
       @Override
-      public FilterRegistration.Dynamic addFilter(String filterName, Class<? extends Filter> filterClass) {
+      public FilterRegistration.Dynamic addFilter(
+        String filterName,
+        Class<? extends Filter> filterClass
+      ) {
         return jakarta.addFilter(filterName, filterClass);
       }
 
       @Override
-      public <T extends Filter> T createFilter(Class<T> c) throws ServletException {
+      public <T extends Filter> T createFilter(Class<T> c)
+        throws ServletException {
         return jakarta.createFilter(c);
       }
 
@@ -198,7 +224,10 @@ public interface ServletContext extends jakarta.servlet.ServletContext {
       }
 
       @Override
-      public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+      public Map<
+        String,
+        ? extends FilterRegistration
+      > getFilterRegistrations() {
         return jakarta.getFilterRegistrations();
       }
 
@@ -208,7 +237,9 @@ public interface ServletContext extends jakarta.servlet.ServletContext {
       }
 
       @Override
-      public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes) {
+      public void setSessionTrackingModes(
+        Set<SessionTrackingMode> sessionTrackingModes
+      ) {
         jakarta.setSessionTrackingModes(sessionTrackingModes);
       }
 
@@ -238,7 +269,8 @@ public interface ServletContext extends jakarta.servlet.ServletContext {
       }
 
       @Override
-      public <T extends EventListener> T createListener(Class<T> c) throws ServletException {
+      public <T extends EventListener> T createListener(Class<T> c)
+        throws ServletException {
         return jakarta.createListener(c);
       }
 

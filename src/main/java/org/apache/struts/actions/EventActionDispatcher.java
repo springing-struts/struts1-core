@@ -1,12 +1,11 @@
 package org.apache.struts.actions;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.lang.Nullable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * An Action helper class that dispatches to one of the public methods that
@@ -60,6 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * }</pre>
  */
 public class EventActionDispatcher extends ActionDispatcher {
+
   public EventActionDispatcher(Action action) {
     super(action, ActionDispatcher.MAPPING_FLAVOR);
   }

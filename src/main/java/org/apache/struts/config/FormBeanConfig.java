@@ -1,11 +1,22 @@
 package org.apache.struts.config;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static springing.util.ObjectUtils.classFor;
+import static springing.util.ObjectUtils.createInstanceOf;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import jakarta.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.DynaActionForm;
 import org.apache.struts.action.DynaActionFormClass;
@@ -15,23 +26,15 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.DataBinder;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static springing.util.ObjectUtils.classFor;
-import static springing.util.ObjectUtils.createInstanceOf;
-
 /**
  * A JavaBean representing the configuration information of a `form-bean`
  * element in a Struts configuration file.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.CLASS,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "class"
+)
 public class FormBeanConfig {
 
   @JsonBackReference
@@ -54,6 +57,7 @@ public class FormBeanConfig {
   public String getName() {
     return name;
   }
+
   @JacksonXmlProperty(localName = "name", isAttribute = true)
   private String name;
 
@@ -64,12 +68,13 @@ public class FormBeanConfig {
   public String getType() {
     return getFormClass().getName();
   }
+
   public Class<? extends ActionForm> getFormClass() {
-    return requireNonNull(
-      getInheritedProperty(Class.class, it -> it.type)
-    );
+    return requireNonNull(getInheritedProperty(Class.class, it -> it.type));
   }
+
   private Class<? extends ActionForm> type;
+
   @JacksonXmlProperty(localName = "type", isAttribute = true)
   private void setType(String type) {
     this.type = classFor(type);
@@ -94,6 +99,7 @@ public class FormBeanConfig {
     }
     return props;
   }
+
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "form-property")
   private List<FormPropertyConfig> formProperties = new ArrayList<>();
@@ -128,7 +134,8 @@ public class FormBeanConfig {
   }
 
   private <T> @Nullable T getInheritedProperty(
-    Class<T> propType, Function<FormBeanConfig, T> getProp
+    Class<T> propType,
+    Function<FormBeanConfig, T> getProp
   ) {
     var selfValue = getProp.apply(this);
     if (selfValue != null) {
@@ -150,9 +157,12 @@ public class FormBeanConfig {
         return mapping;
       }
     }
-    throw new IllegalArgumentException(format(
-      "Unknown parent form bean config name [%s] of the form bean config [%s].",
-      inherit, name
-    ));
+    throw new IllegalArgumentException(
+      format(
+        "Unknown parent form bean config name [%s] of the form bean config [%s].",
+        inherit,
+        name
+      )
+    );
   }
 }

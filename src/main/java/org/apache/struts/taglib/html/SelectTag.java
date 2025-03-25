@@ -1,12 +1,12 @@
 package org.apache.struts.taglib.html;
 
-import jakarta.servlet.jsp.JspException;
-import org.springframework.lang.Nullable;
-import springing.struts1.taglib.StrutsInputElementTagBase;
-import java.util.Map;
-
 import static java.util.Collections.emptyIterator;
 import static springing.util.ObjectUtils.asIterator;
+
+import jakarta.servlet.jsp.JspException;
+import java.util.Map;
+import org.springframework.lang.Nullable;
+import springing.struts1.taglib.StrutsInputElementTagBase;
 
 /**
  * Render A Select Element.
@@ -102,7 +102,7 @@ public class SelectTag extends StrutsInputElementTagBase {
 
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
-    var attrs =  super.getAdditionalAttributes();
+    var attrs = super.getAdditionalAttributes();
     attrs.put("multiple", multiple ? "multiple" : null);
     attrs.put("size", size == null ? null : size.toString());
     attrs.put("value", null);

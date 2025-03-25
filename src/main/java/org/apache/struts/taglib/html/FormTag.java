@@ -1,13 +1,12 @@
 package org.apache.struts.taglib.html;
 
+import static org.apache.struts.taglib.html.Constants.BEAN_KEY;
+
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsHtmlElementTagBase;
-
-import java.util.Map;
-
-import static org.apache.struts.taglib.html.Constants.BEAN_KEY;
 
 /**
  * Define An Input Form.
@@ -19,6 +18,7 @@ import static org.apache.struts.taglib.html.Constants.BEAN_KEY;
  * specification for the associated `ActionMapping`.
  */
 public class FormTag extends StrutsHtmlElementTagBase {
+
   public FormTag() {
     init();
   }
@@ -46,7 +46,7 @@ public class FormTag extends StrutsHtmlElementTagBase {
   }
 
   private @Nullable String action;
-  private @Nullable String  formName;
+  private @Nullable String formName;
   private String method = DEFAULT_METHOD;
   private @Nullable String enctype;
   private @Nullable String acceptCharset;
@@ -107,6 +107,7 @@ public class FormTag extends StrutsHtmlElementTagBase {
   public void setMethod(String method) {
     this.method = method;
   }
+
   private static final String DEFAULT_METHOD = "post";
 
   /**

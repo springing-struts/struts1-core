@@ -1,6 +1,8 @@
 package org.apache.struts.validator.validwhen;
 
 import jakarta.el.*;
+import java.math.BigDecimal;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.ValidatorAction;
@@ -8,14 +10,12 @@ import org.apache.struts.action.ActionMessages;
 import org.springframework.lang.Nullable;
 import springing.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-
 /**
  * This class contains the `validwhen` validation that is used in the
  * `validator-rules.xml` file.
  */
 public class ValidWhen {
+
   private ValidWhen() {}
 
   /**
@@ -32,7 +32,9 @@ public class ValidWhen {
   ) {
     var expression = translateToEL(field.getRequiredVarValue("test"));
     var processor = new ELProcessor();
-    processor.getELManager().addBeanNameResolver(new FieldValueResolver(field, bean));
+    processor
+      .getELManager()
+      .addBeanNameResolver(new FieldValueResolver(field, bean));
     boolean isValid = processor.eval(expression);
     if (isValid) {
       return true;
@@ -62,7 +64,9 @@ public class ValidWhen {
 
     @Override
     public @Nullable Object getBean(String beanName) {
-      var propName = beanName.equals("__this__") ? field.getProperty() : beanName;
+      var propName = beanName.equals("__this__")
+        ? field.getProperty()
+        : beanName;
       var value = ObjectUtils.retrieveValue(bean, propName);
       if (value instanceof String str) {
         if (str.isEmpty()) {

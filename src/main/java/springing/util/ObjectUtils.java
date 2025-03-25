@@ -1,18 +1,14 @@
 package springing.util;
 
+import static java.lang.String.format;
+import static springing.util.StringUtils.lowerCamelize;
+
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.struts.action.ActionMessages;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.lang.Nullable;
-import javax.xml.stream.*;
 import java.beans.FeatureDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,23 +20,32 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static java.lang.String.format;
-import static springing.util.StringUtils.lowerCamelize;
+import javax.xml.stream.*;
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.struts.action.ActionMessages;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.lang.Nullable;
 
 public class ObjectUtils {
+
   private ObjectUtils() {}
 
   private static XmlMapper initializeXmlMapper() {
     var module = new JacksonXmlModule();
-    module.addDeserializer(String.class, new StdScalarDeserializer<String>(String.class) {
-      @Override
-      public String deserialize(
-        JsonParser jsonParser, DeserializationContext deserializationContext
-      ) throws IOException, JacksonException {
-        return jsonParser.getValueAsString().trim();
+    module.addDeserializer(
+      String.class,
+      new StdScalarDeserializer<String>(String.class) {
+        @Override
+        public String deserialize(
+          JsonParser jsonParser,
+          DeserializationContext deserializationContext
+        ) throws IOException, JacksonException {
+          return jsonParser.getValueAsString().trim();
+        }
       }
-    });
+    );
     var mapper = new XmlMapper(module);
     var factory = mapper.getFactory().getXMLInputFactory();
     factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
@@ -55,14 +60,20 @@ public class ObjectUtils {
   }
 
   public static <T> T createInstanceOf(Class<T> clazz) {
-    return createInstanceOf(clazz,null);
+    return createInstanceOf(clazz, null);
   }
 
-  public static <T> T createInstanceOf(String fqn, @Nullable Map<String, ?> props) {
+  public static <T> T createInstanceOf(
+    String fqn,
+    @Nullable Map<String, ?> props
+  ) {
     return createInstanceOf(classFor(fqn), props);
   }
 
-  public static <T> T createInstanceOf(Class<T> clazz, @Nullable Map<String, ?> props) {
+  public static <T> T createInstanceOf(
+    Class<T> clazz,
+    @Nullable Map<String, ?> props
+  ) {
     return createInstanceOf(clazz, List.of(), List.of(), props);
   }
 
@@ -73,15 +84,23 @@ public class ObjectUtils {
     @Nullable Map<String, ?> props
   ) {
     try {
-      var constructor = clazz.getDeclaredConstructor(constructorArgTypes.toArray(new Class[0]));
+      var constructor = clazz.getDeclaredConstructor(
+        constructorArgTypes.toArray(new Class[0])
+      );
       constructor.setAccessible(true);
-      var instance = constructor.newInstance(constructorArgs.toArray(new Object[0]));
+      var instance = constructor.newInstance(
+        constructorArgs.toArray(new Object[0])
+      );
       if (props != null) {
         setProperties(instance, props);
       }
       return instance;
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-             NoSuchMethodException e) {
+    } catch (
+      InstantiationException
+      | IllegalAccessException
+      | InvocationTargetException
+      | NoSuchMethodException e
+    ) {
       throw new RuntimeException(e);
     }
   }
@@ -100,17 +119,22 @@ public class ObjectUtils {
     });
     if (bean instanceof DynaBean dynaBean) {
       setPropertiesToDynaBean(dynaBean, normalizedProps);
-    } else{
+    } else {
       setPropertiesToBean(bean, normalizedProps);
     }
   }
 
-  private static void setPropertiesToDynaBean(DynaBean bean, Map<String, ?> props) {
+  private static void setPropertiesToDynaBean(
+    DynaBean bean,
+    Map<String, ?> props
+  ) {
     props.forEach(bean::set);
   }
 
   private static void setPropertiesToBean(Object bean, Map<String, ?> props) {
-    var descriptors = Arrays.asList(BeanUtils.getPropertyDescriptors(bean.getClass()));
+    var descriptors = Arrays.asList(
+      BeanUtils.getPropertyDescriptors(bean.getClass())
+    );
     var names = descriptors.stream().map(FeatureDescriptor::getName).toList();
     var declaredProps = new HashMap<String, Object>();
     props.forEach((key, value) -> {
@@ -122,13 +146,15 @@ public class ObjectUtils {
       if (clearCheckboxKey.isEmpty()) {
         return;
       }
-      var checkboxCleared = descriptors.stream().anyMatch(d -> {
-        if (!clearCheckboxKey.equals(d.getName())) {
-          return false;
-        }
-        var type = d.getPropertyType();
-        return type.equals(Boolean.class) || type.equals(boolean.class);
-      });
+      var checkboxCleared = descriptors
+        .stream()
+        .anyMatch(d -> {
+          if (!clearCheckboxKey.equals(d.getName())) {
+            return false;
+          }
+          var type = d.getPropertyType();
+          return type.equals(Boolean.class) || type.equals(boolean.class);
+        });
       if (checkboxCleared) {
         declaredProps.put(clearCheckboxKey, false);
       }
@@ -219,9 +245,13 @@ public class ObjectUtils {
 
   private static Method getAccessor(Object bean, String name) {
     var propDesc = BeanUtils.getPropertyDescriptor(bean.getClass(), name);
-    if (propDesc == null) throw new IllegalArgumentException(format(
-      "Unknown property [%s] of the bean class [%s]." , name, bean.getClass().getName()
-    ));
+    if (propDesc == null) throw new IllegalArgumentException(
+      format(
+        "Unknown property [%s] of the bean class [%s].",
+        name,
+        bean.getClass().getName()
+      )
+    );
     return propDesc.getReadMethod();
   }
 
@@ -236,9 +266,7 @@ public class ObjectUtils {
     }
   }
 
-  public static @Nullable Integer getSize(
-    @Nullable Object items
-  ) {
+  public static @Nullable Integer getSize(@Nullable Object items) {
     if (items == null) {
       return null;
     }
@@ -261,10 +289,12 @@ public class ObjectUtils {
       }
       return count;
     }
-    throw new IllegalArgumentException(format(
-      "It is impossible to count the size of given object of type [%s].",
-      clazz.getCanonicalName()
-    ));
+    throw new IllegalArgumentException(
+      format(
+        "It is impossible to count the size of given object of type [%s].",
+        clazz.getCanonicalName()
+      )
+    );
   }
 
   public static boolean isEmpty(@Nullable Object value) {
@@ -277,7 +307,7 @@ public class ObjectUtils {
     if (value instanceof Collection<?> collection) {
       return collection.isEmpty();
     }
-    if (value instanceof Map<?,?> map) {
+    if (value instanceof Map<?, ?> map) {
       return map.isEmpty();
     }
     if (value instanceof Iterator<?> itr) {
@@ -306,14 +336,16 @@ public class ObjectUtils {
         }
       }
     }
-    throw new IllegalArgumentException(format(
-      "Index access is not allowed for the type [%s].",
-      clazz.getCanonicalName()
-    ));
+    throw new IllegalArgumentException(
+      format(
+        "Index access is not allowed for the type [%s].",
+        clazz.getCanonicalName()
+      )
+    );
   }
 
   public static final Pattern INDEXED_PROPERTY = Pattern.compile(
-      "^([_a-zA-Z][_a-zA-Z0-9]*)\\[([0-9]+)]$"
+    "^([_a-zA-Z][_a-zA-Z0-9]*)\\[([0-9]+)]$"
   );
 
   public static Iterator<?> asIterator(Object value) {
@@ -327,10 +359,13 @@ public class ObjectUtils {
   ) {
     var from = offset == null ? 0 : offset.intValue();
     var to = maxSize == null ? Integer.MAX_VALUE : (from + maxSize.intValue());
-    if (from < 0 || from > to) throw new IllegalArgumentException(format(
-      "MaxSize and offset can not be negative: maxSize [%s], offset [%s]. ",
-      maxSize, offset
-    ));
+    if (from < 0 || from > to) throw new IllegalArgumentException(
+      format(
+        "MaxSize and offset can not be negative: maxSize [%s], offset [%s]. ",
+        maxSize,
+        offset
+      )
+    );
     if (from == to) {
       return Collections.emptyIterator();
     }
@@ -367,19 +402,25 @@ public class ObjectUtils {
   }
 
   private static <T> Iterator<T> subIterator(
-    Iterator<T> original, int from, int to
+    Iterator<T> original,
+    int from,
+    int to
   ) {
     if (from >= to) {
       return Collections.emptyIterator();
     }
     return new Iterator<T>() {
       private long index = 0;
-      {{
-        while (index < from && original.hasNext()) {
-          original.next();
-          index++;
+
+      {
+        {
+          while (index < from && original.hasNext()) {
+            original.next();
+            index++;
+          }
         }
-      }}
+      }
+
       @Override
       public boolean hasNext() {
         if (index >= to) {
@@ -402,8 +443,10 @@ public class ObjectUtils {
 
   @FunctionalInterface
   public interface XmlPreprocessor {
-    void preprocess(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException;
+    void preprocess(XMLStreamReader reader, XMLStreamWriter writer)
+      throws XMLStreamException;
   }
+
   public static <T> T parseConfigFileAt(
     String resourceClassPath,
     Class<T> clazz
@@ -421,14 +464,15 @@ public class ObjectUtils {
       return XML_MAPPER.readValue(preprocessXml(preprocessor, in), clazz);
     } catch (IOException e) {
       throw new IllegalStateException(
-        "Failed to load a configuration file at [" +
-        resourceClassPath + "].", e
+        "Failed to load a configuration file at [" + resourceClassPath + "].",
+        e
       );
     }
   }
 
   private static InputStream preprocessXml(
-    @Nullable XmlPreprocessor preprocessor, InputStream in
+    @Nullable XmlPreprocessor preprocessor,
+    InputStream in
   ) {
     if (preprocessor == null) return in;
     XMLStreamReader reader = null;

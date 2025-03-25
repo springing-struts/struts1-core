@@ -1,15 +1,14 @@
 package org.apache.struts.action;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.BiConsumer;
 import org.apache.commons.validator.Arg;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.ValidatorAction;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  *  A class that encapsulates messages.
@@ -24,11 +23,13 @@ import java.util.function.BiConsumer;
  *    required for access to internal collections.
  */
 public class ActionMessages {
+
   /**
    * The "property name" marker to use for global messages, as opposed to those
    * related to a specific property.
    */
-  public static final String GLOBAL_MESSAGE = "org.apache.struts.action.GLOBAL_MESSAGE";
+  public static final String GLOBAL_MESSAGE =
+    "org.apache.struts.action.GLOBAL_MESSAGE";
 
   private final MultiValueMap<String, ActionMessage> messages;
 
@@ -68,9 +69,7 @@ public class ActionMessages {
     messages.addAll(actionMessages.messages);
   }
 
-  public void addValidationError(
-    Field field, ValidatorAction validator
-  ) {
+  public void addValidationError(Field field, ValidatorAction validator) {
     add(field.getProperty(), field.getActionMessageFor(validator));
   }
 
@@ -95,10 +94,7 @@ public class ActionMessages {
    * recorded, an empty enumeration is returned.
    */
   public List<ActionMessage> get() {
-    return messages
-      .values().stream()
-      .flatMap(Collection::stream)
-      .toList();
+    return messages.values().stream().flatMap(Collection::stream).toList();
   }
 
   /**
@@ -140,10 +136,7 @@ public class ActionMessages {
    *   there are any messages at all.
    */
   public int size() {
-    return messages
-      .values().stream()
-      .map(List::size)
-      .reduce(0, Integer::sum);
+    return messages.values().stream().map(List::size).reduce(0, Integer::sum);
   }
 
   /**

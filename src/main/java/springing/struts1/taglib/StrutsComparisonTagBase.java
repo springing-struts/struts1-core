@@ -1,10 +1,11 @@
 package springing.struts1.taglib;
 
+import java.math.BigDecimal;
 import org.springframework.lang.Nullable;
 
-import java.math.BigDecimal;
-
-public abstract class StrutsComparisonTagBase extends StrutsConditionalTagBase implements JspVariableAware {
+public abstract class StrutsComparisonTagBase
+  extends StrutsConditionalTagBase
+  implements JspVariableAware {
 
   public StrutsComparisonTagBase() {
     init();

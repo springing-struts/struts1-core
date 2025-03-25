@@ -1,17 +1,16 @@
 package org.apache.struts.action;
 
+import static java.util.Objects.requireNonNullElse;
+
 import jakarta.servlet.http.HttpServlet;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import org.apache.struts.Globals;
 import org.apache.struts.config.ModuleConfigBean;
 import org.springframework.lang.Nullable;
 import springing.struts1.configuration.ServletConfigBean;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import java.util.HashMap;
-import java.util.List;
-
-import static java.util.Objects.requireNonNullElse;
 
 /**
  * Dummy implementation of a Struts Action Servlet for Action classes which
@@ -31,7 +30,10 @@ public class ActionServlet extends HttpServlet {
   }
 
   public void setServletContext(jakarta.servlet.ServletContext servletContext) {
-    servletContext.setAttribute(Globals.SERVLET_KEY, servletConfig.getUrlPattern());
+    servletContext.setAttribute(
+      Globals.SERVLET_KEY,
+      servletConfig.getUrlPattern()
+    );
     servletConfig.setServletContext(
       ServletContext.toJavaxNamespace(servletContext)
     );
@@ -42,9 +44,7 @@ public class ActionServlet extends HttpServlet {
   }
 
   public int getLoadOnStartup() {
-    return requireNonNullElse(
-      servletConfig.getLoadOnStartup(),1
-    );
+    return requireNonNullElse(servletConfig.getLoadOnStartup(), 1);
   }
 
   public List<ModuleConfigBean> getStrutsModules() {
@@ -60,9 +60,11 @@ public class ActionServlet extends HttpServlet {
     var results = new HashMap<String, ModuleConfigBean>();
     var params = servletConfig.getInitParams();
     params.forEach((name, value) -> {
-      var moduleName = "config".equals(name) ? ""
-        : name.startsWith("config/") ? name.substring("config/".length())
-        : null;
+      var moduleName = "config".equals(name)
+        ? ""
+        : name.startsWith("config/")
+          ? name.substring("config/".length())
+          : null;
       if (moduleName == null) {
         return;
       }
@@ -73,7 +75,10 @@ public class ActionServlet extends HttpServlet {
         if (existingConfig != null) {
           existingConfig.merge(config);
         }
-        results.put(config.getPrefix(), existingConfig != null ? existingConfig : config);
+        results.put(
+          config.getPrefix(),
+          existingConfig != null ? existingConfig : config
+        );
       }
     });
     return results.values().stream().toList();

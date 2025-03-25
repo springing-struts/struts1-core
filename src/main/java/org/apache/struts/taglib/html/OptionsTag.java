@@ -1,10 +1,11 @@
 package org.apache.struts.taglib.html;
 
+import static springing.util.ObjectUtils.asIterator;
+
+import java.util.Iterator;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableReference;
 import springing.struts1.taglib.StrutsOptionsTagBase;
-import java.util.Iterator;
-import static springing.util.ObjectUtils.asIterator;
 
 /**
  * Render a Collection of Select Options.

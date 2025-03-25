@@ -1,16 +1,15 @@
 package org.apache.struts.taglib.bean;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
 import springing.util.ObjectUtils;
-
-import javax.servlet.jsp.PageContext;
-
-import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Define a scripting variable based on the value(s) of the specified bean
@@ -105,10 +104,14 @@ public class DefineTag extends SetSupport implements JspVariableAware {
 
   @Override
   public int doEndTag() throws JspException {
-    var value = isValueAssigned ? assignedValue
-              : hasText(ref.getName()) ? resolveValue(PageContext.toJavaxNamespace(pageContext))
-              : getBodyContent().getString();
-    this.value = type == null ? value : ServletActionContext.current().convertValue(value, type);
+    var value = isValueAssigned
+      ? assignedValue
+      : hasText(ref.getName())
+        ? resolveValue(PageContext.toJavaxNamespace(pageContext))
+        : getBodyContent().getString();
+    this.value = type == null
+      ? value
+      : ServletActionContext.current().convertValue(value, type);
     return super.doEndTag();
   }
 

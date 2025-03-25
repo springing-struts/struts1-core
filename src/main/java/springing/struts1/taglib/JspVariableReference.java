@@ -1,16 +1,15 @@
 package springing.struts1.taglib;
 
-import org.springframework.lang.Nullable;
-
-import javax.servlet.jsp.PageContext;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import static jakarta.servlet.jsp.PageContext.*;
 import static java.lang.String.format;
 import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
 import static org.springframework.util.StringUtils.hasText;
 import static springing.util.ObjectUtils.setProperties;
+
+import java.util.Map;
+import java.util.regex.Pattern;
+import javax.servlet.jsp.PageContext;
+import org.springframework.lang.Nullable;
 
 /**
  * A class that represents a reference to a variable or property in a JSP context.
@@ -29,8 +28,7 @@ public class JspVariableReference {
   }
 
   // Private constructor to prevent direct instantiation.
-  private JspVariableReference() {
-  }
+  private JspVariableReference() {}
 
   /**
    * Gets the name of the object reference.
@@ -46,7 +44,9 @@ public class JspVariableReference {
    */
   public void setName(@Nullable String name) {
     if (name != null && !PROPERTY_PATH.asMatchPredicate().test(name)) {
-      throw new IllegalArgumentException("Invalid object reference name: " + name);
+      throw new IllegalArgumentException(
+        "Invalid object reference name: " + name
+      );
     }
     this.name = name;
   }
@@ -67,7 +67,9 @@ public class JspVariableReference {
    */
   public void setProperty(@Nullable String property) {
     if (property != null && !PROPERTY_PATH.asMatchPredicate().test(property)) {
-      throw new IllegalArgumentException("Invalid object property path: " + property);
+      throw new IllegalArgumentException(
+        "Invalid object property path: " + property
+      );
     }
     this.property = property;
   }
@@ -132,9 +134,9 @@ public class JspVariableReference {
         return;
       }
     }
-    throw new IllegalArgumentException(format(
-      "Invalid scope name: [%s].", scope
-    ));
+    throw new IllegalArgumentException(
+      format("Invalid scope name: [%s].", scope)
+    );
   }
 
   private @Nullable Integer scope;
@@ -174,9 +176,13 @@ public class JspVariableReference {
       return;
     }
     var bean = resolveValueOnScope(name, null, awareNestedTag, context, scope);
-    if (bean == null) throw new IllegalArgumentException(format(
-      "Failed to set property [%s] because bean [%s] was null.", property, name
-    ));
+    if (bean == null) throw new IllegalArgumentException(
+      format(
+        "Failed to set property [%s] because bean [%s] was null.",
+        property,
+        name
+      )
+    );
     setProperties(bean, Map.of(property, value));
   }
 
@@ -184,7 +190,8 @@ public class JspVariableReference {
    * A regular expression pattern that defines the valid structure of a property path.
    * The property path can consist of identifiers (e.g., object.property) and array indexes (e.g., object.property[0]).
    */
-  private static final String PROPERTY_NODE = "[_a-zA-Z][_a-zA-Z0-9]*(\\[(0|[1-9][0-9]*)])?";
+  private static final String PROPERTY_NODE =
+    "[_a-zA-Z][_a-zA-Z0-9]*(\\[(0|[1-9][0-9]*)])?";
   private static final Pattern PROPERTY_PATH = Pattern.compile(
     "^" + PROPERTY_NODE + "(\\." + PROPERTY_NODE + ")*$"
   );

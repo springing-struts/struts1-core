@@ -3,11 +3,10 @@ package org.apache.struts.tiles.config;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.springframework.lang.Nullable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 /**
  * The "tiles-definitions" element is the root of the configuration file
@@ -25,11 +24,14 @@ public class TilesDefinitions {
     }
   }
 
-  public @Nullable TilesDefinition getTilesDefinitionByName(String definitionName) {
+  public @Nullable TilesDefinition getTilesDefinitionByName(
+    String definitionName
+  ) {
     return tilesDefinitionsByName.get(definitionName);
   }
 
-  private final Map<String, TilesDefinition> tilesDefinitionsByName = new HashMap<>();
+  private final Map<String, TilesDefinition> tilesDefinitionsByName =
+    new HashMap<>();
 
   public void merge(TilesDefinitions another) {
     tilesDefinitionsByName.putAll(another.tilesDefinitionsByName);

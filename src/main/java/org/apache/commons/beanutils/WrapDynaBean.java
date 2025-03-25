@@ -1,9 +1,8 @@
 package org.apache.commons.beanutils;
 
+import java.util.*;
 import org.springframework.beans.BeanUtils;
 import springing.util.BeanMap;
-
-import java.util.*;
 
 public class WrapDynaBean implements MapBackedDynaBean {
 
@@ -15,7 +14,10 @@ public class WrapDynaBean implements MapBackedDynaBean {
       var prop = new DynaProperty(d.getName(), d.getPropertyType());
       properties.add(prop);
     }
-    dynaClass = new DefaultDynaClass(className, properties.toArray(DynaProperty[]::new));
+    dynaClass = new DefaultDynaClass(
+      className,
+      properties.toArray(DynaProperty[]::new)
+    );
     values = new BeanMap(bean);
   }
 

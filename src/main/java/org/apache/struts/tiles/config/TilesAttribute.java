@@ -10,8 +10,11 @@ import org.springframework.lang.Nullable;
  *  specified as an xml attribute, or in the body of the `put` tag.
  */
 public class TilesAttribute {
+
   public TilesAttribute(
-    @JacksonXmlProperty(isAttribute = true, localName = "name") @JsonAlias("content") String name,
+    @JacksonXmlProperty(isAttribute = true, localName = "name") @JsonAlias(
+      "content"
+    ) String name,
     @JacksonXmlProperty(isAttribute = true, localName = "value") String value
   ) {
     this.name = name;
@@ -24,6 +27,7 @@ public class TilesAttribute {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
@@ -33,6 +37,7 @@ public class TilesAttribute {
   public String getValue() {
     return value;
   }
+
   private final String value;
 
   /**

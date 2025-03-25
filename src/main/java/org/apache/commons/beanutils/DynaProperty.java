@@ -1,17 +1,16 @@
 package org.apache.commons.beanutils;
 
-import org.springframework.beans.SimpleTypeConverter;
-import org.springframework.beans.TypeConverter;
-import org.springframework.lang.Nullable;
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNullElse;
+import static springing.util.ObjectUtils.classFor;
 
 import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
-import static springing.util.ObjectUtils.classFor;
+import org.springframework.beans.SimpleTypeConverter;
+import org.springframework.beans.TypeConverter;
+import org.springframework.lang.Nullable;
 
 public class DynaProperty {
 
@@ -39,21 +38,25 @@ public class DynaProperty {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
    * The Java class representing the data type of the underlying property values.
    */
   public Class<?> getType() {
-    return requireNonNullElse(type, String.class) ;
+    return requireNonNullElse(type, String.class);
   }
+
   private @Nullable Class<?> type;
 
   /**
    * Returns whether this property represents an indexed value (ie an array or List).
    */
   public boolean isIndexed() {
-    return lazy || getType().isArray() || List.class.isAssignableFrom(getType());
+    return (
+      lazy || getType().isArray() || List.class.isAssignableFrom(getType())
+    );
   }
 
   /**
@@ -71,10 +74,12 @@ public class DynaProperty {
     return new SimpleTypeConverter().convertIfNecessary(value, getType());
   }
 
-  public List<Object> getIndexedValueFrom(Map<java.lang.String, Object> values) {
-    if (!isIndexed()) throw new IllegalStateException(format(
-      "%s (type: %s) is not a indexed property.", name, getType()
-    ));
+  public List<Object> getIndexedValueFrom(
+    Map<java.lang.String, Object> values
+  ) {
+    if (!isIndexed()) throw new IllegalStateException(
+      format("%s (type: %s) is not a indexed property.", name, getType())
+    );
     Object v = getValueFrom(values);
     if (lazy && v == null) {
       type = List.class;
@@ -96,10 +101,12 @@ public class DynaProperty {
     return (List<Object>) v;
   }
 
-  public Map<String, Object> getKeyedValueFrom(Map<java.lang.String, Object> values) {
-    if (!isKeyed()) throw new IllegalStateException(format(
-        "%s (type: %s) is not a map type property.", name, getType()
-    ));
+  public Map<String, Object> getKeyedValueFrom(
+    Map<java.lang.String, Object> values
+  ) {
+    if (!isKeyed()) throw new IllegalStateException(
+      format("%s (type: %s) is not a map type property.", name, getType())
+    );
     var v = getValueFrom(values);
     if (lazy && v == null) {
       type = Map.class;
@@ -122,6 +129,9 @@ public class DynaProperty {
       return;
     }
     var valueType = value.getClass();
-    values.put(name, new SimpleTypeConverter().convertIfNecessary(value, valueType));
+    values.put(
+      name,
+      new SimpleTypeConverter().convertIfNecessary(value, valueType)
+    );
   }
 }

@@ -1,12 +1,12 @@
 package org.apache.struts.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.TestApp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class ActionConfigTest {
@@ -24,11 +24,17 @@ public class ActionConfigTest {
   @Test
   public void itInterpolatesPlaceholdersInTemplateStringWithPathParameters() {
     var request = app.createRequest(GET, "/mailreader/Logon");
-    var forwardPath = app.getActionContext().getActionConfig().getForwardPath(request);
+    var forwardPath = app
+      .getActionContext()
+      .getActionConfig()
+      .getForwardPath(request);
     assertThat(forwardPath).isEqualTo("/Logon.jsp");
 
     request = app.createRequest(GET, "/mailreader/Logout");
-    forwardPath = app.getActionContext().getActionConfig().getForwardPath(request);
+    forwardPath = app
+      .getActionContext()
+      .getActionConfig()
+      .getForwardPath(request);
     assertThat(forwardPath).isEqualTo("/Logout.jsp");
   }
 

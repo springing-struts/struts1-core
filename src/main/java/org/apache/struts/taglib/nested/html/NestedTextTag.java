@@ -8,6 +8,7 @@ import org.apache.struts.taglib.html.TextTag;
  * documentation for information on tag attributes and usage details.
  */
 public class NestedTextTag extends TextTag {
+
   @Override
   protected void init() {
     super.init();

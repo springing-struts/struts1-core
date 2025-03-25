@@ -1,11 +1,12 @@
 package org.apache.struts.taglib.logic;
 
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.StringUtils.hasText;
+
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
 import springing.struts1.taglib.StrutsConditionalTagBase;
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Evaluate the nested body content of this tag if the specified value is an
@@ -15,7 +16,9 @@ import static org.springframework.util.StringUtils.hasText;
  * (appropriately limited by the `location` attribute), the nested body content
  * of this tag is evaluated.
  */
-public class MatchTag extends StrutsConditionalTagBase implements JspVariableAware {
+public class MatchTag
+  extends StrutsConditionalTagBase
+  implements JspVariableAware {
 
   public MatchTag() {
     init();
@@ -33,6 +36,7 @@ public class MatchTag extends StrutsConditionalTagBase implements JspVariableAwa
     matchesFromStart = false;
     matchesFromEnd = false;
   }
+
   private JspVariableReference ref;
   private @Nullable String testValue;
   private boolean matchesFromStart;
@@ -72,12 +76,10 @@ public class MatchTag extends StrutsConditionalTagBase implements JspVariableAwa
     if ("start".equals(location)) {
       matchesFromStart = true;
       matchesFromEnd = false;
-    }
-    else if ("end".equals(location)) {
+    } else if ("end".equals(location)) {
       matchesFromStart = false;
       matchesFromEnd = true;
-    }
-    else {
+    } else {
       matchesFromStart = false;
       matchesFromEnd = false;
     }

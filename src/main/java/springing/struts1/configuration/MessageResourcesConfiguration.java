@@ -1,5 +1,7 @@
 package springing.struts1.configuration;
 
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.Globals;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +10,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import springing.struts1.message.StrutsModuleAwareMessageSource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 
 @Configuration
 public class MessageResourcesConfiguration {

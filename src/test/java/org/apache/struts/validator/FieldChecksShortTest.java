@@ -1,5 +1,10 @@
 package org.apache.struts.validator;
 
+import static org.apache.struts.validator.FieldChecks.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.ValidatorAction;
@@ -12,22 +17,27 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.apache.struts.validator.FieldChecks.*;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class FieldChecksShortTest {
 
-  @Mock Field mockField;
-  @Mock ActionMessages mockErrors;
-  @Mock HttpServletRequest mockRequest;
-  @Mock Validator mockValidator;
-  @Mock ValidatorAction mockAction;
-  @Mock Object mockBean;
+  @Mock
+  Field mockField;
+
+  @Mock
+  ActionMessages mockErrors;
+
+  @Mock
+  HttpServletRequest mockRequest;
+
+  @Mock
+  Validator mockValidator;
+
+  @Mock
+  ValidatorAction mockAction;
+
+  @Mock
+  Object mockBean;
 
   void prepareFixture(@Nullable Object fieldValue) {
     when(mockField.getValueOf(mockBean)).thenReturn(fieldValue);
@@ -36,14 +46,28 @@ public class FieldChecksShortTest {
 
   void shouldPass() {
     assertThat(
-      validateShort(mockBean, mockAction, mockField, mockErrors, mockValidator, mockRequest)
+      validateShort(
+        mockBean,
+        mockAction,
+        mockField,
+        mockErrors,
+        mockValidator,
+        mockRequest
+      )
     ).isTrue();
     verify(mockErrors, never()).addValidationError(any(), any());
   }
 
   void shouldReject() {
     assertThat(
-      validateShort(mockBean, mockAction, mockField, mockErrors, mockValidator, mockRequest)
+      validateShort(
+        mockBean,
+        mockAction,
+        mockField,
+        mockErrors,
+        mockValidator,
+        mockRequest
+      )
     ).isFalse();
     verify(mockErrors).addValidationError(mockField, mockAction);
   }

@@ -8,6 +8,7 @@ package org.apache.struts.taglib.logic;
  * scope. If such a bean is found, nothing will be rendered.
  */
 public class MessagesNotPresentTag extends MessagesPresentTag {
+
   public MessagesNotPresentTag() {
     super(true);
   }

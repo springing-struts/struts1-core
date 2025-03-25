@@ -29,6 +29,7 @@ public class XhtmlTag extends StrutsHtmlElementTagBase {
   private void init() {
     this.scope = null;
   }
+
   private @Nullable String scope;
 
   @Override

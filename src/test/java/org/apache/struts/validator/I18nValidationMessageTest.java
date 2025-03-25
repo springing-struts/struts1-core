@@ -1,6 +1,11 @@
 package org.apache.struts.validator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpMethod.GET;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.struts.TestApp;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.util.ModuleUtils;
@@ -10,13 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import springing.struts1.configuration.ServletConfigBean;
 import springing.struts1.validator.ValidationUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpMethod.GET;
 
 /**
  * ## validation-i18n.xml
@@ -70,10 +68,15 @@ public class I18nValidationMessageTest {
   @Test
   void switchesMessageContentBasedOnTheCurrentLocale() throws Exception {
     app.createRequest(GET, "/validator/validateI18nExample");
-    ModuleUtils.getCurrent().loadPlugins(
-      new ActionServlet(new ServletConfigBean("action", ActionServlet.class.getName()))
-    );
-    var form = ModuleUtils.getCurrent().getValidatorResources().getForm("i18nForm");
+    ModuleUtils.getCurrent()
+      .loadPlugins(
+        new ActionServlet(
+          new ServletConfigBean("action", ActionServlet.class.getName())
+        )
+      );
+    var form = ModuleUtils.getCurrent()
+      .getValidatorResources()
+      .getForm("i18nForm");
     assertNotNull(form);
     var nameField = form.getFieldByName("name");
     var minLengthOfName = nameField.getRequiredVarValue("minlength");

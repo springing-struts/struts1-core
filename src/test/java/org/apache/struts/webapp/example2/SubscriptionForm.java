@@ -19,17 +19,13 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
 
-
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
-
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  * Form bean for the user profile page.  This form has the following fields,
@@ -48,238 +44,192 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Rev$ $Date$
  */
 
-public final class SubscriptionForm extends ActionForm  {
+public final class SubscriptionForm extends ActionForm {
 
+  // --------------------------------------------------- Instance Variables
 
-    // --------------------------------------------------- Instance Variables
+  /**
+   * The maintenance action we are performing (Create or Edit).
+   */
+  private String action = "Create";
 
+  /**
+   * Should we auto-connect at startup time?
+   */
+  private boolean autoConnect = false;
 
-    /**
-     * The maintenance action we are performing (Create or Edit).
-     */
-    private String action = "Create";
+  /**
+   * The host name.
+   */
+  private String host = null;
 
+  /**
+   * The password.
+   */
+  private String password = null;
 
-    /**
-     * Should we auto-connect at startup time?
-     */
-    private boolean autoConnect = false;
+  /**
+   * The subscription type.
+   */
+  private String type = null;
 
+  /**
+   * The username.
+   */
+  private String username = null;
 
-    /**
-     * The host name.
-     */
-    private String host = null;
+  // ----------------------------------------------------------- Properties
 
-
-    /**
-     * The password.
-     */
-    private String password = null;
-
-
-    /**
-     * The subscription type.
-     */
-    private String type = null;
-
-
-    /**
-     * The username.
-     */
-    private String username = null;
-
-
-    // ----------------------------------------------------------- Properties
-
-
-    /**
-     * Return the maintenance action.
-     */
-    public String getAction() {
-
+  /**
+   * Return the maintenance action.
+   */
+  public String getAction() {
     return (this.action);
+  }
 
-    }
+  /**
+   * Set the maintenance action.
+   *
+   * @param action The new maintenance action.
+   */
+  public void setAction(String action) {
+    this.action = action;
+  }
 
+  /**
+   * Return the auto-connect flag.
+   */
+  public boolean getAutoConnect() {
+    return (this.autoConnect);
+  }
 
-    /**
-     * Set the maintenance action.
-     *
-     * @param action The new maintenance action.
-     */
-    public void setAction(String action) {
+  /**
+   * Set the auto-connect flag.
+   *
+   * @param autoConnect The new auto-connect flag
+   */
+  public void setAutoConnect(boolean autoConnect) {
+    this.autoConnect = autoConnect;
+  }
 
-        this.action = action;
-
-    }
-
-
-    /**
-     * Return the auto-connect flag.
-     */
-    public boolean getAutoConnect() {
-
-        return (this.autoConnect);
-
-    }
-
-
-    /**
-     * Set the auto-connect flag.
-     *
-     * @param autoConnect The new auto-connect flag
-     */
-    public void setAutoConnect(boolean autoConnect) {
-
-        this.autoConnect = autoConnect;
-    }
-
-
-    /**
-     * Return the host name.
-     */
-    public String getHost() {
-
+  /**
+   * Return the host name.
+   */
+  public String getHost() {
     return (this.host);
+  }
 
-    }
+  /**
+   * Set the host name.
+   *
+   * @param host The host name
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
 
-
-    /**
-     * Set the host name.
-     *
-     * @param host The host name
-     */
-    public void setHost(String host) {
-
-        this.host = host;
-
-    }
-
-
-    /**
-     * Return the password.
-     */
-    public String getPassword() {
-
+  /**
+   * Return the password.
+   */
+  public String getPassword() {
     return (this.password);
+  }
 
-    }
+  /**
+   * Set the password.
+   *
+   * @param password The new password
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-
-    /**
-     * Set the password.
-     *
-     * @param password The new password
-     */
-    public void setPassword(String password) {
-
-        this.password = password;
-
-    }
-
-
-    /**
-     * Return the subscription type.
-     */
-    public String getType() {
-
+  /**
+   * Return the subscription type.
+   */
+  public String getType() {
     return (this.type);
+  }
 
-    }
+  /**
+   * Set the subscription type.
+   *
+   * @param type The subscription type
+   */
+  public void setType(String type) {
+    this.type = type;
+  }
 
-
-    /**
-     * Set the subscription type.
-     *
-     * @param type The subscription type
-     */
-    public void setType(String type) {
-
-        this.type = type;
-
-    }
-
-
-    /**
-     * Return the username.
-     */
-    public String getUsername() {
-
+  /**
+   * Return the username.
+   */
+  public String getUsername() {
     return (this.username);
+  }
 
-    }
+  /**
+   * Set the username.
+   *
+   * @param username The new username
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
+  // --------------------------------------------------------- Public Methods
 
-    /**
-     * Set the username.
-     *
-     * @param username The new username
-     */
-    public void setUsername(String username) {
+  /**
+   * Reset all properties to their default values.
+   *
+   * @param mapping The mapping used to select this instance
+   * @param request The servlet request we are processing
+   */
+  public void reset(ActionMapping mapping, HttpServletRequest request) {
+    this.action = "Create";
+    this.autoConnect = false;
+    this.host = null;
+    this.password = null;
+    this.type = null;
+    this.username = null;
+  }
 
-        this.username = username;
+  /**
+   * Validate the properties that have been set from this HTTP request,
+   * and return an <code>ActionErrors</code> object that encapsulates any
+   * validation errors that have been found.  If no errors are found, return
+   * <code>null</code> or an <code>ActionErrors</code> object with no
+   * recorded error messages.
+   *
+   * @param mapping The mapping used to select this instance
+   * @param request The servlet request we are processing
+   */
+  public ActionErrors validate(
+    ActionMapping mapping,
+    HttpServletRequest request
+  ) {
+    ActionErrors errors = new ActionErrors();
 
-    }
-
-
-    // --------------------------------------------------------- Public Methods
-
-
-    /**
-     * Reset all properties to their default values.
-     *
-     * @param mapping The mapping used to select this instance
-     * @param request The servlet request we are processing
-     */
-    public void reset(ActionMapping mapping, HttpServletRequest request) {
-
-        this.action = "Create";
-        this.autoConnect = false;
-        this.host = null;
-        this.password = null;
-        this.type = null;
-        this.username = null;
-
-    }
-
-
-    /**
-     * Validate the properties that have been set from this HTTP request,
-     * and return an <code>ActionErrors</code> object that encapsulates any
-     * validation errors that have been found.  If no errors are found, return
-     * <code>null</code> or an <code>ActionErrors</code> object with no
-     * recorded error messages.
-     *
-     * @param mapping The mapping used to select this instance
-     * @param request The servlet request we are processing
-     */
-    public ActionErrors validate(ActionMapping mapping,
-                                 HttpServletRequest request) {
-
-        ActionErrors errors = new ActionErrors();
-
-    if ((host == null) || (host.length() < 1))
-            errors.add("host",
-                       new ActionMessage("error.host.required"));
-    if ((username == null) || (username.length() < 1))
-            errors.add("username",
-                       new ActionMessage("error.username.required"));
-    if ((password == null) || (password.length() < 1))
-            errors.add("password",
-                       new ActionMessage("error.password.required"));
-    if ((type == null) || (type.length() < 1))
-            errors.add("type",
-                       new ActionMessage("error.type.required"));
-    else if (!"imap".equals(type) && !"pop3".equals(type))
-            errors.add("type",
-                       new ActionMessage("error.type.invalid", type));
+    if ((host == null) || (host.length() < 1)) errors.add(
+      "host",
+      new ActionMessage("error.host.required")
+    );
+    if ((username == null) || (username.length() < 1)) errors.add(
+      "username",
+      new ActionMessage("error.username.required")
+    );
+    if ((password == null) || (password.length() < 1)) errors.add(
+      "password",
+      new ActionMessage("error.password.required")
+    );
+    if ((type == null) || (type.length() < 1)) errors.add(
+      "type",
+      new ActionMessage("error.type.required")
+    );
+    else if (!"imap".equals(type) && !"pop3".equals(type)) errors.add(
+      "type",
+      new ActionMessage("error.type.invalid", type)
+    );
 
     return (errors);
-
-    }
-
-
+  }
 }
-

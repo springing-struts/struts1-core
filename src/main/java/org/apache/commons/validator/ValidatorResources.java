@@ -3,10 +3,9 @@ package org.apache.commons.validator;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.*;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
-
-import java.util.*;
 
 /**
  * General purpose class for storing FormSet objects based on their associated
@@ -33,12 +32,16 @@ public class ValidatorResources {
   /**
    * Gets a Map of the ValidatorActions.
    */
-  public Map<String ,ValidatorAction> getValidatorActions() {
+  public Map<String, ValidatorAction> getValidatorActions() {
     return globalDefinitions.validatorActionsByName;
   }
 
   public List<ValidatorAction> getJsUtilities() {
-    return getValidatorActions().values().stream().filter(ValidatorAction::isJsUtility).toList();
+    return getValidatorActions()
+      .values()
+      .stream()
+      .filter(ValidatorAction::isJsUtility)
+      .toList();
   }
 
   /**
@@ -49,13 +52,15 @@ public class ValidatorResources {
   }
 
   public static class GlobalDefinitions {
+
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "constant")
     private void setConstants(List<Constant> constants) {
-      for (var constant: constants) {
+      for (var constant : constants) {
         constantMap.put(constant.getName(), constant.getValue());
       }
     }
+
     private final Map<String, String> constantMap = new HashMap<>();
 
     @JacksonXmlElementWrapper(useWrapping = false)
@@ -65,7 +70,9 @@ public class ValidatorResources {
         validatorActionsByName.put(validator.getName(), validator);
       }
     }
-    private final Map<String, ValidatorAction> validatorActionsByName = new HashMap<>();
+
+    private final Map<String, ValidatorAction> validatorActionsByName =
+      new HashMap<>();
   }
 
   /**
@@ -75,7 +82,9 @@ public class ValidatorResources {
     validationFormSetList.addAll(another.validationFormSetList);
     another.validationFormSetList.forEach(it -> it.parent = this);
     globalDefinitions.constantMap.putAll(another.globalDefinitions.constantMap);
-    globalDefinitions.validatorActionsByName.putAll(another.globalDefinitions.validatorActionsByName);
+    globalDefinitions.validatorActionsByName.putAll(
+      another.globalDefinitions.validatorActionsByName
+    );
   }
 
   public @Nullable Form getForm(String formKey) {
@@ -108,7 +117,10 @@ public class ValidatorResources {
    * - default locale
    */
   private @Nullable Form getForm(
-    String language, String country, String variant, String formKey
+    String language,
+    String country,
+    String variant,
+    String formKey
   ) {
     Form forDefaultLocale = null;
     Form forLanguage = null;

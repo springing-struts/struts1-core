@@ -19,9 +19,7 @@
  * under the License.
  */
 
-
 package org.apache.struts.apps.mailreader.dao;
-
 
 /**
  * <p>A <strong>Subscription</strong> which is stored, along with the
@@ -31,77 +29,63 @@ package org.apache.struts.apps.mailreader.dao;
  */
 
 public interface Subscription {
+  // ------------------------------------------------------------- Properties
 
+  /**
+   * Return the auto-connect flag.
+   */
+  public boolean getAutoConnect();
 
-    // ------------------------------------------------------------- Properties
+  /**
+   * Set the auto-connect flag.
+   *
+   * @param autoConnect The new auto-connect flag
+   */
+  public void setAutoConnect(boolean autoConnect);
 
+  /**
+   * Return the host name.
+   */
+  public String getHost();
 
-    /**
-     * Return the auto-connect flag.
-     */
-    public boolean getAutoConnect();
+  /**
+   * Return the password.
+   */
+  public String getPassword();
 
+  /**
+   * Set the password.
+   *
+   * @param password The new password
+   */
+  public void setPassword(String password);
 
-    /**
-     * Set the auto-connect flag.
-     *
-     * @param autoConnect The new auto-connect flag
-     */
-    public void setAutoConnect(boolean autoConnect);
+  /**
+   * Return the subscription type.
+   */
+  public String getType();
 
+  /**
+   * Set the subscription type.
+   *
+   * @param type The new subscription type
+   */
+  public void setType(String type);
 
-    /**
-     * Return the host name.
-     */
-    public String getHost();
+  /**
+   * Return the {@link User} owning this Subscription.
+   */
+  public User getUser();
 
+  /**
+   * Return the username.
+   */
+  public String getUsername();
 
-    /**
-     * Return the password.
-     */
-    public String getPassword();
-
-
-    /**
-     * Set the password.
-     *
-     * @param password The new password
-     */
-    public void setPassword(String password);
-
-
-    /**
-     * Return the subscription type.
-     */
-    public String getType();
-
-
-    /**
-     * Set the subscription type.
-     *
-     * @param type The new subscription type
-     */
-    public void setType(String type);
-
-
-    /**
-     * Return the {@link User} owning this Subscription.
-     */
-    public User getUser();
-
-
-    /**
-     * Return the username.
-     */
-    public String getUsername();
-
-
-    /**
-     * Set the username.
-     *
-     * @param username The new username
-     */
-    public void setUsername(String username);
-
-
+  /**
+   * Set the username.
+   *
+   * @param username The new username
+   */
+  public void setUsername(String username);
 }

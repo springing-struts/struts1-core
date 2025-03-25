@@ -1,18 +1,17 @@
 package org.apache.struts.config;
 
+import static springing.util.StringUtils.normalizeForwardPath;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.apache.struts.chain.contexts.ServletActionContext;
-import org.apache.struts.util.ModuleUtils;
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static springing.util.StringUtils.normalizeForwardPath;
+import org.apache.struts.chain.contexts.ServletActionContext;
+import org.apache.struts.util.ModuleUtils;
+import org.springframework.lang.Nullable;
 
 /**
  * A JavaBean representing the configuration information of a `forward`
@@ -20,10 +19,14 @@ import static springing.util.StringUtils.normalizeForwardPath;
  */
 public class ForwardConfig {
 
-  @JsonCreator()
+  @JsonCreator
   public ForwardConfig(
-    @JacksonXmlProperty(localName = "name", isAttribute = true) @JsonProperty("name") String name,
-    @JacksonXmlProperty(localName = "path", isAttribute = true) @JsonProperty("path") String path
+    @JacksonXmlProperty(localName = "name", isAttribute = true) @JsonProperty(
+      "name"
+    ) String name,
+    @JacksonXmlProperty(localName = "path", isAttribute = true) @JsonProperty(
+      "path"
+    ) String path
   ) {
     this.name = name;
     this.path = path;
@@ -36,6 +39,7 @@ public class ForwardConfig {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
@@ -57,13 +61,14 @@ public class ForwardConfig {
   public String getPath() {
     return path;
   }
+
   private final String path;
 
   /**
    * Returns the URL targeted by this forward, relative to the servlet context.
    */
   public String getUrl() {
-    var path =  isAbsolute()
+    var path = isAbsolute()
       ? getPath()
       : normalizeForwardPath(getModulePath() + "/" + getPath());
     return ServletActionContext.current().interpolatePathParams(path);
@@ -76,6 +81,7 @@ public class ForwardConfig {
   private boolean containsScheme() {
     return URL_SCHEME.matcher(getPath()).matches();
   }
+
   private static final Pattern URL_SCHEME = Pattern.compile(
     "^[_a-zA-Z0-9]+://.*$"
   );
@@ -99,6 +105,7 @@ public class ForwardConfig {
   public boolean getRedirect() {
     return redirect != null && redirect;
   }
+
   @JacksonXmlProperty(localName = "redirect", isAttribute = true)
   private @Nullable Boolean redirect;
 
@@ -114,6 +121,7 @@ public class ForwardConfig {
   public String getModule() {
     return modulePrefix == null ? "" : modulePrefix;
   }
+
   @JacksonXmlProperty(localName = "module", isAttribute = true)
   private @Nullable String modulePrefix;
 
@@ -124,6 +132,7 @@ public class ForwardConfig {
   public void setActionConfig(ActionConfig actionConfig) {
     this.actionConfig = actionConfig;
   }
+
   private @Nullable ActionConfig actionConfig;
 
   /**
@@ -133,6 +142,7 @@ public class ForwardConfig {
   public void setModuleConfig(ModuleConfig moduleConfig) {
     this.moduleConfig = moduleConfig;
   }
+
   private @Nullable ModuleConfig moduleConfig;
 
   @JacksonXmlElementWrapper(useWrapping = false)

@@ -1,15 +1,15 @@
 package org.apache.struts.taglib.html;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+
 import org.apache.struts.TestApp;
 import org.apache.struts.webapp.exercise.TestBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 
 /**
  * <pre>
@@ -39,7 +39,8 @@ public class CheckboxTagTest {
    * </pre>
    */
   @Test
-  void testItRendersFormBeansPropertyValueAsInputElementWithCheckboxType() throws Exception {
+  void testItRendersFormBeansPropertyValueAsInputElementWithCheckboxType()
+    throws Exception {
     app.createRequest(HttpMethod.POST, "/exercise/html-link-submit");
     app.setupActionForm("testbean", () -> {
       var testBean = new TestBean();
@@ -67,8 +68,8 @@ public class CheckboxTagTest {
       return testBean;
     });
     app.assertTagContent(
-        "/html-link-submit",
-        CheckboxTag.class,
+      "/html-link-submit",
+      CheckboxTag.class,
       (tag, context) -> {
         tag.setProperty("booleanProperty");
       },

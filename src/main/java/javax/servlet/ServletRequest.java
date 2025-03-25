@@ -5,25 +5,25 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletResponse;
-import org.springframework.lang.Nullable;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 public interface ServletRequest extends jakarta.servlet.ServletRequest {
-
   @Override
-  @Nullable RequestDispatcher getRequestDispatcher(String path);
+  @Nullable
+  RequestDispatcher getRequestDispatcher(String path);
 
   default jakarta.servlet.ServletRequest unwrap() {
     throw new UnsupportedOperationException();
   }
 
   class JavaxNamespaceWrapper implements ServletRequest {
+
     public JavaxNamespaceWrapper(jakarta.servlet.ServletRequest request) {
       orig = request;
     }
@@ -51,7 +51,8 @@ public interface ServletRequest extends jakarta.servlet.ServletRequest {
     }
 
     @Override
-    public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
+    public void setCharacterEncoding(String s)
+      throws UnsupportedEncodingException {
       orig.setCharacterEncoding(s);
     }
 
@@ -193,7 +194,10 @@ public interface ServletRequest extends jakarta.servlet.ServletRequest {
     }
 
     @Override
-    public AsyncContext startAsync(jakarta.servlet.ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+    public AsyncContext startAsync(
+      jakarta.servlet.ServletRequest servletRequest,
+      ServletResponse servletResponse
+    ) throws IllegalStateException {
       return orig.startAsync(servletRequest, servletResponse);
     }
 

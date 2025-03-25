@@ -1,10 +1,9 @@
 package org.apache.struts.taglib.bean;
 
 import jakarta.servlet.http.HttpServletRequest;
-import springing.struts1.taglib.SetTagBase;
-
 import java.util.Arrays;
 import java.util.List;
+import springing.struts1.taglib.SetTagBase;
 
 /**
  * Define a scripting variable based on the value(s) of the specified request
@@ -18,9 +17,11 @@ import java.util.List;
  */
 public class ParameterTag extends SetTagBase<String> {
 
-
   @Override
-  protected List<String> retrieveValues(HttpServletRequest request, String name) {
+  protected List<String> retrieveValues(
+    HttpServletRequest request,
+    String name
+  ) {
     var params = request.getParameterValues(name);
     if (params == null) return List.of();
     return Arrays.asList(params);
@@ -28,7 +29,9 @@ public class ParameterTag extends SetTagBase<String> {
 
   @Override
   protected String getDefaultValue(
-    HttpServletRequest request, String name, String defaultValueString
+    HttpServletRequest request,
+    String name,
+    String defaultValueString
   ) {
     return defaultValueString;
   }

@@ -1,10 +1,10 @@
 package org.apache.struts.action;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class ActionForm {
+
   /**
    * Can be used to reset all bean properties to their default state.
    * This method is called before the properties are repopulated by the
@@ -12,10 +12,7 @@ public class ActionForm {
    * The default implementation attempts to forward to the HTTP version of
    * this method.
    */
-  public void reset(
-    ActionMapping mapping,
-    HttpServletRequest request
-  ) {
+  public void reset(ActionMapping mapping, HttpServletRequest request) {
     // NOP
   }
 
@@ -63,4 +60,3 @@ public class ActionForm {
    */
   protected @Nullable ActionServlet servlet;
 }
-

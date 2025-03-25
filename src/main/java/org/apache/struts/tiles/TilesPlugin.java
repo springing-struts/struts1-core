@@ -1,16 +1,15 @@
 package org.apache.struts.tiles;
 
+import static java.util.Objects.requireNonNull;
+import static springing.util.ObjectUtils.parseConfigFileAt;
+
+import javax.servlet.ServletException;
 import org.apache.commons.validator.ValidatorResources;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.tiles.config.TilesDefinitions;
 import org.springframework.lang.Nullable;
-
-import javax.servlet.ServletException;
-
-import static java.util.Objects.requireNonNull;
-import static springing.util.ObjectUtils.parseConfigFileAt;
 
 /**
  * Tiles Plugin used to initialize Tiles. This plugin is to be used with
@@ -33,10 +32,12 @@ import static springing.util.ObjectUtils.parseConfigFileAt;
  */
 public class TilesPlugin implements PlugIn {
 
- @Override
-  public void init(ActionServlet servlet, ModuleConfig config) throws ServletException {
+  @Override
+  public void init(ActionServlet servlet, ModuleConfig config)
+    throws ServletException {
     if (definitionsConfigPaths == null) throw new IllegalArgumentException(
-      "Definitions config paths is required for the TilesPlugin of the module: " + config.getPrefix()
+      "Definitions config paths is required for the TilesPlugin of the module: " +
+      config.getPrefix()
     );
     var paths = definitionsConfigPaths.split("\\s*,\\s*");
     tilesDefinitions = new TilesDefinitions();
@@ -52,7 +53,10 @@ public class TilesPlugin implements PlugIn {
   }
 
   public TilesDefinitions getTilesDefinitions() {
-    return requireNonNull(tilesDefinitions, "This plugin has not been initialized yet.");
+    return requireNonNull(
+      tilesDefinitions,
+      "This plugin has not been initialized yet."
+    );
   }
 
   private @Nullable TilesDefinitions tilesDefinitions;
@@ -60,5 +64,6 @@ public class TilesPlugin implements PlugIn {
   public void setDefinitionsConfig(String paths) {
     definitionsConfigPaths = paths;
   }
+
   private @Nullable String definitionsConfigPaths;
 }

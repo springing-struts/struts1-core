@@ -1,12 +1,11 @@
 package org.apache.struts.taglib.html;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsHtmlElementTagBase;
 import springing.struts1.taglib.UrlBuilder;
 import springing.struts1.taglib.UrlBuilderSupport;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Renders an HTML `a`` element as an anchor definition (if "linkName" is
@@ -75,7 +74,9 @@ import java.util.Map;
  * the end of the URL that is created by any of the above mechanisms, by using
  * the `anchor` attribute.
  */
-public class LinkTag extends StrutsHtmlElementTagBase implements UrlBuilderSupport {
+public class LinkTag
+  extends StrutsHtmlElementTagBase
+  implements UrlBuilderSupport {
 
   public LinkTag() {
     init();

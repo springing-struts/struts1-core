@@ -19,9 +19,7 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
-
 
 /**
  * Manifest constants for the example application.
@@ -32,32 +30,26 @@ package org.apache.struts.webapp.example2;
 
 public final class Constants {
 
+  /**
+   * The package name for this application.
+   */
+  public static final String Package = "org.apache.struts.webapp.example";
 
-    /**
-     * The package name for this application.
-     */
-    public static final String Package = "org.apache.struts.webapp.example";
+  /**
+   * The application scope attribute under which our user database
+   * is stored.
+   */
+  public static final String DATABASE_KEY = "database";
 
+  /**
+   * The session scope attribute under which the Subscription object
+   * currently selected by our logged-in User is stored.
+   */
+  public static final String SUBSCRIPTION_KEY = "subscription";
 
-    /**
-     * The application scope attribute under which our user database
-     * is stored.
-     */
-    public static final String DATABASE_KEY = "database";
-
-
-    /**
-     * The session scope attribute under which the Subscription object
-     * currently selected by our logged-in User is stored.
-     */
-    public static final String SUBSCRIPTION_KEY = "subscription";
-
-
-    /**
-     * The session scope attribute under which the User object
-     * for the currently logged in user is stored.
-     */
-    public static final String USER_KEY = "user";
-
-
+  /**
+   * The session scope attribute under which the User object
+   * for the currently logged in user is stored.
+   */
+  public static final String USER_KEY = "user";
 }

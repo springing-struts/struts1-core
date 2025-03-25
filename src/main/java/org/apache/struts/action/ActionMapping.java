@@ -18,14 +18,13 @@ import org.springframework.lang.Nullable;
  */
 public class ActionMapping extends ActionConfig {
 
-  protected ActionMapping() {
-  }
+  protected ActionMapping() {}
 
   public ActionMapping(String path) {
     setPath(path);
   }
 
- /**
+  /**
    * Find and return the `ForwardConfig` instance defining how forwarding to
    * the specified logical name should be handled. This is performed by
    * checking local and then global configurations for the specified forwarding
@@ -41,9 +40,13 @@ public class ActionMapping extends ActionConfig {
    */
   public ActionForward findRequiredForward(String forwardName) {
     var forward = findForward(forwardName);
-    if (forward == null) throw new IllegalStateException(String.format(
-      "Failed to find the forward [%s] for the action [%s].", forwardName, getPath()
-    ));
+    if (forward == null) throw new IllegalStateException(
+      String.format(
+        "Failed to find the forward [%s] for the action [%s].",
+        forwardName,
+        getPath()
+      )
+    );
     return forward;
   }
 
@@ -56,7 +59,7 @@ public class ActionMapping extends ActionConfig {
       .stream()
       .map(ForwardConfig::getName)
       .toList()
-      .toArray(new String[]{});
+      .toArray(new String[] {});
   }
 
   /**

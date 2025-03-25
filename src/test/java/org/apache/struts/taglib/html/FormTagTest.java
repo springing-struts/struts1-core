@@ -1,14 +1,14 @@
 package org.apache.struts.taglib.html;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.struts.TestApp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <pre>
@@ -43,7 +43,10 @@ public class FormTagTest {
       },
       (content, processedBody) -> {
         assertThat(content, containsString("<form"));
-        assertThat(content, containsString("action=\"/exercise/html-link-submit\""));
+        assertThat(
+          content,
+          containsString("action=\"/exercise/html-link-submit\"")
+        );
         assertThat(content, containsString("method=\"post\""));
       }
     );
@@ -51,7 +54,10 @@ public class FormTagTest {
 
   @Test
   void testItSetsActionFormNameAssociatedWithAction() throws Exception {
-    var request = app.createRequest(HttpMethod.GET, "/exercise/html-link-submit");
+    var request = app.createRequest(
+      HttpMethod.GET,
+      "/exercise/html-link-submit"
+    );
     app.assertTagContent(
       "/html-link-submit",
       FormTag.class,

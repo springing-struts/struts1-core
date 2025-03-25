@@ -1,5 +1,8 @@
 package org.apache.struts.tiles;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.TestApp;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.util.ModuleUtils;
@@ -7,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import springing.struts1.configuration.ServletConfigBean;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class TilesPluginTest {
@@ -41,9 +41,11 @@ public class TilesPluginTest {
   void testItCanBeLoadedFromStrutsConfig() {
     var request = app.createRequest(GET, "/example2/welcome");
     var module = ModuleUtils.getCurrent();
-    module.loadPlugins(new ActionServlet(
-      new ServletConfigBean("action", ActionServlet.class.getName())
-    ));
+    module.loadPlugins(
+      new ActionServlet(
+        new ServletConfigBean("action", ActionServlet.class.getName())
+      )
+    );
     var tilesPlugin = module.getPlugInByType(TilesPlugin.class);
     assertThat(tilesPlugin).isNotNull();
     var tilesDefinitions = tilesPlugin.getTilesDefinitions();

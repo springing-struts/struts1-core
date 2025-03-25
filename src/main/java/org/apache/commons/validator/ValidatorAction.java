@@ -1,12 +1,12 @@
 package org.apache.commons.validator;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.chain.contexts.ServletActionContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.lang.Nullable;
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.util.Objects.requireNonNullElse;
+import static org.springframework.util.StringUtils.hasText;
+import static springing.util.StringUtils.lowerCamelize;
 
-import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static java.lang.String.format;
-import static java.lang.String.join;
-import static java.util.Objects.requireNonNullElse;
-import static org.springframework.util.StringUtils.hasText;
-import static springing.util.StringUtils.lowerCamelize;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.chain.contexts.ServletActionContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.lang.Nullable;
 
 /**
  * Contains the information to dynamically create and run a validation method.
@@ -29,12 +28,19 @@ import static springing.util.StringUtils.lowerCamelize;
  * **Note:** The validation method is assumed to be thread safe.
  */
 public class ValidatorAction {
+
   public ValidatorAction(
-      @JacksonXmlProperty(isAttribute = true, localName = "name") String name,
-      @JacksonXmlProperty(isAttribute = true, localName = "msg") String msg,
-      @JacksonXmlProperty(isAttribute = true, localName = "classname") String className,
-      @JacksonXmlProperty(isAttribute = true, localName = "method") String method,
-      @JacksonXmlProperty(isAttribute = true, localName = "methodParams") @Nullable String methodParams
+    @JacksonXmlProperty(isAttribute = true, localName = "name") String name,
+    @JacksonXmlProperty(isAttribute = true, localName = "msg") String msg,
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "classname"
+    ) String className,
+    @JacksonXmlProperty(isAttribute = true, localName = "method") String method,
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "methodParams"
+    ) @Nullable String methodParams
   ) {
     this.name = name;
     this.msg = msg;
@@ -42,8 +48,7 @@ public class ValidatorAction {
     if (className.isEmpty()) {
       this.testMethod = null;
       this.paramTypes = new ArrayList<>();
-    }
-    else {
+    } else {
       this.paramTypes = loadParamTypes(methodParams);
       this.testMethod = loadTestMethod(className, method, paramTypes);
     }
@@ -55,6 +60,7 @@ public class ValidatorAction {
   public String getMethod() {
     return method;
   }
+
   private final String method;
 
   /**
@@ -63,6 +69,7 @@ public class ValidatorAction {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
@@ -71,10 +78,10 @@ public class ValidatorAction {
   public String getMsg() {
     return msg;
   }
+
   private final String msg;
 
-
-  public boolean test(Object target, Field field, ActionMessages errors ) {
+  public boolean test(Object target, Field field, ActionMessages errors) {
     if (testMethod == null) {
       return true;
     }
@@ -86,40 +93,51 @@ public class ValidatorAction {
         throw re;
       }
       throw new RuntimeException(
-        "An error occurred while calling a validator action: " + name, e.getCause()
+        "An error occurred while calling a validator action: " + name,
+        e.getCause()
       );
     } catch (IllegalAccessException e) {
       throw new RuntimeException(
-        "An error occurred while calling a validator action: " + name, e
+        "An error occurred while calling a validator action: " + name,
+        e
       );
     }
   }
 
-  private List<?> buildParamsFrom(Object target, Field field, ActionMessages errors) {
-    return paramTypes.stream().map(paramType -> {
-      if (ValidatorAction.class.isAssignableFrom(paramType)) {
-        return this;
-      }
-      if (HttpServletRequest.class.isAssignableFrom(paramType)) {
-        return ServletActionContext.current().getRequest();
-      }
-      if (Field.class.isAssignableFrom(paramType)) {
-        return field;
-      }
-      if (ActionMessages.class.isAssignableFrom(paramType)) {
-        return errors;
-      }
-      if (Validator.class.isAssignableFrom(paramType)) {
+  private List<?> buildParamsFrom(
+    Object target,
+    Field field,
+    ActionMessages errors
+  ) {
+    return paramTypes
+      .stream()
+      .map(paramType -> {
+        if (ValidatorAction.class.isAssignableFrom(paramType)) {
+          return this;
+        }
+        if (HttpServletRequest.class.isAssignableFrom(paramType)) {
+          return ServletActionContext.current().getRequest();
+        }
+        if (Field.class.isAssignableFrom(paramType)) {
+          return field;
+        }
+        if (ActionMessages.class.isAssignableFrom(paramType)) {
+          return errors;
+        }
+        if (Validator.class.isAssignableFrom(paramType)) {
+          return null;
+        }
+        if (Object.class.equals(paramType)) {
+          return target;
+        }
         return null;
-      }
-      if (Object.class.equals(paramType)) {
-        return target;
-      }
-      return null;
-    }).toList();
+      })
+      .toList();
   }
 
-  private @Nullable final Method testMethod;
+  @Nullable
+  private final Method testMethod;
+
   private final List<Class<?>> paramTypes;
 
   /**
@@ -142,6 +160,7 @@ public class ValidatorAction {
     dependencyList.clear();
     dependencyList.addAll(Arrays.asList(depends.split("\\s*,\\s*")));
   }
+
   private final List<String> dependencyList = new ArrayList<>();
 
   /**
@@ -156,6 +175,7 @@ public class ValidatorAction {
     javascriptLoaded = true;
     return javascript;
   }
+
   private transient @Nullable String javascript;
   private boolean javascriptLoaded = false;
 
@@ -175,9 +195,13 @@ public class ValidatorAction {
     try (var in = resource.getInputStream()) {
       javascript = new String(in.readAllBytes(), StandardCharsets.UTF_8);
     } catch (IOException e) {
-      if (hasText(jsFunction)) throw new IllegalArgumentException(format(
-        "Failed to load the javascript resource file from classpath: [%s].", jsFilePath
-      ), e);
+      if (hasText(jsFunction)) throw new IllegalArgumentException(
+        format(
+          "Failed to load the javascript resource file from classpath: [%s].",
+          jsFilePath
+        ),
+        e
+      );
     }
   }
 
@@ -205,9 +229,12 @@ public class ValidatorAction {
     );
     return path.replace('.', '/') + ".js";
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "jsFunction")
   private @Nullable String jsFunction;
-  private static final String JS_FUNCTION_BASE_PACKAGE = "org.apache.commons.validator.javascript";
+
+  private static final String JS_FUNCTION_BASE_PACKAGE =
+    "org.apache.commons.validator.javascript";
 
   public boolean isJsUtility() {
     return testMethod == null && jsFunction != null;
@@ -221,12 +248,11 @@ public class ValidatorAction {
   public String getJsFunctionName() {
     return requireNonNullElse(jsFunctionName, getName());
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "jsFunctionName")
   private @Nullable String jsFunctionName;
 
-  private static List<Class<?>> loadParamTypes(
-    @Nullable String methodParams
-  ) {
+  private static List<Class<?>> loadParamTypes(@Nullable String methodParams) {
     if (methodParams == null || methodParams.isEmpty()) {
       return List.of();
     }
@@ -245,7 +271,9 @@ public class ValidatorAction {
    * Load the test method being called for this validator action.
    */
   private static @Nullable Method loadTestMethod(
-    String className, String methodName, List<Class<?>> paramTypes
+    String className,
+    String methodName,
+    List<Class<?>> paramTypes
   ) {
     if (className.isEmpty()) {
       return null;
@@ -254,10 +282,14 @@ public class ValidatorAction {
       var clazz = Class.forName(className);
       return clazz.getMethod(methodName, paramTypes.toArray(Class[]::new));
     } catch (ClassNotFoundException | NoSuchMethodException e) {
-      throw new RuntimeException(format(
-        "Failed to retrieve the validator method. class: [%s], method: [%s].",
-        className, methodName
-      ), e);
+      throw new RuntimeException(
+        format(
+          "Failed to retrieve the validator method. class: [%s], method: [%s].",
+          className,
+          methodName
+        ),
+        e
+      );
     }
   }
 }

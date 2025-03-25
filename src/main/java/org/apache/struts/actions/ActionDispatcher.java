@@ -1,4 +1,14 @@
 package org.apache.struts.actions;
+
+import static java.lang.String.format;
+import static org.apache.struts.Globals.CANCEL_KEY;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -8,16 +18,6 @@ import org.apache.struts.dispatcher.Dispatcher;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static java.lang.String.format;
-import static org.apache.struts.Globals.CANCEL_KEY;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Action `helper` class that dispatches to a public method in an Action.
@@ -60,6 +60,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  *   (equivalent to `MappingDispatchAction`).
  */
 public class ActionDispatcher implements Dispatcher {
+
   /**
    * Indicates "default" dispatch flavor.
    */
@@ -146,10 +147,12 @@ public class ActionDispatcher implements Dispatcher {
     if (flavor == DEFAULT_FLAVOR) {
       return "method";
     }
-    throw new IllegalArgumentException(format(
-      "The parameter of the mapping [%s] is not defined, which is required to determine the dispatch target.",
-      mapping.getPath()
-    ));
+    throw new IllegalArgumentException(
+      format(
+        "The parameter of the mapping [%s] is not defined, which is required to determine the dispatch target.",
+        mapping.getPath()
+      )
+    );
   }
 
   /**
@@ -191,44 +194,67 @@ public class ActionDispatcher implements Dispatcher {
   }
 
   private ActionForward dispatchMethod(
-      ActionMapping mapping,
-      @Nullable ActionForm form,
-      HttpServletRequest request,
-      HttpServletResponse response,
-      @Nullable String name
+    ActionMapping mapping,
+    @Nullable ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    @Nullable String name
   ) throws Exception {
     if (name == null) {
       if (supportsUnspecifiedRequest()) {
         return unspecified(mapping, form, request, response);
       }
-      throw new ResponseStatusException(NOT_FOUND, format(
-        "Failed to process the request [%s] as the dispatch method name is not given" +
-        " and the action class [%s] does not support 'unspecified' handling.",
-        mapping.getPath(), actionClass.getName()
-      ));
+      throw new ResponseStatusException(
+        NOT_FOUND,
+        format(
+          "Failed to process the request [%s] as the dispatch method name is not given" +
+          " and the action class [%s] does not support 'unspecified' handling.",
+          mapping.getPath(),
+          actionClass.getName()
+        )
+      );
     }
     var recursive = name.equals("execute") || name.equals("perform");
-    if (recursive) throw new ResponseStatusException(NOT_FOUND, format(
-      "Failed to dispatch the request for the path: [%s] (methodName: [%s]).",
-      mapping.getPath(), name
-    ));
+    if (recursive) throw new ResponseStatusException(
+      NOT_FOUND,
+      format(
+        "Failed to dispatch the request for the path: [%s] (methodName: [%s]).",
+        mapping.getPath(),
+        name
+      )
+    );
     var method = getMethod(name);
-    if (method == null) throw new ResponseStatusException(NOT_FOUND, format(
-      "Failed to dispatch the request [%s] because" +
-      " the request handler method [%s] is not defined on the action class [%s].",
-      mapping.getPath(), name, actionClass.getName()
-    ));
+    if (method == null) throw new ResponseStatusException(
+      NOT_FOUND,
+      format(
+        "Failed to dispatch the request [%s] because" +
+        " the request handler method [%s] is not defined on the action class [%s].",
+        mapping.getPath(),
+        name,
+        actionClass.getName()
+      )
+    );
     try {
-      return (ActionForward) method.invoke(action, mapping, form, request, response);
+      return (ActionForward) method.invoke(
+        action,
+        mapping,
+        form,
+        request,
+        response
+      );
     } catch (InvocationTargetException e) {
       var cause = e.getCause();
       if (cause instanceof Exception runtimeError) {
         throw runtimeError;
       }
-      throw new RuntimeException(format(
-        "An error occurred while invoking action method [%s] for the request [%s].",
-        name, mapping.getPath()
-      ), cause);
+      throw new RuntimeException(
+        format(
+          "An error occurred while invoking action method [%s] for the request [%s].",
+          name,
+          mapping.getPath()
+        ),
+        cause
+      );
     }
   }
 

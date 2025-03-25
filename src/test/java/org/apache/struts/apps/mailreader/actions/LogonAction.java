@@ -20,14 +20,13 @@
  */
 package org.apache.struts.apps.mailreader.actions;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.apps.mailreader.dao.User;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -38,45 +37,42 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class LogonAction extends BaseAction {
 
-    /**
-     * <p>
-     * Use "username" and "password" fields from ActionForm to retrieve a User
-     * object from the database. If credentials are not valid, or database
-     * has disappeared, post error messages and forward to input.
-     * </p>
-     *
-     * @param mapping  The ActionMapping used to select this instance
-     * @param form     The optional ActionForm bean for this request (if any)
-     * @param request  The HTTP request we are processing
-     * @param response The HTTP response we are creating
-     * @throws Exception if the application business logic throws
-     *                   an exception
-     */
-    public ActionForward execute(
-            ActionMapping mapping,
-            ActionForm form,
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws Exception {
+  /**
+   * <p>
+   * Use "username" and "password" fields from ActionForm to retrieve a User
+   * object from the database. If credentials are not valid, or database
+   * has disappeared, post error messages and forward to input.
+   * </p>
+   *
+   * @param mapping  The ActionMapping used to select this instance
+   * @param form     The optional ActionForm bean for this request (if any)
+   * @param request  The HTTP request we are processing
+   * @param response The HTTP response we are creating
+   * @throws Exception if the application business logic throws
+   *                   an exception
+   */
+  public ActionForward execute(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    // Retrieve user
+    String username = doGet(form, USERNAME);
+    String password = doGet(form, PASSWORD);
+    ActionMessages errors = new ActionMessages();
+    User user = doGetUser(username, password, errors);
 
-        // Retrieve user
-        String username = doGet(form, USERNAME);
-        String password = doGet(form, PASSWORD);
-        ActionMessages errors = new ActionMessages();
-        User user = doGetUser(username, password, errors);
-
-        // Report back any errors, and exit if any
-        if (!errors.isEmpty()) {
-            this.saveErrors(request, errors);
-            return (mapping.getInputForward());
-        }
-
-        // Cache user object in session to signify logon
-        doCacheUser(request, user);
-
-        // Done
-        return doFindSuccess(mapping);
-
+    // Report back any errors, and exit if any
+    if (!errors.isEmpty()) {
+      this.saveErrors(request, errors);
+      return (mapping.getInputForward());
     }
 
+    // Cache user object in session to signify logon
+    doCacheUser(request, user);
+
+    // Done
+    return doFindSuccess(mapping);
+  }
 }

@@ -19,43 +19,39 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.validator;
-
 
 /**
  * Just used to provide an indexed properties example.
  *
-*/
+ */
 public class CityStateZip implements java.io.Serializable {
 
-    private String sCity = null;
-    private String sStateProv = null;
-    private String[] sZipPostal = new String[3];
+  private String sCity = null;
+  private String sStateProv = null;
+  private String[] sZipPostal = new String[3];
 
+  public String getCity() {
+    return sCity;
+  }
 
-    public String getCity() {
-       return sCity;
-    }
+  public void setCity(String sCity) {
+    this.sCity = sCity;
+  }
 
-    public void setCity(String sCity) {
-        this.sCity = sCity;
-    }
+  public String getStateProv() {
+    return sStateProv;
+  }
 
-    public String getStateProv() {
-       return sStateProv;
-    }
+  public void setStateProv(String sStateProv) {
+    this.sStateProv = sStateProv;
+  }
 
-    public void setStateProv(String sStateProv) {
-        this.sStateProv = sStateProv;
-    }
+  public String getZipPostal(int index) {
+    return sZipPostal[index];
+  }
 
-    public String getZipPostal(int index) {
-       return sZipPostal[index];
-    }
-
-    public void setZipPostal(int index, String value) {
-        this.sZipPostal[index] = value;
-    }
-
+  public void setZipPostal(int index, String value) {
+    this.sZipPostal[index] = value;
+  }
 }

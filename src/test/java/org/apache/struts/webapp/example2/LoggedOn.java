@@ -19,9 +19,7 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,28 +30,23 @@ import org.apache.commons.logging.LogFactory;
 
 public class LoggedOn {
 
+  // ------------------------------------------------------ Instance Variables
 
-    // ------------------------------------------------------ Instance Variables
+  private static final Log log = LogFactory.getLog(LoggedOn.class);
 
+  // ----------------------------------------------------------------- Actions
 
-    private static final Log log = LogFactory.getLog(LoggedOn.class);
-
-
-    // ----------------------------------------------------------------- Actions
-
-
-    /**
-     * <p>Begin the process of logging off.</p>
-     */
-    public String logoff() {
-        /*
+  /**
+   * <p>Begin the process of logging off.</p>
+   */
+  public String logoff() {
+    /*
         FacesContext context = FacesContext.getCurrentInstance();
         if (log.isDebugEnabled()) {
             log.debug("logoff(" + context + ")");
         }
         forward(context, "/logoff.do");
          */
-        return (null);
-
-    }
+    return (null);
+  }
 }

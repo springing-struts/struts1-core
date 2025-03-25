@@ -4,8 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class RequestWrapper extends ApplicationHttpRequest {
+
   public RequestWrapper(HttpServletRequest request) {
-    super((ApplicationHttpRequest) request, ((ApplicationHttpRequest) request).context, false);
+    super(
+      (ApplicationHttpRequest) request,
+      ((ApplicationHttpRequest) request).context,
+      false
+    );
   }
 
   @Override

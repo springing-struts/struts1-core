@@ -1,13 +1,12 @@
 package org.apache.struts.util;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNullElseGet;
+
+import java.util.Locale;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import springing.struts1.message.ResourceBundleMessageResources;
-
-import java.util.Locale;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * General purpose abstract class that describes an API for retrieving
@@ -46,10 +45,13 @@ public abstract class MessageResources {
    */
   public String requireMessage(String key, Object... args) {
     return requireNonNullElseGet(getMessage(null, key, args), () -> {
-      throw new IllegalArgumentException(format(
-        "The message associated with the key [%s] is not defined in the message resource [%s].",
-        key, getConfig()
-      ));
+      throw new IllegalArgumentException(
+        format(
+          "The message associated with the key [%s] is not defined in the message resource [%s].",
+          key,
+          getConfig()
+        )
+      );
     });
   }
 
@@ -61,13 +63,19 @@ public abstract class MessageResources {
    * returned. This method must be implemented by a concrete subclass.
    */
   public abstract @Nullable String getMessage(
-    @Nullable Locale locale, String key, Object... args
+    @Nullable Locale locale,
+    String key,
+    Object... args
   );
 
   public @Nullable String getMessageInLocale(
-    @Nullable String locale, String key, Object... args
+    @Nullable String locale,
+    String key,
+    Object... args
   ) {
-    Locale localeObj = locale != null ? Locale.forLanguageTag(locale) : LocaleContextHolder.getLocale();
+    Locale localeObj = locale != null
+      ? Locale.forLanguageTag(locale)
+      : LocaleContextHolder.getLocale();
     return getMessage(localeObj, key, args);
   }
 

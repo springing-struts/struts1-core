@@ -19,12 +19,9 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
 
-
 import org.apache.struts.action.ActionMapping;
-
 
 /**
  * Implementation of <strong>ActionMapping</strong> for the Struts
@@ -44,67 +41,49 @@ import org.apache.struts.action.ActionMapping;
 
 public final class ApplicationMapping extends ActionMapping {
 
+  // --------------------------------------------------- Instance Variables
 
-    // --------------------------------------------------- Instance Variables
+  /**
+   * The failure URI for this mapping.
+   */
+  private String failure = null;
 
+  /**
+   * The success URI for this mapping.
+   */
+  private String success = null;
 
-    /**
-     * The failure URI for this mapping.
-     */
-    private String failure = null;
+  // ----------------------------------------------------------- Properties
 
-
-    /**
-     * The success URI for this mapping.
-     */
-    private String success = null;
-
-
-    // ----------------------------------------------------------- Properties
-
-
-    /**
-     * Return the failure URI for this mapping.
-     */
-    public String getFailure() {
-
+  /**
+   * Return the failure URI for this mapping.
+   */
+  public String getFailure() {
     return (this.failure);
+  }
 
-    }
-
-
-    /**
-     * Set the failure URI for this mapping.
-     *
-     * @param failure The failure URI for this mapping
-     */
-    public void setFailure(String failure) {
-
+  /**
+   * Set the failure URI for this mapping.
+   *
+   * @param failure The failure URI for this mapping
+   */
+  public void setFailure(String failure) {
     this.failure = failure;
+  }
 
-    }
-
-
-    /**
-     * Return the success URI for this mapping.
-     */
-    public String getSuccess() {
-
+  /**
+   * Return the success URI for this mapping.
+   */
+  public String getSuccess() {
     return (this.success);
+  }
 
-    }
-
-
-    /**
-     * Set the success URI for this mapping.
-     *
-     * @param success The success URI for this mapping
-     */
-    public void setSuccess(String success) {
-
+  /**
+   * Set the success URI for this mapping.
+   *
+   * @param success The success URI for this mapping
+   */
+  public void setSuccess(String success) {
     this.success = success;
-
-    }
-
-
+  }
 }

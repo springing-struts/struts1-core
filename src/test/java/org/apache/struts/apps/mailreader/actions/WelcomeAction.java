@@ -20,17 +20,15 @@
  */
 package org.apache.struts.apps.mailreader.actions;
 
+import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.apps.mailreader.Constants;
 import org.apache.struts.apps.mailreader.dao.UserDatabase;
 import org.apache.struts.util.MessageResources;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-
 
 /**
  * <p>
@@ -50,38 +48,35 @@ import java.util.ArrayList;
  */
 public final class WelcomeAction extends BaseAction {
 
-    // See superclass for Javadoc
-    public ActionForward execute(
-            ActionMapping mapping,
-            ActionForm form,
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws Exception {
+  // See superclass for Javadoc
+  public ActionForward execute(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    // Setup message array in case there are errors
+    ArrayList messages = new ArrayList();
 
-        // Setup message array in case there are errors
-        ArrayList messages = new ArrayList();
-
-        // Confirm message resources loaded
-        MessageResources resources = getResources(request);
-        if (resources == null) {
-            messages.add(Constants.ERROR_MESSAGES_NOT_LOADED);
-        }
-
-        // Confirm database loaded
-        UserDatabase userDatabase = doGetUserDatabase();
-        if (userDatabase == null) {
-            messages.add(Constants.ERROR_DATABASE_NOT_LOADED);
-        }
-
-        // If there were errors, forward to our failure page
-        if (messages.size() > 0) {
-            request.setAttribute(Constants.ERROR_KEY, messages);
-            return doFindFailure(mapping);
-        }
-
-        // Forward to our success page
-        return doFindSuccess(mapping);
-
+    // Confirm message resources loaded
+    MessageResources resources = getResources(request);
+    if (resources == null) {
+      messages.add(Constants.ERROR_MESSAGES_NOT_LOADED);
     }
 
+    // Confirm database loaded
+    UserDatabase userDatabase = doGetUserDatabase();
+    if (userDatabase == null) {
+      messages.add(Constants.ERROR_DATABASE_NOT_LOADED);
+    }
+
+    // If there were errors, forward to our failure page
+    if (messages.size() > 0) {
+      request.setAttribute(Constants.ERROR_KEY, messages);
+      return doFindFailure(mapping);
+    }
+
+    // Forward to our success page
+    return doFindSuccess(mapping);
+  }
 }

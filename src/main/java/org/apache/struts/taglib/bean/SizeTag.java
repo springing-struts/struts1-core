@@ -1,14 +1,13 @@
 package org.apache.struts.taglib.bean;
 
+import static springing.util.ObjectUtils.getSize;
+
 import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
-
-import javax.servlet.jsp.PageContext;
-
-import static springing.util.ObjectUtils.getSize;
 
 /**
  * Define a bean containing the number of elements in a Collection or Map.
@@ -23,6 +22,7 @@ import static springing.util.ObjectUtils.getSize;
  *   specified by the `name` attribute.
  */
 public class SizeTag extends SetSupport implements JspVariableAware {
+
   public SizeTag() {
     init();
   }
@@ -48,7 +48,9 @@ public class SizeTag extends SetSupport implements JspVariableAware {
 
   @Override
   public int doEndTag() throws JspException {
-    var items = collection != null ? collection : resolveValue(PageContext.toJavaxNamespace(pageContext));
+    var items = collection != null
+      ? collection
+      : resolveValue(PageContext.toJavaxNamespace(pageContext));
     value = getSize(items);
     return super.doEndTag();
   }

@@ -15,5 +15,4 @@ import org.apache.struts.action.RequestProcessor;
  *   up in the specified Catalog. If not specified, the default value is
  *   servlet-standard.
  */
-public class ComposableRequestProcessor extends RequestProcessor {
-}
+public class ComposableRequestProcessor extends RequestProcessor {}

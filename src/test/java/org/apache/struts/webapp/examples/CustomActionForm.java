@@ -21,9 +21,7 @@
 
 package org.apache.struts.webapp.examples;
 
-
 import org.apache.struts.action.ActionForm;
-
 
 /**
  * Custom ActionForm to demonstrate usage.
@@ -33,38 +31,28 @@ import org.apache.struts.action.ActionForm;
 
 public final class CustomActionForm extends ActionForm {
 
+  // --------------------------------------------------- Instance Variables
 
-    // --------------------------------------------------- Instance Variables
+  /**
+   * An example String property.
+   */
+  private String example = "";
 
+  // ----------------------------------------------------------- Properties
 
-    /**
-     * An example String property.
-     */
-    private String example = "";
+  /**
+   * Return the example String.
+   */
+  public String getExample() {
+    return (this.example);
+  }
 
-
-    // ----------------------------------------------------------- Properties
-
-
-    /**
-     * Return the example String.
-     */
-    public String getExample() {
-
-        return (this.example);
-
-    }
-
-
-    /**
-     * Set the example String.
-     *
-     * @param example The new example String.
-     */
-    public void setExample(String example) {
-
-        this.example = example;
-
-    }
-
+  /**
+   * Set the example String.
+   *
+   * @param example The new example String.
+   */
+  public void setExample(String example) {
+    this.example = example;
+  }
 }

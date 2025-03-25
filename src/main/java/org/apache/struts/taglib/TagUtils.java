@@ -1,13 +1,12 @@
 package org.apache.struts.taglib;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Locale;
+import javax.servlet.jsp.PageContext;
 import org.apache.struts.Globals;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
-
-import javax.servlet.jsp.PageContext;
-import java.util.Locale;
-
-import static java.util.Objects.requireNonNull;
 
 public class TagUtils {
 
@@ -19,9 +18,11 @@ public class TagUtils {
   }
 
   public static class Holder {
+
     public Holder(TagUtils instance) {
       INSTANCE = instance;
     }
+
     private static @Nullable TagUtils INSTANCE;
   }
 
@@ -30,7 +31,10 @@ public class TagUtils {
    * @param locale Name of the session attribute for our user's Locale. If this
    *               is `null`, the default locale key is used for the lookup.
    */
-  public Locale getUserLocale(PageContext pageContext, @Nullable String locale) {
+  public Locale getUserLocale(
+    PageContext pageContext,
+    @Nullable String locale
+  ) {
     return LocaleContextHolder.getLocale();
   }
 

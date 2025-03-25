@@ -33,6 +33,7 @@ public class MessagesPresentTag extends TagSupport implements MessagesAware {
   protected void init() {
     ref = MessagesReference.create();
   }
+
   private MessagesReference ref;
 
   @Override

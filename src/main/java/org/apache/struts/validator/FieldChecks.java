@@ -1,13 +1,8 @@
 package org.apache.struts.validator;
 
-import org.apache.commons.validator.Field;
-import org.apache.commons.validator.Validator;
-import org.apache.commons.validator.ValidatorAction;
-import org.apache.struts.action.ActionMessages;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.lang.Nullable;
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -16,9 +11,13 @@ import java.text.*;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.validator.Field;
+import org.apache.commons.validator.Validator;
+import org.apache.commons.validator.ValidatorAction;
+import org.apache.struts.action.ActionMessages;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.lang.Nullable;
 
 /**
  * This class contains the default validations that are used in the
@@ -66,31 +65,53 @@ public class FieldChecks {
     var joinType = field.getRequiredVarValue("fieldJoin", "AND").toUpperCase();
     var andJoin = joinType.equals("AND");
     var orJoin = joinType.equals("OR");
-    if (!andJoin && !orJoin) throw new IllegalArgumentException(format(
-      "Unknown requiredIf validation join type: [%s].", joinType
-    ));
+    if (!andJoin && !orJoin) throw new IllegalArgumentException(
+      format("Unknown requiredIf validation join type: [%s].", joinType)
+    );
     for (int i = 0; fieldVars.containsKey("field[" + i + "]"); i++) {
       var fieldName = field.getRequiredVarValue("field[" + i + "]");
-      var testType = field.getRequiredVarValue("fieldTest[" + i + "]").toUpperCase();
+      var testType = field
+        .getRequiredVarValue("fieldTest[" + i + "]")
+        .toUpperCase();
       var testNull = testType.equals("NULL");
       var testNotNull = testType.equals("NOTNULL");
       var testEqual = testType.equals("EQUAL");
-      if (!testNull && !testNotNull && !testEqual) throw new IllegalArgumentException(format(
-        "Unknown requiredIf validation test type: [%s].", testType
-      ));
-      var isIndexed = field.getRequiredVarValueAsBool("fieldIndexed[" + i + "]", false);
+      if (
+        !testNull && !testNotNull && !testEqual
+      ) throw new IllegalArgumentException(
+        format("Unknown requiredIf validation test type: [%s].", testType)
+      );
+      var isIndexed = field.getRequiredVarValueAsBool(
+        "fieldIndexed[" + i + "]",
+        false
+      );
       var testField = requireNonNull(
-        field.getForm().getFieldByName(fieldName), () -> format(
-          "Unknown field name [%s] of the form [%s] is referred by a requiredIf validator.",
-          fieldName, field.getForm().getName()
-        )
+        field.getForm().getFieldByName(fieldName),
+        () ->
+          format(
+            "Unknown field name [%s] of the form [%s] is referred by a requiredIf validator.",
+            fieldName,
+            field.getForm().getName()
+          )
       );
       var testValue = testField.getValueOf(bean);
-      var testPassed = testNull ? testValue == null
-        : testNotNull ? testValue != null
-        : Objects.equals(testValue, field.getRequiredVarValue("fieldValue[" + i + "]"));
+      var testPassed = testNull
+        ? testValue == null
+        : testNotNull
+          ? testValue != null
+          : Objects.equals(
+            testValue,
+            field.getRequiredVarValue("fieldValue[" + i + "]")
+          );
       if (orJoin && testPassed) {
-        return validateRequired(bean, validatorAction, field, errors, validator, request);
+        return validateRequired(
+          bean,
+          validatorAction,
+          field,
+          errors,
+          validator,
+          request
+        );
       }
       if (andJoin && !testPassed) {
         return true;
@@ -99,7 +120,14 @@ public class FieldChecks {
     if (orJoin) {
       return true;
     }
-    return validateRequired(bean, validatorAction, field, errors, validator, request);
+    return validateRequired(
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request
+    );
   }
 
   /**
@@ -186,9 +214,16 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateByte(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
+
   /**
    * Checks if the field can safely be converted to a byte primitive.
    */
@@ -201,7 +236,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateByte(
-      bean, validatorAction, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -244,9 +285,16 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateShort(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
+
   /**
    * Checks if the field can safely be converted to a short primitive.
    */
@@ -259,7 +307,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateShort(
-      bean, va, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      va,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -302,7 +356,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateInteger(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
 
@@ -318,7 +378,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateInteger(
-      bean, validatorAction, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -364,7 +430,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateLong(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
 
@@ -380,7 +452,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateLong(
-      bean, validatorAction, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -410,6 +488,7 @@ public class FieldChecks {
     errors.addValidationError(field, validatorAction);
     return false;
   }
+
   /**
    * Checks if the field can safely be converted to a float primitive.
    */
@@ -422,7 +501,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateFloat(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
 
@@ -438,7 +523,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateFloat(
-      bean, validatorAction, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -458,7 +549,8 @@ public class FieldChecks {
     var isValid = isValidNumber(
       value,
       true,
-      -Float.MAX_VALUE, Float.MAX_VALUE,
+      -Float.MAX_VALUE,
+      Float.MAX_VALUE,
       locale
     );
     if (isValid) {
@@ -480,7 +572,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateDouble(
-      bean, validatorAction, field, errors, validator, request, null
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      null
     );
   }
 
@@ -496,7 +594,13 @@ public class FieldChecks {
     HttpServletRequest request
   ) {
     return doValidateDouble(
-      bean, validatorAction, field, errors, validator, request, LocaleContextHolder.getLocale()
+      bean,
+      validatorAction,
+      field,
+      errors,
+      validator,
+      request,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -519,7 +623,7 @@ public class FieldChecks {
     var isValid = isValidNumber(
       value,
       true,
-      - Double.MAX_VALUE,
+      -Double.MAX_VALUE,
       Double.MAX_VALUE,
       null
     );
@@ -537,7 +641,13 @@ public class FieldChecks {
     Number max,
     @Nullable Locale locale
   ) {
-    var validNumber = toValidNumber(value, allowsDecimalPoint, min, max ,locale);
+    var validNumber = toValidNumber(
+      value,
+      allowsDecimalPoint,
+      min,
+      max,
+      locale
+    );
     return validNumber != null;
   }
 
@@ -554,9 +664,7 @@ public class FieldChecks {
     format.setParseIntegerOnly(!allowsDecimalPoint);
     format.setRoundingMode(RoundingMode.UNNECESSARY);
     var position = new ParsePosition(0);
-    var v = value
-      .replace("+", "")
-      .replace('e', 'E');
+    var v = value.replace("+", "").replace('e', 'E');
     var number = format.parse(v, position);
     if (position.getIndex() != v.length() || position.getErrorIndex() != -1) {
       return null;
@@ -599,14 +707,20 @@ public class FieldChecks {
     }
     var datePattern = field.getVarValue("datePattern");
     var datePatternStrict = field.getVarValue("datePatternStrict");
-    if (datePattern != null && datePatternStrict != null) throw new IllegalArgumentException(format(
-      "Only one of the properties datePattern or datePatternStrict is allowed" +
-      "for date validation of the field [%s].", field.getKey()
-    ));
-    var format =
-        datePattern != null ? new SimpleDateFormat(datePattern)
-      : datePatternStrict != null ? new SimpleDateFormat(datePatternStrict)
-      : getDefaultDateFormat();
+    if (
+      datePattern != null && datePatternStrict != null
+    ) throw new IllegalArgumentException(
+      format(
+        "Only one of the properties datePattern or datePatternStrict is allowed" +
+        "for date validation of the field [%s].",
+        field.getKey()
+      )
+    );
+    var format = datePattern != null
+      ? new SimpleDateFormat(datePattern)
+      : datePatternStrict != null
+        ? new SimpleDateFormat(datePatternStrict)
+        : getDefaultDateFormat();
     format.setLenient(false);
     try {
       format.parse(value);
@@ -625,7 +739,9 @@ public class FieldChecks {
 
   private static DateFormat getDefaultDateFormat() {
     return DateFormat.getDateTimeInstance(
-      DateFormat.SHORT, DateFormat.SHORT, LocaleContextHolder.getLocale()
+      DateFormat.SHORT,
+      DateFormat.SHORT,
+      LocaleContextHolder.getLocale()
     );
   }
 
@@ -658,8 +774,9 @@ public class FieldChecks {
     }
     var min = field.getVarValueAsLong("min");
     var max = field.getVarValueAsLong("max");
-    var inRange = (min == null || number.intValue() >= min)
-      && (max == null || number.intValue() <= max);
+    var inRange =
+      (min == null || number.intValue() >= min) &&
+      (max == null || number.intValue() <= max);
     if (inRange) {
       return true;
     }
@@ -696,8 +813,9 @@ public class FieldChecks {
     }
     var min = field.getVarValueAsLong("min");
     var max = field.getVarValueAsLong("max");
-    var inRange = (min == null || number.intValue() >= min)
-      && (max == null || number.intValue() <= max);
+    var inRange =
+      (min == null || number.intValue() >= min) &&
+      (max == null || number.intValue() <= max);
     if (inRange) {
       return true;
     }
@@ -724,7 +842,7 @@ public class FieldChecks {
     var number = toValidNumber(
       value,
       true,
-      - Float.MAX_VALUE,
+      -Float.MAX_VALUE,
       Float.MAX_VALUE,
       null
     );
@@ -734,8 +852,9 @@ public class FieldChecks {
     }
     var min = field.getVarValueAsNumber("min");
     var max = field.getVarValueAsNumber("max");
-    var inRange = (min == null || number.floatValue() >= min.floatValue())
-      && (max == null || number.floatValue() <= max.floatValue());
+    var inRange =
+      (min == null || number.floatValue() >= min.floatValue()) &&
+      (max == null || number.floatValue() <= max.floatValue());
     if (inRange) {
       return true;
     }
@@ -762,7 +881,7 @@ public class FieldChecks {
     var number = toValidNumber(
       value,
       true,
-      - Double.MAX_VALUE,
+      -Double.MAX_VALUE,
       Double.MAX_VALUE,
       null
     );
@@ -772,8 +891,9 @@ public class FieldChecks {
     }
     var min = field.getVarValueAsNumber("min");
     var max = field.getVarValueAsNumber("max");
-    var inRange = (min == null || number.doubleValue() >= min.doubleValue())
-      && (max == null || number.doubleValue() <= max.doubleValue());
+    var inRange =
+      (min == null || number.doubleValue() >= min.doubleValue()) &&
+      (max == null || number.doubleValue() <= max.doubleValue());
     if (inRange) {
       return true;
     }
@@ -808,6 +928,7 @@ public class FieldChecks {
     errors.addValidationError(field, validatorAction);
     return false;
   }
+
   private static final Pattern VALID_CREDIT_CARD_NUMBER = Pattern.compile(
     "^((4\\d{3})|(5[1-5]\\d{2})|(6011)|(7\\d{3}))-?\\d{4}-?\\d{4}-?\\d{4}|3[4,7]\\d{13}$"
   );
@@ -839,6 +960,7 @@ public class FieldChecks {
     errors.addValidationError(field, validatorAction);
     return false;
   }
+
   private static final Pattern VALID_EMAIL = Pattern.compile(
     "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$"
   );
@@ -875,7 +997,9 @@ public class FieldChecks {
     try {
       var url = new URI(value).toURL();
       return true;
-    } catch (URISyntaxException | MalformedURLException | IllegalArgumentException e) {
+    } catch (
+      URISyntaxException | MalformedURLException | IllegalArgumentException e
+    ) {
       // was invalid URL
     }
     errors.addValidationError(field, validatorAction);

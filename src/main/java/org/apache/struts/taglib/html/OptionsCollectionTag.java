@@ -1,12 +1,12 @@
 package org.apache.struts.taglib.html;
 
+import static springing.util.ObjectUtils.asIterator;
+
+import java.util.Collections;
+import java.util.Iterator;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableReference;
 import springing.struts1.taglib.StrutsOptionsTagBase;
-import java.util.Collections;
-import java.util.Iterator;
-
-import static springing.util.ObjectUtils.asIterator;
 
 /**
  * Render a Collection of Select Options
@@ -89,6 +89,7 @@ public class OptionsCollectionTag extends StrutsOptionsTagBase {
   public void setLabel(String label) {
     this.label = label;
   }
+
   private static final String DEFAULT_LABEL_PROPERTY = "label";
 
   /**
@@ -116,5 +117,6 @@ public class OptionsCollectionTag extends StrutsOptionsTagBase {
   public void setValue(String value) {
     this.value = value;
   }
+
   private static final String DEFAULT_VALUE_PROPERTY = "value";
 }

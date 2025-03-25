@@ -1,14 +1,13 @@
 package org.apache.struts.taglib.logic;
 
+import static java.util.Objects.requireNonNull;
+
 import jakarta.servlet.jsp.JspException;
-import springing.struts1.taglib.UrlBuilder;
-import springing.struts1.taglib.UrlBuilderSupport;
+import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import java.io.IOException;
-
-import static java.util.Objects.requireNonNull;
+import springing.struts1.taglib.UrlBuilder;
+import springing.struts1.taglib.UrlBuilderSupport;
 
 /**
  * Render an HTTP Redirect.
@@ -91,9 +90,10 @@ public class RedirectTag extends TagSupport implements UrlBuilderSupport {
     try {
       response.sendRedirect(redirectUrl);
     } catch (IOException e) {
-      throw new RuntimeException(String.format(
-        "Failed to redirect to the path [%s].", redirectUrl
-      ), e);
+      throw new RuntimeException(
+        String.format("Failed to redirect to the path [%s].", redirectUrl),
+        e
+      );
     }
     return SKIP_PAGE;
   }

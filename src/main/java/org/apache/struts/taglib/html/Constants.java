@@ -1,6 +1,7 @@
 package org.apache.struts.taglib.html;
 
 public class Constants {
+
   private Constants() {}
 
   public static boolean isReservedFormPropertyName(String propertyName) {

@@ -1,10 +1,11 @@
 package org.apache.struts.util;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 import static springing.util.ObjectUtils.classFor;
 import static springing.util.ObjectUtils.createInstanceOf;
+
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * General purpose utility methods related to processing a servlet request in
@@ -40,6 +41,4 @@ public class RequestUtils {
   public static Class<?> applicationClass(String className) {
     return classFor(className);
   }
-
-
 }

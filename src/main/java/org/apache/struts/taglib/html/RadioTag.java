@@ -1,10 +1,9 @@
 package org.apache.struts.taglib.html;
 
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsInputElementTagBase;
-
-import java.util.Map;
 
 /**
  * Render A Radio Button Input Field.
@@ -31,6 +30,7 @@ public class RadioTag extends StrutsInputElementTagBase {
   private void init() {
     idName = null;
   }
+
   private @Nullable String idName;
 
   @Override
@@ -40,7 +40,7 @@ public class RadioTag extends StrutsInputElementTagBase {
 
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
-    var attrs =  super.getAdditionalAttributes();
+    var attrs = super.getAdditionalAttributes();
     attrs.put("type", "radio");
     return attrs;
   }

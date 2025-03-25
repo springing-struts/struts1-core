@@ -1,5 +1,9 @@
 package springing.struts1.configuration;
 
+import java.util.List;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.RequestProcessor;
 import org.apache.struts.chain.contexts.ServletActionContext;
@@ -18,18 +22,15 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import springing.struts1.controller.JspForwardingHandler;
 import springing.struts1.controller.RequestTokenManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-
 @Configuration
 public class StrutsConfiguration {
 
   public static final String STRUTS_ACTION_FORWARD_PATTERN = "/**/*.do";
 
   @Bean
-  public ModuleUtils moduleUtils(jakarta.servlet.http.HttpServletRequest request) {
+  public ModuleUtils moduleUtils(
+    jakarta.servlet.http.HttpServletRequest request
+  ) {
     ModuleUtils.initialize(
       actionServlet().getStrutsModules(),
       HttpServletRequest.toJavaxNamespace(request)
@@ -93,7 +94,9 @@ public class StrutsConfiguration {
   }
 
   @Bean
-  public ServletActionContext.Holder actionContextHolder(ServletActionContext instance) {
+  public ServletActionContext.Holder actionContextHolder(
+    ServletActionContext instance
+  ) {
     return new ServletActionContext.Holder(instance);
   }
 
@@ -103,7 +106,9 @@ public class StrutsConfiguration {
   }
 
   @Bean
-  public List<ServletContextListenerConfigBean> contextListenerConfigs(WebXml webXml) {
+  public List<ServletContextListenerConfigBean> contextListenerConfigs(
+    WebXml webXml
+  ) {
     return webXml.getServletContextListenerConfigBeans();
   }
 
@@ -126,7 +131,9 @@ public class StrutsConfiguration {
   }
 
   @Bean
-  public JspForwardingHandler jspResourceHandler(ResourceHttpRequestHandler staticResourceHandler) {
+  public JspForwardingHandler jspResourceHandler(
+    ResourceHttpRequestHandler staticResourceHandler
+  ) {
     return new JspForwardingHandler(staticResourceHandler);
   }
 
@@ -144,7 +151,11 @@ public class StrutsConfiguration {
       webxml.registerWelcomeFile(mappings, moduleConfig);
       for (var actionConfig : moduleConfig.getActionConfigs()) {
         actionConfig.registerRequestMapping(
-          mappings, actionContext, requestProcessor, jspResourceHandler, context
+          mappings,
+          actionContext,
+          requestProcessor,
+          jspResourceHandler,
+          context
         );
       }
     }

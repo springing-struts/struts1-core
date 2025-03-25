@@ -13,7 +13,11 @@ public class DefaultDynaBean implements MapBackedDynaBean {
     this(name, false, properties);
   }
 
-  public DefaultDynaBean(String name, boolean isLazy, DynaProperty... properties) {
+  public DefaultDynaBean(
+    String name,
+    boolean isLazy,
+    DynaProperty... properties
+  ) {
     dynaClass = new DefaultDynaClass(name, isLazy, properties);
   }
 
@@ -27,5 +31,6 @@ public class DefaultDynaBean implements MapBackedDynaBean {
   public Map<String, Object> getValues() {
     return values;
   }
+
   private final Map<String, Object> values = new HashMap<>();
 }

@@ -1,19 +1,18 @@
 package org.apache.struts.taglib.logic;
 
+import static org.apache.struts.chain.contexts.ServletActionContext.getAttributeFromScope;
+import static springing.util.ObjectUtils.asIterator;
+
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;
+import java.util.regex.Pattern;
+import javax.servlet.jsp.PageContext;
 import org.apache.taglibs.standard.tag.common.core.ForEachSupport;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.tags.NestedPathTag;
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
 import springing.struts1.taglib.StrutsDataBinding;
-
-import javax.servlet.jsp.PageContext;
-import java.util.regex.Pattern;
-
-import static org.apache.struts.chain.contexts.ServletActionContext.getAttributeFromScope;
-import static springing.util.ObjectUtils.asIterator;
 
 /**
  * Repeat the nested body content of this tag over a specified collection.
@@ -80,6 +79,7 @@ public class IterateTag extends ForEachSupport implements JspVariableAware {
     offset = null;
     type = null;
   }
+
   private JspVariableReference reference;
   private final boolean supportsNestedTag;
   private @Nullable NestedPathTag nestedPathTag;
@@ -106,6 +106,7 @@ public class IterateTag extends ForEachSupport implements JspVariableAware {
     var iterator = asIterator(value, getLengthAsInt(), offset);
     items = new ForEachIterator() {
       private int index = offset == null ? 0 : offset;
+
       @Override
       public boolean hasNext() throws JspTagException {
         return iterator.hasNext();
@@ -121,9 +122,7 @@ public class IterateTag extends ForEachSupport implements JspVariableAware {
             }
             nestedPathTag = new NestedPathTag();
             nestedPathTag.setPageContext(pageContext);
-            nestedPathTag.setPath(
-              reference.getProperty() + "[" + index + "]"
-            );
+            nestedPathTag.setPath(reference.getProperty() + "[" + index + "]");
             nestedPathTag.doStartTag();
           } catch (JspException e) {
             throw new JspTagException(e);
@@ -217,7 +216,7 @@ public class IterateTag extends ForEachSupport implements JspVariableAware {
   }
 
   private static final Pattern INTEGER_STRING = Pattern.compile(
-      "^(0|[+-]?[1-9][0-9]*)$"
+    "^(0|[+-]?[1-9][0-9]*)$"
   );
 
   /**

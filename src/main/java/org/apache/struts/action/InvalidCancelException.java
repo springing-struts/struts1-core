@@ -8,6 +8,7 @@ import org.springframework.web.client.HttpStatusCodeException;
  * the cancellable property for the Action Mapping is not set.
  */
 public class InvalidCancelException extends HttpStatusCodeException {
+
   public InvalidCancelException() {
     super(HttpStatus.BAD_REQUEST);
   }

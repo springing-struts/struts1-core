@@ -2,9 +2,9 @@ package org.apache.struts.taglib.bean;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import springing.struts1.taglib.SetTagBase;
 import java.util.Arrays;
 import java.util.List;
+import springing.struts1.taglib.SetTagBase;
 
 /**
  * Define a scripting variable based on the value(s) of the specified request
@@ -19,12 +19,21 @@ import java.util.List;
 public class CookieTag extends SetTagBase<Cookie> {
 
   @Override
-  protected List<Cookie> retrieveValues(HttpServletRequest request, String name) {
-    return Arrays.stream(request.getCookies()).filter(it -> name.equals(it.getName())).toList();
+  protected List<Cookie> retrieveValues(
+    HttpServletRequest request,
+    String name
+  ) {
+    return Arrays.stream(request.getCookies())
+      .filter(it -> name.equals(it.getName()))
+      .toList();
   }
 
   @Override
-  protected Cookie getDefaultValue(HttpServletRequest request, String name, String defaultValueString) {
+  protected Cookie getDefaultValue(
+    HttpServletRequest request,
+    String name,
+    String defaultValueString
+  ) {
     return new Cookie(name, defaultValueString);
   }
 }

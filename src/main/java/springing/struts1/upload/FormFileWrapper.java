@@ -1,16 +1,16 @@
 package springing.struts1.upload;
 
-import org.apache.struts.upload.FormFile;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
+import org.apache.struts.upload.FormFile;
+import org.springframework.web.multipart.MultipartFile;
 
 public class FormFileWrapper implements FormFile {
 
   public FormFileWrapper(MultipartFile file) {
     this.file = file;
   }
+
   private final MultipartFile file;
 
   @Override

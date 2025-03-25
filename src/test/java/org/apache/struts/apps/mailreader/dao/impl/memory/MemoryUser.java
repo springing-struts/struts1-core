@@ -24,49 +24,46 @@ package org.apache.struts.apps.mailreader.dao.impl.memory;
 import org.apache.struts.apps.mailreader.dao.UserDatabase;
 import org.apache.struts.apps.mailreader.dao.impl.AbstractUser;
 
-
 /**
  * <p>Concrete implementation of {@link AbstractUser} used for an in-memory
  * database backed by an XML data file.</p>
  *
  * @version $Rev$
  */
-public class MemoryUser extends AbstractUser{
+public class MemoryUser extends AbstractUser {
 
-    public MemoryUser(UserDatabase database, String username) {
-        super(database, username);
+  public MemoryUser(UserDatabase database, String username) {
+    super(database, username);
+  }
+
+  /**
+   * Return a String representation of this object.
+   */
+  public String toString() {
+    StringBuffer sb = new StringBuffer("<user username=\"");
+    sb.append(getUsername());
+    sb.append("\"");
+    if (getFromAddress() != null) {
+      sb.append(" fromAddress=\"");
+      sb.append(getFromAddress());
+      sb.append("\"");
     }
-    /**
-     * Return a String representation of this object.
-     */
-    public String toString() {
-
-        StringBuffer sb = new StringBuffer("<user username=\"");
-        sb.append(getUsername());
-        sb.append("\"");
-        if (getFromAddress() != null) {
-            sb.append(" fromAddress=\"");
-            sb.append(getFromAddress());
-            sb.append("\"");
-        }
-        if (getFullName() != null) {
-            sb.append(" fullName=\"");
-            sb.append(getFullName());
-            sb.append("\"");
-        }
-        if (getPassword() != null) {
-            sb.append(" password=\"");
-            sb.append(getPassword());
-            sb.append("\"");
-        }
-        if (getReplyToAddress() != null) {
-            sb.append(" replyToAddress=\"");
-            sb.append(getReplyToAddress());
-            sb.append("\"");
-        }
-        sb.append(">");
-        return (sb.toString());
-
+    if (getFullName() != null) {
+      sb.append(" fullName=\"");
+      sb.append(getFullName());
+      sb.append("\"");
     }
-
+    if (getPassword() != null) {
+      sb.append(" password=\"");
+      sb.append(getPassword());
+      sb.append("\"");
+    }
+    if (getReplyToAddress() != null) {
+      sb.append(" replyToAddress=\"");
+      sb.append(getReplyToAddress());
+      sb.append("\"");
+    }
+    sb.append(">");
+    return (sb.toString());
+  }
 }

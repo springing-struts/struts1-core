@@ -1,5 +1,11 @@
 package org.apache.struts.action;
 
+import static java.util.Objects.requireNonNull;
+import static org.apache.struts.Globals.*;
+
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;
@@ -8,15 +14,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import springing.struts1.controller.RequestTokenManager;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.Locale;
-
-import static java.util.Objects.requireNonNull;
-import static org.apache.struts.Globals.*;
-
 public abstract class Action {
+
   /**
    * Process the specified HTTP request, and create the corresponding HTTP
    * response (or forward to another web component that will create it), with
@@ -64,8 +63,7 @@ public abstract class Action {
     var empty = errors == null || errors.isEmpty();
     if (empty) {
       request.removeAttribute(ERROR_KEY);
-    }
-    else {
+    } else {
       request.setAttribute(ERROR_KEY, errors);
     }
   }
@@ -83,8 +81,7 @@ public abstract class Action {
     var empty = messages == null || messages.isEmpty();
     if (empty) {
       request.removeAttribute(MESSAGE_KEY);
-    }
-    else {
+    } else {
       request.setAttribute(MESSAGE_KEY, messages);
     }
   }
@@ -149,10 +146,12 @@ public abstract class Action {
     );
     return requestTokenManager;
   }
+
   @Autowired
   public void setRequestTokenManager(RequestTokenManager requestTokenManager) {
     this.requestTokenManager = requestTokenManager;
   }
+
   private @Nullable RequestTokenManager requestTokenManager;
 
   /**
@@ -184,15 +183,19 @@ public abstract class Action {
   public void setServlet(ActionServlet servlet) {
     this.servlet = servlet;
   }
+
   protected @Nullable ActionServlet servlet;
 
-
   @Autowired
-  public void setStrutsRequestContext(ServletActionContext servletActionContext) {
+  public void setStrutsRequestContext(
+    ServletActionContext servletActionContext
+  ) {
     this.servletActionContext = servletActionContext;
   }
+
   public ServletActionContext getStrutsRequestContext() {
     return requireNonNull(servletActionContext);
   }
+
   private @Nullable ServletActionContext servletActionContext;
 }

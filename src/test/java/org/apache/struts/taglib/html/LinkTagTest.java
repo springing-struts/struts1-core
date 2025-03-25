@@ -1,17 +1,16 @@
 package org.apache.struts.taglib.html;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.http.HttpMethod.GET;
+
+import java.util.Map;
 import org.apache.struts.TestApp;
 import org.apache.struts.webapp.exercise.TestBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class LinkTagTest {
@@ -112,9 +111,10 @@ public class LinkTagTest {
       },
       (content, processedBody) -> {
         assertThat(content, containsString("<a"));
-        assertThat(content, containsString(
-          "href=\"/exercise/html-link?booleanProperty=true\""
-        ));
+        assertThat(
+          content,
+          containsString("href=\"/exercise/html-link?booleanProperty=true\"")
+        );
       }
     );
   }
@@ -133,16 +133,22 @@ public class LinkTagTest {
       LinkTag.class,
       (tag, context) -> {
         var newValues = Map.of(
-          "floatProperty", 444.0f,
-          "intProperty", 555,
-          "stringArray", new String[] { "Value 1", "Value&2", "Value/3" }
+          "floatProperty",
+          444.0f,
+          "intProperty",
+          555,
+          "stringArray",
+          new String[] { "Value 1", "Value&2", "Value/3" }
         );
         context.getRequest().setAttribute("newValues", newValues);
         tag.setAction("/html-link-submit");
         tag.setName("newValues");
       },
       (content, processedBody) -> {
-        assertThat(content, containsString("href=\"/exercise/html-link-submit?"));
+        assertThat(
+          content,
+          containsString("href=\"/exercise/html-link-submit?")
+        );
         assertThat(content, containsString("floatProperty=444.0"));
         assertThat(content, containsString("intProperty=555"));
         assertThat(content, containsString("stringArray=Value%201"));
@@ -169,7 +175,7 @@ public class LinkTagTest {
         request.setServletPath("/exercise/action.do");
         tag.setForward("relative");
       },
-      (content, processedBody) ->  {
+      (content, processedBody) -> {
         assertThat(content, containsString("<a"));
         assertThat(content, containsString("href=\"/exercise/welcome.do\""));
       }
@@ -189,10 +195,15 @@ public class LinkTagTest {
       "/html-link",
       LinkTag.class,
       (tag, context) -> {
-        tag.setAction("/html-link-submit?doubleProperty=321.321&amp;longProperty=321321");
+        tag.setAction(
+          "/html-link-submit?doubleProperty=321.321&amp;longProperty=321321"
+        );
       },
       (content, processedBody) -> {
-        assertThat(content, containsString("href=\"/exercise/html-link-submit?"));
+        assertThat(
+          content,
+          containsString("href=\"/exercise/html-link-submit?")
+        );
         assertThat(content, containsString("doubleProperty=321.321"));
         assertThat(content, containsString("longProperty=321321\""));
       }
@@ -224,9 +235,10 @@ public class LinkTagTest {
         tag.setModule("/exercise");
       },
       (content, processedBody) -> {
-        assertThat(content, containsString(
-          "href=\"/exercise/html-link?booleanProperty=true"
-        ));
+        assertThat(
+          content,
+          containsString("href=\"/exercise/html-link?booleanProperty=true")
+        );
       }
     );
   }
@@ -251,7 +263,10 @@ public class LinkTagTest {
       },
       (content, processedBody) -> {
         assertThat(content, containsString("<a"));
-        assertThat(content, containsString("href=\"http://jakarta.apache.org/struts\""));
+        assertThat(
+          content,
+          containsString("href=\"http://jakarta.apache.org/struts\"")
+        );
       }
     );
   }
@@ -260,19 +275,25 @@ public class LinkTagTest {
   void testItRendersHtmlCommonProperties() throws Exception {
     app.createRequest(GET, "/exercise/html-link");
     app.assertTagContent(
-        "/html-link",
-        LinkTag.class,
-        (tag, context) -> {
-          tag.setForward("absolute");
-          tag.setDir("DIR VALUE");
-          tag.setOnclick("function(e) { console.log(e); }");
-        },
-        (content, processedBody) -> {
-          assertThat(content, containsString("<a"));
-          assertThat(content, containsString("href=\"http://jakarta.apache.org/struts\""));
-          assertThat(content, containsString("dir=\"DIR VALUE\""));
-          assertThat(content, containsString("onclick=\"function(e) { console.log(e); }\""));
-        }
+      "/html-link",
+      LinkTag.class,
+      (tag, context) -> {
+        tag.setForward("absolute");
+        tag.setDir("DIR VALUE");
+        tag.setOnclick("function(e) { console.log(e); }");
+      },
+      (content, processedBody) -> {
+        assertThat(content, containsString("<a"));
+        assertThat(
+          content,
+          containsString("href=\"http://jakarta.apache.org/struts\"")
+        );
+        assertThat(content, containsString("dir=\"DIR VALUE\""));
+        assertThat(
+          content,
+          containsString("onclick=\"function(e) { console.log(e); }\"")
+        );
+      }
     );
   }
 
@@ -314,7 +335,12 @@ public class LinkTagTest {
       },
       (content, processedBody) -> {
         assertThat(content, containsString("<a"));
-        assertThat(content, containsString("href=\"/validator/locale?language=ja&city=%93%8C%8B%9E\""));
+        assertThat(
+          content,
+          containsString(
+            "href=\"/validator/locale?language=ja&city=%93%8C%8B%9E\""
+          )
+        );
       }
     );
     app.createRequest(GET, "/validator/welcome");
@@ -329,7 +355,12 @@ public class LinkTagTest {
       },
       (content, processedBody) -> {
         assertThat(content, containsString("<a"));
-        assertThat(content, containsString("href=\"/validator/locale?language=ja&city=%E6%9D%B1%E4%BA%AC\""));
+        assertThat(
+          content,
+          containsString(
+            "href=\"/validator/locale?language=ja&city=%E6%9D%B1%E4%BA%AC\""
+          )
+        );
       }
     );
   }

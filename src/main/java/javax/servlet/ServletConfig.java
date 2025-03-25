@@ -6,7 +6,9 @@ public interface ServletConfig extends jakarta.servlet.ServletConfig {
   @Override
   ServletContext getServletContext();
 
-  static ServletConfig toJavaxNamespace(jakarta.servlet.ServletConfig servletConfig) {
+  static ServletConfig toJavaxNamespace(
+    jakarta.servlet.ServletConfig servletConfig
+  ) {
     return new ServletConfig() {
       @Override
       public String getServletName() {
@@ -15,7 +17,9 @@ public interface ServletConfig extends jakarta.servlet.ServletConfig {
 
       @Override
       public ServletContext getServletContext() {
-        return ServletContext.toJavaxNamespace(servletConfig.getServletContext());
+        return ServletContext.toJavaxNamespace(
+          servletConfig.getServletContext()
+        );
       }
 
       @Override

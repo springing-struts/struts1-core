@@ -1,13 +1,14 @@
 package springing.struts1.taglib;
 
-import jakarta.servlet.jsp.JspException;
-import org.apache.struts.taglib.html.Constants;
-import org.apache.struts.taglib.html.SelectTag;
-import org.springframework.lang.Nullable;
-import java.util.Iterator;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 import static springing.util.ObjectUtils.retrieveValue;
+
+import jakarta.servlet.jsp.JspException;
+import java.util.Iterator;
+import org.apache.struts.taglib.html.Constants;
+import org.apache.struts.taglib.html.SelectTag;
+import org.springframework.lang.Nullable;
 
 public abstract class StrutsOptionsTagBase extends StrutsHtmlElementTagBase {
 
@@ -76,7 +77,9 @@ public abstract class StrutsOptionsTagBase extends StrutsHtmlElementTagBase {
       if (value == null) {
         continue;
       }
-      var label = getLabelPropertyName() == null ? value : (String) retrieveValue(bean, labelPropName);
+      var label = getLabelPropertyName() == null
+        ? value
+        : (String) retrieveValue(bean, labelPropName);
       writeOptionTag(selectTag, value, label);
     }
   }
@@ -105,7 +108,8 @@ public abstract class StrutsOptionsTagBase extends StrutsHtmlElementTagBase {
     tagWriter.startTag("option");
     tagWriter.writeAttribute("value", v);
     tagWriter.writeOptionalAttributeValue(
-      ATTR_SELECTED, selected ? ATTR_SELECTED : null
+      ATTR_SELECTED,
+      selected ? ATTR_SELECTED : null
     );
     var text = getDisplayString(requireNonNullElse(label, v));
     tagWriter.appendValue(text);

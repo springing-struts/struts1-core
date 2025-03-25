@@ -1,13 +1,12 @@
 package org.apache.struts.action;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNullElse;
+
+import java.io.Serializable;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
-
-import java.io.Serializable;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
 
 /**
  * An encapsulation of an individual message returned by the `validate`
@@ -33,7 +32,7 @@ public class ActionMessage implements Serializable {
    */
   public ActionMessage(String key, boolean resource) {
     this.key = key;
-    this.values = new Object[]{};
+    this.values = new Object[] {};
     this.resource = resource;
     this.bundle = null;
   }
@@ -44,6 +43,7 @@ public class ActionMessage implements Serializable {
   public String getKey() {
     return key;
   }
+
   private final String key;
 
   /**
@@ -52,6 +52,7 @@ public class ActionMessage implements Serializable {
   public Object[] getValues() {
     return values;
   }
+
   private final Object[] values;
 
   /**
@@ -61,6 +62,7 @@ public class ActionMessage implements Serializable {
   public boolean isResource() {
     return resource;
   }
+
   private final boolean resource;
 
   private @Nullable String bundle;
@@ -73,9 +75,8 @@ public class ActionMessage implements Serializable {
    * Returns the content of this message.
    */
   public String getText(@Nullable String bundle) {
-    var resources = ModuleUtils.getCurrent().getMessageResources(
-      (bundle != null) ? bundle : this.bundle
-    );
+    var resources = ModuleUtils.getCurrent()
+      .getMessageResources((bundle != null) ? bundle : this.bundle);
     return getText(resources);
   }
 

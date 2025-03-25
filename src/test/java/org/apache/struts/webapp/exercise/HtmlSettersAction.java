@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.struts.webapp.exercise;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +24,6 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 
 /**
  * Do-nothing action that accepts the changes made automatically in our form
@@ -38,30 +35,24 @@ import org.apache.struts.action.ActionMapping;
 
 public class HtmlSettersAction extends Action {
 
-
-    /**
-     * Forward to the input form if "Save" was pressed or the main menu
-     * if "Cancel" was pressed.
-     *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
-     *
-     * @exception Exception if business logic throws an exception
-     */
-    public ActionForward execute(ActionMapping mapping,
-                                 ActionForm form,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response)
-        throws Exception {
-
-        if (isCancelled(request))
-            return (mapping.findForward("redirect-default"));
-        else
-            return (mapping.findForward("input"));
-
-    }
-
-
+  /**
+   * Forward to the input form if "Save" was pressed or the main menu
+   * if "Cancel" was pressed.
+   *
+   * @param mapping The ActionMapping used to select this instance
+   * @param form The optional ActionForm bean for this request
+   * @param request The servlet request we are processing
+   * @param response The servlet response we are creating
+   *
+   * @exception Exception if business logic throws an exception
+   */
+  public ActionForward execute(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    if (isCancelled(request)) return (mapping.findForward("redirect-default"));
+    else return (mapping.findForward("input"));
+  }
 }

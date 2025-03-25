@@ -1,7 +1,15 @@
 package org.apache.struts;
 
+import static java.util.Objects.requireNonNull;
+import static org.springframework.web.servlet.support.RequestContext.WEB_APPLICATION_CONTEXT_ATTRIBUTE;
+
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.RequestProcessor;
 import org.apache.struts.chain.contexts.ServletActionContext;
@@ -28,17 +36,14 @@ import springing.struts1.configuration.StrutsConfiguration;
 import springing.struts1.configuration.WebMvcConfiguration;
 import springing.struts1.controller.StrutsRequestHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
-import static org.springframework.web.servlet.support.RequestContext.WEB_APPLICATION_CONTEXT_ATTRIBUTE;
-
 @SpringBootApplication
-@Import({StrutsConfiguration.class, WebMvcConfiguration.class, MessageResourcesConfiguration.class})
+@Import(
+  {
+    StrutsConfiguration.class,
+    WebMvcConfiguration.class,
+    MessageResourcesConfiguration.class,
+  }
+)
 public class TestApp {
 
   @Autowired
@@ -46,6 +51,7 @@ public class TestApp {
 
   @Autowired
   private ServletActionContext actionContext;
+
   public ServletActionContext getActionContext() {
     return actionContext;
   }
@@ -61,6 +67,7 @@ public class TestApp {
 
   @Autowired
   private @Nullable RequestProcessor requestProcessor;
+
   public RequestProcessor getRequestProcessor() {
     return requireNonNull(requestProcessor);
   }
@@ -77,31 +84,44 @@ public class TestApp {
 
   private ActionForm formBean;
 
-  public HttpServletRequest createRequest(HttpMethod method, String requestPath) {
+  public HttpServletRequest createRequest(
+    HttpMethod method,
+    String requestPath
+  ) {
     return createRequest(method, requestPath, null);
   }
 
   public WebApplicationContext webApplicationContext;
 
   public HttpServletRequest createRequest(
-    HttpMethod method, String requestPath, @Nullable Consumer<MockHttpServletRequest> setup
+    HttpMethod method,
+    String requestPath,
+    @Nullable Consumer<MockHttpServletRequest> setup
   ) {
-
     pageContext = new MockPageContext(servletContext);
     var mockRequest = (MockHttpServletRequest) pageContext.getRequest();
     mockRequest.setMethod(method.name());
     mockRequest.setServletPath(requestPath);
     mockRequest.setRequestURI(requestPath);
     if (webApplicationContext == null) {
-      webApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+      webApplicationContext =
+        WebApplicationContextUtils.getRequiredWebApplicationContext(
+          servletContext
+        );
     }
-    mockRequest.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, webApplicationContext);
+    mockRequest.setAttribute(
+      WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+      webApplicationContext
+    );
     if (setup != null) setup.accept(mockRequest);
     request = HttpServletRequest.toJavaxNamespace(mockRequest);
     var mockResponse = (MockHttpServletResponse) pageContext.getResponse();
     mockResponse.setCharacterEncoding("UTF-8");
     response = HttpServletResponse.toJavaxNamespace(mockResponse);
-    var requestAttributes = new ServletRequestAttributes(mockRequest, mockResponse);
+    var requestAttributes = new ServletRequestAttributes(
+      mockRequest,
+      mockResponse
+    );
     RequestContextHolder.setRequestAttributes(requestAttributes);
     var requestHandler = getStrutsRequestHandlerFor(mockRequest);
     var actionMapping = requestHandler.getActionMapping();
@@ -111,11 +131,14 @@ public class TestApp {
     return request;
   }
 
-  private StrutsRequestHandler getStrutsRequestHandlerFor(MockHttpServletRequest request) {
+  private StrutsRequestHandler getStrutsRequestHandlerFor(
+    MockHttpServletRequest request
+  ) {
     try {
       var handlerExecutionChain = requestHandlerMappings.getHandler(request);
       if (handlerExecutionChain == null) throw new IllegalStateException(
-        "Failed to retrieve action mapping for the path: " + request.getRequestURI()
+        "Failed to retrieve action mapping for the path: " +
+        request.getRequestURI()
       );
       var handler = (HandlerMethod) handlerExecutionChain.getHandler();
       return (StrutsRequestHandler) handler.getBean();
@@ -143,7 +166,8 @@ public class TestApp {
     if (tag instanceof TagSupport tagSupport) {
       tagSupport.doAfterBody();
     }
-    String content = ((MockHttpServletResponse) pageContext.getResponse()).getContentAsString();
+    String content =
+      ((MockHttpServletResponse) pageContext.getResponse()).getContentAsString();
     assertion.accept(content, bodyProcessed == Tag.EVAL_BODY_INCLUDE);
   }
 }

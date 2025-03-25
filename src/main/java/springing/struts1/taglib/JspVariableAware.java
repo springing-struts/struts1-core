@@ -1,11 +1,9 @@
 package springing.struts1.taglib;
 
+import javax.servlet.jsp.PageContext;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.jsp.PageContext;
-
 public interface JspVariableAware {
-
   JspVariableReference getReference();
 
   default void setAwareNestedTag(boolean awareNestedTag) {

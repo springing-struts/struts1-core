@@ -1,29 +1,28 @@
 package org.apache.struts.config;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.apache.commons.validator.ValidatorResources;
-import org.apache.struts.action.*;
-import org.apache.struts.tiles.TilesPlugin;
-import org.apache.struts.tiles.config.TilesDefinitions;
-import org.apache.struts.validator.ValidatorPlugIn;
-import org.springframework.lang.Nullable;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 import static javax.xml.stream.XMLStreamConstants.*;
 import static org.springframework.util.StringUtils.hasText;
 import static springing.util.ObjectUtils.parseConfigFileAt;
 import static springing.util.StringUtils.normalizeForwardPath;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import org.apache.commons.validator.ValidatorResources;
+import org.apache.struts.action.*;
+import org.apache.struts.tiles.TilesPlugin;
+import org.apache.struts.tiles.config.TilesDefinitions;
+import org.apache.struts.validator.ValidatorPlugIn;
+import org.springframework.lang.Nullable;
 
 /**
  * The "struts-config" element is the root of the configuration file hierarchy,
@@ -54,6 +53,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public String getPrefix() {
     return requireNonNull(modulePrefix);
   }
+
   public void setPrefix(String modulePrefix) {
     this.modulePrefix = normalizeModulePrefix(modulePrefix);
   }
@@ -68,9 +68,7 @@ public class ModuleConfigBean implements ModuleConfig {
     if (!hasText(modulePrefix) || modulePrefix.equals("/")) {
       return "";
     }
-    return ("/" + modulePrefix)
-      .replaceAll("//+", "/")
-      .replaceAll("/$", "");
+    return ("/" + modulePrefix).replaceAll("//+", "/").replaceAll("/$", "");
   }
 
   public String appendPrefix(String path) {
@@ -84,6 +82,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public @Nullable ControllerConfig getControllerConfig() {
     return controllerConfig;
   }
+
   @JacksonXmlProperty(localName = "controller")
   private @Nullable ControllerConfig controllerConfig;
 
@@ -94,9 +93,13 @@ public class ModuleConfigBean implements ModuleConfig {
     if (requestProcessor != null) {
       return requestProcessor;
     }
-    requestProcessor = requireNonNullElse(controllerConfig, new ControllerConfig()).createInstance();
+    requestProcessor = requireNonNullElse(
+      controllerConfig,
+      new ControllerConfig()
+    ).createInstance();
     return requestProcessor;
   }
+
   private @Nullable RequestProcessor requestProcessor;
 
   /**
@@ -105,6 +108,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public String getConfigFilePaths() {
     return configFilePaths == null ? "" : configFilePaths;
   }
+
   private @Nullable String configFilePaths;
 
   /**
@@ -129,6 +133,7 @@ public class ModuleConfigBean implements ModuleConfig {
     }
     return null;
   }
+
   /**
    * Returns of the list of form-beans, which are JavaBeans that implement the
    * `org.apache.struts.action.ActionForm` class.
@@ -136,6 +141,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public List<FormBeanConfig> getFormBeanConfigs() {
     return formBeans.getEntries();
   }
+
   @JacksonXmlElementWrapper(localName = "form-beans")
   private FormBeansConfig formBeans;
 
@@ -147,15 +153,15 @@ public class ModuleConfigBean implements ModuleConfig {
     return actionMappings.getEntries();
   }
 
-
   /**
    * Return the action configurations for this module. If there are none,
    * a zero-length array is returned.
    */
   @Override
   public ActionConfig[] findActionConfigs() {
-    return actionMappings.getEntries().toArray(new ActionConfig[]{});
+    return actionMappings.getEntries().toArray(new ActionConfig[] {});
   }
+
   @JacksonXmlProperty(localName = "action-mappings")
   @JsonManagedReference
   private ActionMappingsConfig actionMappings;
@@ -167,6 +173,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public List<ExceptionConfig> getGlobalExceptions() {
     return globalExceptions;
   }
+
   @JacksonXmlElementWrapper(localName = "global-exceptions")
   @JacksonXmlProperty(localName = "exception")
   private List<ExceptionConfig> globalExceptions = new ArrayList<>();
@@ -177,7 +184,7 @@ public class ModuleConfigBean implements ModuleConfig {
    */
   @Override
   public ForwardConfig[] findForwards() {
-    return getGlobalForwards().toArray(new ForwardConfig[]{});
+    return getGlobalForwards().toArray(new ForwardConfig[] {});
   }
 
   /**
@@ -187,18 +194,19 @@ public class ModuleConfigBean implements ModuleConfig {
   public List<ActionForward> getGlobalForwards() {
     return globalForwards;
   }
+
   @JacksonXmlElementWrapper(localName = "global-forwards")
   @JacksonXmlProperty(localName = "forward")
   void setGlobalForwards(List<ActionForward> forwards) {
     forwards.forEach(it -> it.setModuleConfig(this));
     this.globalForwards = forwards;
   }
-  private List<ActionForward> globalForwards = new ArrayList<>();
 
+  private List<ActionForward> globalForwards = new ArrayList<>();
 
   @Override
   public MessageResourcesConfig[] findMessageResourceConfigs() {
-    return messageResourcesConfigs.toArray(new MessageResourcesConfig[]{});
+    return messageResourcesConfigs.toArray(new MessageResourcesConfig[] {});
   }
 
   /**
@@ -208,12 +216,17 @@ public class ModuleConfigBean implements ModuleConfig {
   public List<MessageResourcesConfig> getMessageResourcesConfigs() {
     return messageResourcesConfigs;
   }
+
   @JacksonXmlProperty(localName = "message-resources")
   @JacksonXmlElementWrapper(useWrapping = false)
-  private void setMessageResourcesConfigs(List<MessageResourcesConfig> messageResourcesConfigs) {
+  private void setMessageResourcesConfigs(
+    List<MessageResourcesConfig> messageResourcesConfigs
+  ) {
     this.messageResourcesConfigs = messageResourcesConfigs;
   }
-  private List<MessageResourcesConfig> messageResourcesConfigs = new ArrayList<>();
+
+  private List<MessageResourcesConfig> messageResourcesConfigs =
+    new ArrayList<>();
 
   /**
    * Returns a set of plugin configuration objects which describe fully
@@ -225,6 +238,7 @@ public class ModuleConfigBean implements ModuleConfig {
   public List<PlugInConfig> getPluginConfigs() {
     return pluginConfigs;
   }
+
   @JacksonXmlProperty(localName = "plug-in")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -275,18 +289,33 @@ public class ModuleConfigBean implements ModuleConfig {
     return plugIn.getTilesDefinitions();
   }
 
-  private @Nullable ConcurrentMap<Class<? extends PlugIn>, PlugIn> loadedPlugIns;
+  private @Nullable ConcurrentMap<
+    Class<? extends PlugIn>,
+    PlugIn
+  > loadedPlugIns;
 
   public void merge(ModuleConfigBean another) {
-    if (!getPrefix().equals(another.getPrefix())) throw new IllegalArgumentException(String.format(
-      "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
-      " because it is from another module.", configFilePaths, another.configFilePaths
-    ));
-    if (controllerConfig != null && another.controllerConfig != null) throw new RuntimeException(String.format(
-      "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
-      " because they have conflicting controller settings in a module [%s].",
-        configFilePaths, another.configFilePaths, modulePrefix
-    ));
+    if (
+      !getPrefix().equals(another.getPrefix())
+    ) throw new IllegalArgumentException(
+      String.format(
+        "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
+        " because it is from another module.",
+        configFilePaths,
+        another.configFilePaths
+      )
+    );
+    if (
+      controllerConfig != null && another.controllerConfig != null
+    ) throw new RuntimeException(
+      String.format(
+        "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
+        " because they have conflicting controller settings in a module [%s].",
+        configFilePaths,
+        another.configFilePaths,
+        modulePrefix
+      )
+    );
     getActionConfigs().addAll(another.getActionConfigs());
     getFormBeanConfigs().addAll(another.getFormBeanConfigs());
     getGlobalForwards().addAll(another.getGlobalForwards());
@@ -296,7 +325,8 @@ public class ModuleConfigBean implements ModuleConfig {
     if (another.controllerConfig != null) {
       controllerConfig = another.controllerConfig;
     }
-    this.configFilePaths = this.configFilePaths + ", " + another.configFilePaths;
+    this.configFilePaths =
+      this.configFilePaths + ", " + another.configFilePaths;
     updateBackReferences();
   }
 
@@ -305,9 +335,12 @@ public class ModuleConfigBean implements ModuleConfig {
   }
 
   public static class Visitor {
+
     private @Nullable String actionMappingType = null;
     private @Nullable String formBeanConfigType = null;
-    public void startElement(String elementName, XMLStreamWriter writer) throws XMLStreamException {
+
+    public void startElement(String elementName, XMLStreamWriter writer)
+      throws XMLStreamException {
       writer.writeStartElement(elementName);
       if ("action".equals(elementName)) {
         writer.writeAttribute(
@@ -322,10 +355,21 @@ public class ModuleConfigBean implements ModuleConfig {
         );
       }
     }
-    public void sawText(@Nullable String elementName, String text, XMLStreamWriter writer) throws XMLStreamException {
+
+    public void sawText(
+      @Nullable String elementName,
+      String text,
+      XMLStreamWriter writer
+    ) throws XMLStreamException {
       writer.writeCharacters(text);
     }
-    public void sawAttribute(String elementName, String key, String value, XMLStreamWriter writer) throws XMLStreamException {
+
+    public void sawAttribute(
+      String elementName,
+      String key,
+      String value,
+      XMLStreamWriter writer
+    ) throws XMLStreamException {
       if ("action-mappings".equals(elementName) && "type".equals(key)) {
         actionMappingType = value;
       }
@@ -338,7 +382,9 @@ public class ModuleConfigBean implements ModuleConfig {
         writer.writeAttribute(key, value);
       }
     }
-    public void endElement(String elementName, XMLStreamWriter writer) throws XMLStreamException {
+
+    public void endElement(String elementName, XMLStreamWriter writer)
+      throws XMLStreamException {
       writer.writeEndElement();
       if ("action-mappings".equals(elementName)) {
         actionMappingType = null;
@@ -349,12 +395,11 @@ public class ModuleConfigBean implements ModuleConfig {
     }
   }
 
-  public static ModuleConfigBean loadFrom(
-    String classPath,
-    String moduleName
-  ) {
+  public static ModuleConfigBean loadFrom(String classPath, String moduleName) {
     var visitor = new Visitor();
-    var config = parseConfigFileAt(classPath, ModuleConfigBean.class,
+    var config = parseConfigFileAt(
+      classPath,
+      ModuleConfigBean.class,
       (reader, writer) -> {
         String elementName = null;
         while (reader.hasNext()) {

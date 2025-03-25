@@ -1,25 +1,25 @@
 package springing.struts1.taglib;
 
+import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
+
 import jakarta.servlet.jsp.PageContext;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMessages;
 import org.springframework.lang.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
-
 public interface MessagesAware {
-
   MessagesReference getReference();
 
   class MessagesReference {
+
     public static MessagesReference create() {
       return new MessagesReference();
     }
-    private MessagesReference() {
-    }
+
+    private MessagesReference() {}
+
     public @Nullable String name;
     public @Nullable String property;
     public boolean message = false;
@@ -39,8 +39,15 @@ public interface MessagesAware {
         return messageList;
       }
       if (messages instanceof ActionMessages actionMessages) {
-        setCount(property == null ? actionMessages.size() : actionMessages.size(property), pageContext);
-        return property == null ? actionMessages.get() : actionMessages.get(property);
+        setCount(
+          property == null
+            ? actionMessages.size()
+            : actionMessages.size(property),
+          pageContext
+        );
+        return property == null
+          ? actionMessages.get()
+          : actionMessages.get(property);
       }
       if (messages instanceof List<?> messageList) {
         setCount(messageList.size(), pageContext);
@@ -51,9 +58,14 @@ public interface MessagesAware {
     }
 
     private @Nullable Object getMessagesFromScope(PageContext pageContext) {
-      if  (name == null) {
+      if (name == null) {
         var beanName = message ? Globals.MESSAGE_KEY : Globals.ERROR_KEY;
-        return resolveValueOnScope(beanName , property,  awareNestedTag, pageContext);
+        return resolveValueOnScope(
+          beanName,
+          property,
+          awareNestedTag,
+          pageContext
+        );
       }
       var path = name + "." + property;
       return resolveValueOnScope(null, path, awareNestedTag, pageContext);

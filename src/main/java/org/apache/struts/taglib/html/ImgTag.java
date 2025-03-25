@@ -1,13 +1,14 @@
 package org.apache.struts.taglib.html;
 
+import static java.util.Objects.requireNonNullElseGet;
+
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsHtmlElementTagBase;
 import springing.struts1.taglib.UrlBuilder;
 import springing.struts1.taglib.UrlBuilderSupport;
-import java.util.Map;
-import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * Renders an HTML `img` element with the image at the specified URL. Like
@@ -58,7 +59,9 @@ import static java.util.Objects.requireNonNullElseGet;
  * either directly, through the `alt` attribute, or indirectly from a message
  * resources bundle, using the `bundle` and `altKey` attributes.
  */
-public class ImgTag extends StrutsHtmlElementTagBase implements UrlBuilderSupport {
+public class ImgTag
+  extends StrutsHtmlElementTagBase
+  implements UrlBuilderSupport {
 
   public ImgTag() {
     init();
@@ -101,7 +104,10 @@ public class ImgTag extends StrutsHtmlElementTagBase implements UrlBuilderSuppor
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
     var attrs = super.getAdditionalAttributes();
-    attrs.put("src", requireNonNullElseGet(src, () -> buildUrl(getPageContext())));
+    attrs.put(
+      "src",
+      requireNonNullElseGet(src, () -> buildUrl(getPageContext()))
+    );
     attrs.put("align", align);
     attrs.put("alt", alt);
     attrs.put("border", border);
@@ -145,8 +151,7 @@ public class ImgTag extends StrutsHtmlElementTagBase implements UrlBuilderSuppor
    * The message resources key of the alternate text for this element.
    */
   public void setAltKey(String altKey) {
-    this.alt = ModuleUtils
-      .getCurrent()
+    this.alt = ModuleUtils.getCurrent()
       .getMessageResources(getBundle())
       .requireMessage(altKey);
   }
@@ -215,7 +220,9 @@ public class ImgTag extends StrutsHtmlElementTagBase implements UrlBuilderSuppor
    * attribute, of the String to be used as the URL of this image.
    */
   public void setSrcKey(String srcKey) {
-    this.src = ModuleUtils.getCurrent().getMessageResources().requireMessage(srcKey);
+    this.src = ModuleUtils.getCurrent()
+      .getMessageResources()
+      .requireMessage(srcKey);
   }
 
   @Override

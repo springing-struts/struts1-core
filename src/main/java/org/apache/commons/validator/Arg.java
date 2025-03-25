@@ -18,9 +18,15 @@ import org.springframework.lang.Nullable;
 public class Arg {
 
   public Arg(
-    @JacksonXmlProperty(isAttribute = true, localName = "name") @Nullable String name,
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "name"
+    ) @Nullable String name,
     @JacksonXmlProperty(isAttribute = true, localName = "key") String key,
-    @JacksonXmlProperty(isAttribute = true, localName = "resource") @Nullable Boolean resource
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "resource"
+    ) @Nullable Boolean resource
   ) {
     this.name = (name == null) ? "" : name;
     this.key = key;
@@ -36,6 +42,7 @@ public class Arg {
   public String getName() {
     return name;
   }
+
   private final String name;
 
   /**
@@ -44,6 +51,7 @@ public class Arg {
   public String getKey() {
     return key;
   }
+
   private final String key;
 
   /**
@@ -53,9 +61,11 @@ public class Arg {
   public void setPosition(int position) {
     this.position = position;
   }
+
   public int getPosition() {
     return position;
   }
+
   private int position = 0;
 
   /**
@@ -66,6 +76,7 @@ public class Arg {
   public boolean isResource() {
     return resource;
   }
+
   private final boolean resource;
 
   /**
@@ -75,6 +86,7 @@ public class Arg {
   public String getBundle() {
     return bundle;
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "bundle")
   private String bundle = "";
 
@@ -82,8 +94,7 @@ public class Arg {
     if (!resource) {
       return field.interpolate(key);
     }
-    return ModuleUtils
-      .getCurrent()
+    return ModuleUtils.getCurrent()
       .getMessageResources(getBundle())
       .getMessage(key);
   }

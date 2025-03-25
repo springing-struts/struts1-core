@@ -1,7 +1,6 @@
 package javax.servlet.http;
 
 import jakarta.servlet.ServletContext;
-
 import java.util.Enumeration;
 
 public interface HttpSession extends jakarta.servlet.http.HttpSession {

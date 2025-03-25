@@ -1,21 +1,5 @@
 package org.apache.commons.validator;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.validator.ValidatorForm;
-import org.springframework.lang.Nullable;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Pattern;
-
 import static java.lang.String.format;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNullElse;
@@ -24,6 +8,21 @@ import static org.springframework.util.StringUtils.hasText;
 import static springing.util.ObjectUtils.getSize;
 import static springing.util.ObjectUtils.retrieveValue;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.regex.Pattern;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.validator.ValidatorForm;
+import org.springframework.lang.Nullable;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 /**
  * This contains the list of pluggable validators to run on a field and any
  * message information and variables to perform the validations and generate
@@ -31,14 +30,19 @@ import static springing.util.ObjectUtils.retrieveValue;
  * element.
  */
 public class Field {
+
   public Field(
-    @JacksonXmlProperty(isAttribute = true, localName = "property") String property,
-    @JacksonXmlProperty(isAttribute = true, localName = "depends") @Nullable String depends
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "property"
+    ) String property,
+    @JacksonXmlProperty(
+      isAttribute = true,
+      localName = "depends"
+    ) @Nullable String depends
   ) {
     this.property = property;
-    this.depends = List.of(
-      (depends == null ? "" : depends).split("\\s*,\\s*")
-    );
+    this.depends = List.of((depends == null ? "" : depends).split("\\s*,\\s*"));
   }
 
   /**
@@ -50,16 +54,21 @@ public class Field {
     Map<String, ValidatorAction> actionsByName
   ) {
     var validationErrors = new ActionErrors();
-    var notIncludedInCurrentPage = (target instanceof ValidatorForm vf)
-      && requireNonNullElse(vf.getPage(), 0) != getPage();
+    var notIncludedInCurrentPage =
+      (target instanceof ValidatorForm vf) &&
+      requireNonNullElse(vf.getPage(), 0) != getPage();
     if (notIncludedInCurrentPage) {
       return validationErrors;
     }
     for (var validatorActionName : getDependencyList()) {
       var action = actionsByName.get(validatorActionName);
-      if (action == null) throw new IllegalArgumentException(format(
-        "Unknown validation rule [%s] for field [%s].", validatorActionName, getKey()
-      ));
+      if (action == null) throw new IllegalArgumentException(
+        format(
+          "Unknown validation rule [%s] for field [%s].",
+          validatorActionName,
+          getKey()
+        )
+      );
       var valid = isIndexed()
         ? testIndexedValue(action, target, validationErrors)
         : testValue(action, target, validationErrors);
@@ -70,11 +79,19 @@ public class Field {
     return validationErrors;
   }
 
-  private boolean testValue(ValidatorAction action, Object target, ActionMessages validationErrors) {
+  private boolean testValue(
+    ValidatorAction action,
+    Object target,
+    ActionMessages validationErrors
+  ) {
     return action.test(target, this, validationErrors);
   }
 
-  private boolean testIndexedValue(ValidatorAction action, Object target, ActionMessages validationErrors) {
+  private boolean testIndexedValue(
+    ValidatorAction action,
+    Object target,
+    ActionMessages validationErrors
+  ) {
     var list = getIndexedValueOf(target);
     var size = getSize(list);
     if (size == null) {
@@ -96,10 +113,10 @@ public class Field {
 
   private static final ThreadLocal<Integer> CURRENT_INDEX = new ThreadLocal<>();
 
-
   public Form getForm() {
     return form;
   }
+
   @JsonBackReference
   private Form form;
 
@@ -110,7 +127,6 @@ public class Field {
   public @Nullable Object getIndexedValueOf(@Nullable Object bean) {
     return (bean == null) ? null : retrieveValue(bean, indexedListProperty);
   }
-
 
   /**
    * Returns a unique key based on the property and indexedProperty fields.
@@ -128,6 +144,7 @@ public class Field {
     }
     return property;
   }
+
   private final String property;
 
   /**
@@ -143,6 +160,7 @@ public class Field {
   public List<String> getDependencyList() {
     return depends;
   }
+
   private final List<String> depends;
 
   /**
@@ -170,6 +188,7 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
+
   @JacksonXmlProperty(localName = "arg0")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -179,6 +198,7 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
+
   @JacksonXmlProperty(localName = "arg1")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -188,6 +208,7 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
+
   @JacksonXmlProperty(localName = "arg2")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -197,6 +218,7 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
+
   @JacksonXmlProperty(localName = "arg3")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -206,6 +228,7 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
+
   @JacksonXmlProperty(localName = "arg4")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -215,8 +238,9 @@ public class Field {
       argsByValidatorName.add(arg.getName(), arg);
     }
   }
-  private final MultiValueMap<String, Arg>
-    argsByValidatorName = new LinkedMultiValueMap<>();
+
+  private final MultiValueMap<String, Arg> argsByValidatorName =
+    new LinkedMultiValueMap<>();
 
   /**
    * Retrieve a variable's value.
@@ -225,7 +249,10 @@ public class Field {
     return getVarValue(varName, null);
   }
 
-  public @Nullable String getVarValue(String varName, @Nullable String defaultValue) {
+  public @Nullable String getVarValue(
+    String varName,
+    @Nullable String defaultValue
+  ) {
     var aVar = getVarMap().get(varName);
     if (aVar == null) {
       return defaultValue;
@@ -237,12 +264,19 @@ public class Field {
     return getRequiredVarValue(varName, null);
   }
 
-  public String getRequiredVarValue(String varName, @Nullable String defaultValue) {
+  public String getRequiredVarValue(
+    String varName,
+    @Nullable String defaultValue
+  ) {
     var varValue = getVarValue(varName, defaultValue);
-    if (varValue == null) throw new IllegalArgumentException(format(
-      "The var [%s] is required but is not assigned to the validation config for field [%s] of form [%s].",
-      varName, property, form.getName()
-    ));
+    if (varValue == null) throw new IllegalArgumentException(
+      format(
+        "The var [%s] is required but is not assigned to the validation config for field [%s] of form [%s].",
+        varName,
+        property,
+        form.getName()
+      )
+    );
     return varValue;
   }
 
@@ -255,7 +289,10 @@ public class Field {
     return getRequiredVarValueAsLong(varName, null);
   }
 
-  public long getRequiredVarValueAsLong(String varName, @Nullable Long defaultValue) {
+  public long getRequiredVarValueAsLong(
+    String varName,
+    @Nullable Long defaultValue
+  ) {
     var varValue = getRequiredVarValue(
       varName,
       defaultValue == null ? null : defaultValue.toString()
@@ -272,7 +309,10 @@ public class Field {
     return getRequiredVarValueAsNumber(varName, null);
   }
 
-  public BigDecimal getRequiredVarValueAsNumber(String varName, @Nullable Long defaultValue) {
+  public BigDecimal getRequiredVarValueAsNumber(
+    String varName,
+    @Nullable Long defaultValue
+  ) {
     var varValue = getRequiredVarValue(
       varName,
       defaultValue == null ? null : defaultValue.toString()
@@ -284,7 +324,10 @@ public class Field {
     return getRequiredVarValueAsBool(varName, null);
   }
 
-  public boolean getRequiredVarValueAsBool(String varName, @Nullable Boolean defaultValue) {
+  public boolean getRequiredVarValueAsBool(
+    String varName,
+    @Nullable Boolean defaultValue
+  ) {
     var varValue = getRequiredVarValue(
       varName,
       defaultValue == null ? null : defaultValue.toString()
@@ -305,6 +348,7 @@ public class Field {
   public Map<String, Var> getVarMap() {
     return varsByName;
   }
+
   @JacksonXmlProperty(localName = "var")
   @JacksonXmlElementWrapper(useWrapping = false)
   @JsonManagedReference
@@ -314,6 +358,7 @@ public class Field {
       varsByName.put(aVar.getName(), aVar);
     }
   }
+
   private final Map<String, Var> varsByName = new HashMap<>();
 
   @JacksonXmlProperty(localName = "msg")
@@ -323,6 +368,7 @@ public class Field {
       messagesByValidatorName.put(message.getName(), message);
     }
   }
+
   private final Map<String, Msg> messagesByValidatorName = new HashMap<>();
 
   /**
@@ -331,15 +377,15 @@ public class Field {
   public int getPage() {
     return requireNonNullElse(page, 0);
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "page")
   private @Nullable Integer page;
-
 
   /**
    * If there is a value specified for the indexedProperty field then `true`
    * will be returned. Otherwise, it will be `false`.
    */
-  public boolean isIndexed()  {
+  public boolean isIndexed() {
     return hasText(indexedListProperty);
   }
 
@@ -363,7 +409,10 @@ public class Field {
 
   public ActionMessage getActionMessageFor(ValidatorAction validatorAction) {
     var validatorName = validatorAction.getName();
-    var args = getArgs(validatorAction.getName()).stream().map(Arg::getText).toArray();
+    var args = getArgs(validatorAction.getName())
+      .stream()
+      .map(Arg::getText)
+      .toArray();
     var fieldMessage = messagesByValidatorName.get(validatorName);
     if (fieldMessage != null) {
       return fieldMessage.getActionMessage(args);
@@ -393,6 +442,7 @@ public class Field {
       return "";
     });
   }
+
   private static final Pattern INTERPOLATION_PLACEHOLDER = Pattern.compile(
     "\\$\\{(var:)?([_0-9a-zA-Z]+)}"
   );

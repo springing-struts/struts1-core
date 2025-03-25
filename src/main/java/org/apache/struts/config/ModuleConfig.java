@@ -1,11 +1,11 @@
 package org.apache.struts.config;
 
+import static java.util.Objects.requireNonNullElse;
+import static springing.util.StringUtils.normalizeForwardPath;
+
 import org.apache.struts.util.MessageResources;
 import org.springframework.lang.Nullable;
 import springing.struts1.message.ResourceBundleMessageResources;
-
-import static java.util.Objects.requireNonNullElse;
-import static springing.util.StringUtils.normalizeForwardPath;
 
 /**
  * The "struts-config" element is the root of the configuration file hierarchy,
@@ -23,7 +23,8 @@ public interface ModuleConfig {
   /**
    * The controller configuration object for this module.
    */
-  @Nullable ControllerConfig getControllerConfig();
+  @Nullable
+  ControllerConfig getControllerConfig();
 
   /**
    * The default class name to be used when creating action form bean
@@ -35,7 +36,8 @@ public interface ModuleConfig {
    * Return the form bean configuration for the specified key, if any;
    * otherwise return `null`.
    */
-  @Nullable FormBeanConfig findFormBeanConfig(String name);
+  @Nullable
+  FormBeanConfig findFormBeanConfig(String name);
 
   /**
    * Return the action configuration for the specified path, if any; otherwise
@@ -100,7 +102,9 @@ public interface ModuleConfig {
     return getMessageResources("");
   }
 
-  default ResourceBundleMessageResources getMessageResources(@Nullable String key) {
+  default ResourceBundleMessageResources getMessageResources(
+    @Nullable String key
+  ) {
     var config = findMessageResourceConfig(key);
     if (config != null) {
       return config.toMessageResources();

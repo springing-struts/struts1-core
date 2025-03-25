@@ -1,12 +1,12 @@
 package org.apache.struts.util;
 
-import org.springframework.lang.Nullable;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
+import org.springframework.lang.Nullable;
 
-public class LabelValueBean implements Comparable<LabelValueBean>, Serializable {
+public class LabelValueBean
+  implements Comparable<LabelValueBean>, Serializable {
 
   public LabelValueBean() {
     this(null, null);
@@ -27,7 +27,6 @@ public class LabelValueBean implements Comparable<LabelValueBean>, Serializable 
 
   private @Nullable String label;
 
-
   public @Nullable String getValue() {
     return value;
   }
@@ -40,8 +39,10 @@ public class LabelValueBean implements Comparable<LabelValueBean>, Serializable 
 
   @Override
   public boolean equals(Object obj) {
-    return (obj instanceof LabelValueBean another)
-      && Objects.equals(this.label, another.label);
+    return (
+      (obj instanceof LabelValueBean another) &&
+      Objects.equals(this.label, another.label)
+    );
   }
 
   @Override

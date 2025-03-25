@@ -19,7 +19,6 @@
  * under the License.
  */
 
-
 package org.apache.struts.webapp.example2;
 
 import org.apache.struts.util.ModuleException;
@@ -29,19 +28,14 @@ import org.apache.struts.util.ModuleException;
  * can be configured.
  */
 
-
 public class ExpiredPasswordException extends ModuleException {
 
-
-    /**
-     * Construct a new instance of this exception for the specified username.
-     *
-     * @param username Username whose password has expired
-     */
-    public ExpiredPasswordException(String username) {
-        super("error.password.expired", username);
-    }
-
-
+  /**
+   * Construct a new instance of this exception for the specified username.
+   *
+   * @param username Username whose password has expired
+   */
+  public ExpiredPasswordException(String username) {
+    super("error.password.expired", username);
+  }
 }
-

@@ -1,16 +1,16 @@
 package org.apache.struts.util;
 
-import org.springframework.lang.Nullable;
-
 import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.web.util.HtmlUtils.htmlEscape;
+
+import org.springframework.lang.Nullable;
 
 /**
  * General purpose utility methods related to generating a servlet response in the Struts controller framework.
  */
 public class ResponseUtils {
-  private ResponseUtils() {
-  }
+
+  private ResponseUtils() {}
 
   /**
    * Filter the specified string for characters that are sensitive to HTML

@@ -1,15 +1,14 @@
 package org.apache.struts.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import jakarta.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.util.ModuleUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest
 public class ModuleUtilsTest {

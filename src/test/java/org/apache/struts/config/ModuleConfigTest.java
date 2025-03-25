@@ -1,14 +1,13 @@
 package org.apache.struts.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.List;
 import org.apache.struts.action.ActionServlet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @WebMvcTest
 public class ModuleConfigTest {
@@ -17,8 +16,12 @@ public class ModuleConfigTest {
   private ActionServlet actionServlet;
 
   ModuleConfig getRootModule() {
-    return actionServlet.getStrutsModules().stream().filter(
-      it -> it.isDefaultModule()).findAny().get();
+    return actionServlet
+      .getStrutsModules()
+      .stream()
+      .filter(it -> it.isDefaultModule())
+      .findAny()
+      .get();
   }
 
   @Test

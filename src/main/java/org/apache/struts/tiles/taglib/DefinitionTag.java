@@ -1,13 +1,13 @@
 package org.apache.struts.tiles.taglib;
 
+import static java.util.Objects.requireNonNull;
+
 import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.tiles.config.TilesDefinition;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableReference;
-import javax.servlet.jsp.tagext.TagSupport;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Create a tile/component/template definition as a bean. Newly created bean

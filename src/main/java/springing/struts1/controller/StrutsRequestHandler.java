@@ -1,6 +1,11 @@
 package springing.struts1.controller;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+
 import jakarta.servlet.ServletException;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.RequestProcessor;
@@ -10,12 +15,6 @@ import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.ModuleConfigBean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.web.HttpRequestHandler;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
 
 public class StrutsRequestHandler implements HttpRequestHandler {
 
@@ -27,10 +26,15 @@ public class StrutsRequestHandler implements HttpRequestHandler {
     JspForwardingHandler jspResourceHandler,
     GenericApplicationContext appContext
   ) {
-    if (!(actionConfig instanceof ActionMapping mapping)) throw new IllegalStateException(format(
-      "The action config [%s] should be an instance of [%s].",
-      actionConfig.getPath(), ActionMapping.class.getName()
-    ));
+    if (
+      !(actionConfig instanceof ActionMapping mapping)
+    ) throw new IllegalStateException(
+      format(
+        "The action config [%s] should be an instance of [%s].",
+        actionConfig.getPath(),
+        ActionMapping.class.getName()
+      )
+    );
     this.actionMapping = mapping;
     this.moduleConfig = moduleConfig;
     this.actionContext = actionContext;
@@ -42,16 +46,19 @@ public class StrutsRequestHandler implements HttpRequestHandler {
   public ActionMapping getActionMapping() {
     return requireNonNull(actionMapping);
   }
+
   private final ActionMapping actionMapping;
 
   public ModuleConfigBean getModuleConfig() {
     return requireNonNull(moduleConfig);
   }
+
   private final ModuleConfigBean moduleConfig;
 
   public ServletActionContext actionContext() {
     return requireNonNull(actionContext);
   }
+
   private final ServletActionContext actionContext;
 
   private final RequestProcessor requestProcessor;
@@ -59,11 +66,14 @@ public class StrutsRequestHandler implements HttpRequestHandler {
 
   private final JspForwardingHandler jspResourceHandler;
 
- public void handleRequest(
+  public void handleRequest(
     jakarta.servlet.http.HttpServletRequest request,
     jakarta.servlet.http.HttpServletResponse response
   ) throws ServletException, IOException {
-    request.setAttribute(Globals.MESSAGES_KEY, moduleConfig.getMessageResources());
+    request.setAttribute(
+      Globals.MESSAGES_KEY,
+      moduleConfig.getMessageResources()
+    );
     actionContext.init(request, response);
     actionContext.setActionMapping(actionMapping);
     actionContext.setModuleConfig(moduleConfig);
@@ -76,18 +86,19 @@ public class StrutsRequestHandler implements HttpRequestHandler {
       actionContext.getRequest(),
       actionContext.getResponse()
     );
-  };
+  }
+
   public static final Method HANDLE_REQUEST;
+
   static {
     try {
       HANDLE_REQUEST = HttpRequestHandler.class.getMethod(
-        "handleRequest",
-        jakarta.servlet.http.HttpServletRequest.class,
-        jakarta.servlet.http.HttpServletResponse.class
-      );
+          "handleRequest",
+          jakarta.servlet.http.HttpServletRequest.class,
+          jakarta.servlet.http.HttpServletResponse.class
+        );
     } catch (NoSuchMethodException e) {
       throw new IllegalStateException(e);
     }
   }
 }
-

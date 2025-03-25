@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
  * any associated data types, read-only states, and write-only states.
  */
 public interface DynaClass {
-
   /**
    * Returns the name of this DynaClass (analogous to the getName() method of
    * `java.lang.Class`).
@@ -26,7 +25,8 @@ public interface DynaClass {
    * Returns a property descriptor for the specified property, if it exists;
    * otherwise, return null.
    */
-  @Nullable DynaProperty getDynaProperty(String name);
+  @Nullable
+  DynaProperty getDynaProperty(String name);
 
   /**
    * Instantiate and return a new DynaBean instance, associated with this

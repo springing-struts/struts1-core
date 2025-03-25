@@ -21,15 +21,14 @@
 
 package org.apache.struts.apps.mailreader.actions;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.apps.mailreader.Constants;
 import org.apache.struts.apps.mailreader.dao.User;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -40,41 +39,37 @@ import javax.servlet.http.HttpSession;
  */
 public final class LogoffAction extends BaseAction {
 
-    // See superclass for Javadoc
-    public ActionForward execute(
-            ActionMapping mapping,
-            ActionForm form,
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws Exception {
-
-        // Log event
-        HttpSession session = request.getSession();
-        User user = doGetUser(session);
-        if (user != null) {
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        "LogoffAction: User '"
-                                + user.getUsername()
-                                + "' logged off in session "
-                                + session.getId());
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        "LogoffActon: User logged off in session " +
-                                session.getId());
-            }
-        }
-
-        // Process user logoff by removing session attributes
-        session.removeAttribute(Constants.SUBSCRIPTION_KEY);
-        session.removeAttribute(Constants.USER_KEY);
-        session.invalidate();
-
-        // Done
-        return doFindSuccess(mapping);
-
+  // See superclass for Javadoc
+  public ActionForward execute(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    // Log event
+    HttpSession session = request.getSession();
+    User user = doGetUser(session);
+    if (user != null) {
+      if (log.isDebugEnabled()) {
+        log.debug(
+          "LogoffAction: User '" +
+          user.getUsername() +
+          "' logged off in session " +
+          session.getId()
+        );
+      }
+    } else {
+      if (log.isDebugEnabled()) {
+        log.debug("LogoffActon: User logged off in session " + session.getId());
+      }
     }
 
+    // Process user logoff by removing session attributes
+    session.removeAttribute(Constants.SUBSCRIPTION_KEY);
+    session.removeAttribute(Constants.USER_KEY);
+    session.invalidate();
+
+    // Done
+    return doFindSuccess(mapping);
+  }
 }

@@ -20,13 +20,12 @@
  */
 package org.apache.struts.webapp.dispatch;
 
-import org.apache.struts.action.*;
-import org.apache.struts.actions.LookupDispatchAction;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.struts.action.*;
+import org.apache.struts.actions.LookupDispatchAction;
 
 /**
  * Example LookupDispatchAction.
@@ -35,76 +34,74 @@ import java.util.Map;
  */
 public class LookupDispatchExampleAction extends LookupDispatchAction {
 
-    private Map keyMethodMap = new HashMap();
-    private int fooCount;
-    private int barCount;
+  private Map keyMethodMap = new HashMap();
+  private int fooCount;
+  private int barCount;
 
-    /**
-     * Constructor - populate the key method map.
-     */
-    public LookupDispatchExampleAction() {
-        keyMethodMap.put("button.foo.label", "doFoo");
-        keyMethodMap.put("button.bar.label", "doBar");
-    }
+  /**
+   * Constructor - populate the key method map.
+   */
+  public LookupDispatchExampleAction() {
+    keyMethodMap.put("button.foo.label", "doFoo");
+    keyMethodMap.put("button.bar.label", "doBar");
+  }
 
-    /**
-     * Example "foo" method.
-     *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
-     *
-     * @exception Exception if business logic throws an exception
-     */
-    public ActionForward doFoo(ActionMapping mapping,
-                               ActionForm form,
-                               HttpServletRequest request,
-                               HttpServletResponse response)
-        throws Exception {
+  /**
+   * Example "foo" method.
+   *
+   * @param mapping The ActionMapping used to select this instance
+   * @param form The optional ActionForm bean for this request
+   * @param request The servlet request we are processing
+   * @param response The servlet response we are creating
+   *
+   * @exception Exception if business logic throws an exception
+   */
+  public ActionForward doFoo(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    fooCount++;
 
-        fooCount++;
+    ActionMessages messages = new ActionMessages();
+    messages.add("foo", new ActionMessage("count.foo.message", fooCount + ""));
+    saveMessages(request, messages);
 
-        ActionMessages messages = new ActionMessages();
-        messages.add("foo", new ActionMessage("count.foo.message", fooCount+""));
-        saveMessages(request, messages);
+    return (mapping.findForward("success"));
+  }
 
-        return (mapping.findForward("success"));
+  /**
+   * Example "bar" method.
+   *
+   * @param mapping The ActionMapping used to select this instance
+   * @param form The optional ActionForm bean for this request
+   * @param request The servlet request we are processing
+   * @param response The servlet response we are creating
+   *
+   * @exception Exception if business logic throws an exception
+   */
+  public ActionForward doBar(
+    ActionMapping mapping,
+    ActionForm form,
+    HttpServletRequest request,
+    HttpServletResponse response
+  ) throws Exception {
+    barCount++;
 
-    }
+    ActionMessages messages = new ActionMessages();
+    messages.add("bar", new ActionMessage("count.bar.message", barCount + ""));
+    saveMessages(request, messages);
 
-    /**
-     * Example "bar" method.
-     *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
-     *
-     * @exception Exception if business logic throws an exception
-     */
-    public ActionForward doBar(ActionMapping mapping,
-                               ActionForm form,
-                               HttpServletRequest request,
-                               HttpServletResponse response)
-        throws Exception {
-        barCount++;
+    return (mapping.findForward("success"));
+  }
 
-        ActionMessages messages = new ActionMessages();
-        messages.add("bar", new ActionMessage("count.bar.message", barCount+""));
-        saveMessages(request, messages);
-
-        return (mapping.findForward("success"));
-
-    }
-
-    /**
-     * Provides the mapping from resource key to method name.
-     *
-     * @return Resource key / method name map.
-     */
-    protected Map getKeyMethodMap() {
-        return keyMethodMap;
-    }
-
+  /**
+   * Provides the mapping from resource key to method name.
+   *
+   * @return Resource key / method name map.
+   */
+  protected Map getKeyMethodMap() {
+    return keyMethodMap;
+  }
 }

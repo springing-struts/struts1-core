@@ -1,15 +1,15 @@
 package org.apache.struts.action;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpMethod.GET;
+
 import org.apache.struts.TestApp;
 import org.apache.struts.util.ModuleUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpMethod.GET;
 
 @WebMvcTest
 public class ActionMappingTest {
@@ -86,8 +86,9 @@ public class ActionMappingTest {
    * </pre>
    */
   @Test
-  void testActionCanReceiveActionFormAssignedInActionMapping() throws Exception {
-    var request =  app.createRequest(GET, "/exercise/html-link-submit");
+  void testActionCanReceiveActionFormAssignedInActionMapping()
+    throws Exception {
+    var request = app.createRequest(GET, "/exercise/html-link-submit");
     var moduleConfig = moduleUtils.getModuleConfig(request);
     var actionConfig = moduleConfig.findActionConfig("/html-link-submit");
     assertNotNull(actionConfig);

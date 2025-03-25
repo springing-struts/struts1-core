@@ -1,5 +1,11 @@
 package org.apache.struts.validator;
 
+import static org.apache.struts.validator.FieldChecks.validateByteLocale;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.ValidatorAction;
@@ -15,24 +21,27 @@ import org.mockito.quality.Strictness;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Locale;
-
-import static org.apache.struts.validator.FieldChecks.validateByteLocale;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class FieldChecksByteLocaleTest {
 
-  @Mock Field mockField;
-  @Mock ActionMessages mockErrors;
-  @Mock HttpServletRequest mockRequest;
-  @Mock Validator mockValidator;
-  @Mock ValidatorAction mockAction;
-  @Mock Object mockBean;
+  @Mock
+  Field mockField;
+
+  @Mock
+  ActionMessages mockErrors;
+
+  @Mock
+  HttpServletRequest mockRequest;
+
+  @Mock
+  Validator mockValidator;
+
+  @Mock
+  ValidatorAction mockAction;
+
+  @Mock
+  Object mockBean;
 
   @BeforeAll
   static void setLocale() {
@@ -51,14 +60,28 @@ public class FieldChecksByteLocaleTest {
 
   void shouldPass() {
     assertThat(
-      validateByteLocale(mockBean, mockAction, mockField, mockErrors, mockValidator, mockRequest)
+      validateByteLocale(
+        mockBean,
+        mockAction,
+        mockField,
+        mockErrors,
+        mockValidator,
+        mockRequest
+      )
     ).isTrue();
     verify(mockErrors, never()).addValidationError(any(), any());
   }
 
   void shouldReject() {
     assertThat(
-      validateByteLocale(mockBean, mockAction, mockField, mockErrors, mockValidator, mockRequest)
+      validateByteLocale(
+        mockBean,
+        mockAction,
+        mockField,
+        mockErrors,
+        mockValidator,
+        mockRequest
+      )
     ).isFalse();
     verify(mockErrors).addValidationError(mockField, mockAction);
   }

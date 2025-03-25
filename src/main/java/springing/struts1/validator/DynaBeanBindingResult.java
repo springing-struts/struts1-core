@@ -10,6 +10,7 @@ public class DynaBeanBindingResult extends AbstractPropertyBindingResult {
     super(name);
     this.bean = bean;
   }
+
   private final DynaBean bean;
 
   @Override

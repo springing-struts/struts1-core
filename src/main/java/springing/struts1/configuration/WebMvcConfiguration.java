@@ -1,5 +1,8 @@
 package springing.struts1.configuration;
 
+import static springing.struts1.configuration.StrutsConfiguration.STRUTS_ACTION_FORWARD_PATTERN;
+
+import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
@@ -13,17 +16,14 @@ import org.springframework.web.servlet.view.JstlView;
 import springing.struts1.controller.JspForwardingHandler;
 import springing.struts1.controller.StrutsViewResolutionInterceptor;
 
-import java.util.Map;
-import static springing.struts1.configuration.StrutsConfiguration.STRUTS_ACTION_FORWARD_PATTERN;
-
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Bean
-  public HandlerMapping defaultServletHttpRequestHandler(JspForwardingHandler jspResourceHandler) {
-    return new SimpleUrlHandlerMapping(Map.of(
-      "/**", jspResourceHandler
-    ));
+  public HandlerMapping defaultServletHttpRequestHandler(
+    JspForwardingHandler jspResourceHandler
+  ) {
+    return new SimpleUrlHandlerMapping(Map.of("/**", jspResourceHandler));
   }
 
   @Bean
@@ -46,8 +46,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(
-      new StrutsViewResolutionInterceptor()
-    ).addPathPatterns(STRUTS_ACTION_FORWARD_PATTERN);
+    registry
+      .addInterceptor(new StrutsViewResolutionInterceptor())
+      .addPathPatterns(STRUTS_ACTION_FORWARD_PATTERN);
   }
 }

@@ -1,23 +1,22 @@
 package org.apache.struts.taglib.html;
 
-import jakarta.servlet.jsp.JspException;
-import org.apache.commons.validator.Form;
-import org.apache.commons.validator.ValidatorAction;
-import org.apache.commons.validator.ValidatorResources;
-import org.apache.struts.util.ModuleUtils;
-import org.springframework.lang.Nullable;
-import springing.struts1.taglib.StrutsHtmlElementTagBase;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Objects.requireNonNullElse;
 import static java.util.stream.Collectors.joining;
 import static org.springframework.util.StringUtils.hasText;
 import static springing.util.StringUtils.lowerCamelize;
+
+import jakarta.servlet.jsp.JspException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.validator.Form;
+import org.apache.commons.validator.ValidatorAction;
+import org.apache.commons.validator.ValidatorResources;
+import org.apache.struts.util.ModuleUtils;
+import org.springframework.lang.Nullable;
+import springing.struts1.taglib.StrutsHtmlElementTagBase;
 
 /**
  * Render JavaScript validation based on the validation rules loaded by the
@@ -80,7 +79,7 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
 
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
-    var attrs =  super.getAdditionalAttributes();
+    var attrs = super.getAdditionalAttributes();
     attrs.put("type", "text/javascript");
     return attrs;
   }
@@ -89,9 +88,9 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
   protected String getBodyTextForOutput() {
     var buff = new StringBuilder();
     var form = getForm();
-    var validatorActions =
-      (form == null) ? getValidatorResources().getValidatorActions().values()
-                     : getValidatorActionsFor(form);
+    var validatorActions = (form == null)
+      ? getValidatorResources().getValidatorActions().values()
+      : getValidatorActionsFor(form);
     if (dynamicJavascript) {
       if (form == null) throw new IllegalArgumentException(
         "formName property is required if dynamicJavascript is true in <html:javascript> tag."
@@ -144,9 +143,7 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
     }
   }
 
-  private void writeValidationUtilityScripts(
-    StringBuilder buff
-  ) {
+  private void writeValidationUtilityScripts(StringBuilder buff) {
     if (!staticJavascript) {
       return;
     }
@@ -161,52 +158,79 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
     Collection<ValidatorAction> validatorActions,
     StringBuilder buff
   ) {
-    buff.append(format(join("\n", "",
-      "let bCancel = false;",
-      "",
-      "function %s(form) {",
-      "  if (bCancel) {",
-      "    return true;",
-      "  }",
-      "  return %s;",
-      "}"
-      ),
-      getValidatorMethodName(),
-      getFormValidationMethodBody(validatorActions)
-    ));
+    buff.append(
+      format(
+        join(
+          "\n",
+          "",
+          "let bCancel = false;",
+          "",
+          "function %s(form) {",
+          "  if (bCancel) {",
+          "    return true;",
+          "  }",
+          "  return %s;",
+          "}"
+        ),
+        getValidatorMethodName(),
+        getFormValidationMethodBody(validatorActions)
+      )
+    );
     for (var validatorAction : validatorActions) {
       buff.append("\n");
-      buff.append(format(
-        "function %s_%s() {", formName, validatorAction.getJsFunctionName()
-      ));
+      buff.append(
+        format(
+          "function %s_%s() {",
+          formName,
+          validatorAction.getJsFunctionName()
+        )
+      );
       var fields = form.getFields();
       for (int i = 0; i < fields.size(); i++) {
         var field = fields.get(i);
         if (field.isIndexed()) {
           continue;
         }
-        if (field.getPage() != page || !field.isDependency(validatorAction.getName())) {
+        if (
+          field.getPage() != page ||
+          !field.isDependency(validatorAction.getName())
+        ) {
           continue;
         }
         var message = field.getMessageFor(validatorAction, getBundle());
-        buff.append(format(join("\n", "",
-          "  this.%s = [",
-          "    '%s',",
-          "    '%s',",
-          "    (varName) => {"
-        ), ("a" + i), field.getKey(), escapeJsString(message)));
-        field.getVars().forEach((name, var) -> {
-          buff.append(format(join("\n", "",
-          "      if ('%s' === varName) {",
-          "        return %s;",
-          "      }"
-          ), name, var.getVarValueAsJsLiteral()));
-        });
-        buff.append(join("\n", "",
-          "      return null;",
-          "    }",
-          "  ];"
-        ));
+        buff.append(
+          format(
+            join(
+              "\n",
+              "",
+              "  this.%s = [",
+              "    '%s',",
+              "    '%s',",
+              "    (varName) => {"
+            ),
+            ("a" + i),
+            field.getKey(),
+            escapeJsString(message)
+          )
+        );
+        field
+          .getVars()
+          .forEach((name, var) -> {
+            buff.append(
+              format(
+                join(
+                  "\n",
+                  "",
+                  "      if ('%s' === varName) {",
+                  "        return %s;",
+                  "      }"
+                ),
+                name,
+                var.getVarValueAsJsLiteral()
+              )
+            );
+          });
+        buff.append(join("\n", "", "      return null;", "    }", "  ];"));
       }
       buff.append("\n");
       buff.append("}");
@@ -217,16 +241,11 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
     if (!hasText(message)) {
       return message;
     }
-    return message
-      .replace("\\", "\\\\")
-      .replace("\"", "\\\"");
+    return message.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 
   private String getValidatorMethodName() {
-    return requireNonNullElse(
-      methodName,
-      lowerCamelize("validate", formName)
-    );
+    return requireNonNullElse(methodName, lowerCamelize("validate", formName));
   }
 
   private String getFormValidationMethodBody(
@@ -235,9 +254,11 @@ public class JavascriptValidatorTag extends StrutsHtmlElementTagBase {
     if (validatorActions.isEmpty()) {
       return "true";
     }
-    return validatorActions.stream().filter(it -> hasText(it.getJavascript())).map(
-      it -> it.getMethod() + "(form)"
-    ).collect(joining("\n    && "));
+    return validatorActions
+      .stream()
+      .filter(it -> hasText(it.getJavascript()))
+      .map(it -> it.getMethod() + "(form)")
+      .collect(joining("\n    && "));
   }
 
   /**

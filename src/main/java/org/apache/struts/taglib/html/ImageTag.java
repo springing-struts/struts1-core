@@ -1,12 +1,13 @@
 package org.apache.struts.taglib.html;
 
+import static org.springframework.util.StringUtils.hasText;
+import static springing.util.StringUtils.normalizeForwardPath;
+
 import jakarta.servlet.jsp.JspException;
+import java.util.Map;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsInputElementTagBase;
-import java.util.Map;
-import static org.springframework.util.StringUtils.hasText;
-import static springing.util.StringUtils.normalizeForwardPath;
 
 /**
  * Render an input tag of type "image".
@@ -62,11 +63,16 @@ public class ImageTag extends StrutsInputElementTagBase {
   @Override
   protected Map<String, String> getAdditionalAttributes() throws JspException {
     var imageUrl = getImageUrl();
-    if (!hasText(imageUrl)) throw new IllegalArgumentException(String.format(
-      "Failed to determine the URL for the image from the following attributes:" +
-      " src=[%s], srcKey=[%s], page=[%s], pageKey=[%s]"
-      , src, srcKey, page, pageKey
-    ));
+    if (!hasText(imageUrl)) throw new IllegalArgumentException(
+      String.format(
+        "Failed to determine the URL for the image from the following attributes:" +
+        " src=[%s], srcKey=[%s], page=[%s], pageKey=[%s]",
+        src,
+        srcKey,
+        page,
+        pageKey
+      )
+    );
     var attrs = super.getAdditionalAttributes();
     attrs.put("align", align);
     attrs.put("border", border);
@@ -90,11 +96,16 @@ public class ImageTag extends StrutsInputElementTagBase {
       var page = messageResources.getMessageInLocale(locale, pageKey);
       return normalizeForwardPath(modulePrefix + "/" + page);
     }
-    throw new IllegalArgumentException(String.format(
-      "Only one of the following attributes should be specified for the image tag:" +
-      " src=[%s], srcKey=[%s], page=[%s], pageKey=[%s]."
-      , src, srcKey, page, pageKey
-    ));
+    throw new IllegalArgumentException(
+      String.format(
+        "Only one of the following attributes should be specified for the image tag:" +
+        " src=[%s], srcKey=[%s], page=[%s], pageKey=[%s].",
+        src,
+        srcKey,
+        page,
+        pageKey
+      )
+    );
   }
 
   /**

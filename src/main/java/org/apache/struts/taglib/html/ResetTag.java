@@ -17,8 +17,7 @@ public class ResetTag extends SubmitTag {
     init();
   }
 
-  private void init() {
-  }
+  private void init() {}
 
   @Override
   protected Map<String, String> getAdditionalAttributes() {

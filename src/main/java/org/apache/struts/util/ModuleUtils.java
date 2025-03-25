@@ -1,19 +1,18 @@
 package org.apache.struts.util;
 
+import static org.apache.struts.config.ModuleConfigBean.normalizeModulePrefix;
+import static springing.util.StringUtils.normalizeForwardPath;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.ModuleConfigBean;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.RequestContextHolder;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.apache.struts.config.ModuleConfigBean.normalizeModulePrefix;
-import static springing.util.StringUtils.normalizeForwardPath;
 
 /**
  * General purpose utility methods related to module processing.
@@ -30,7 +29,8 @@ public class ModuleUtils {
     }
   }
 
-  private final Map<String, ModuleConfigBean> moduleConfigs = new ConcurrentHashMap<>();
+  private final Map<String, ModuleConfigBean> moduleConfigs =
+    new ConcurrentHashMap<>();
   private final HttpServletRequest request;
 
   public static ModuleUtils getInstance() {
@@ -66,7 +66,8 @@ public class ModuleUtils {
    * Return the ModuleConfig object is it exists, null otherwise.
    */
   public @Nullable ModuleConfig getModuleConfig(
-    HttpServletRequest request, ServletContext context
+    HttpServletRequest request,
+    ServletContext context
   ) {
     return getModuleConfig(request);
   }
@@ -108,10 +109,7 @@ public class ModuleUtils {
   /**
    * Get the module name to which the specified uri belong.
    */
-  public String getModuleName(
-    String matchPath,
-    ServletContext context
-  ) {
+  public String getModuleName(String matchPath, ServletContext context) {
     return getModuleConfigFor(matchPath).getPrefix().substring(1);
   }
 
@@ -122,10 +120,7 @@ public class ModuleUtils {
    *   This method does nothing; the module-config for the current request
    *   is managed as a request-scoped, Spring-managed bean.
    */
-  public void selectModule(
-    HttpServletRequest request,
-    ServletContext context
-  ) {
+  public void selectModule(HttpServletRequest request, ServletContext context) {
     // NOP
   }
 
@@ -138,7 +133,11 @@ public class ModuleUtils {
       if (path.equals(prefix)) {
         return config;
       }
-      if (path.startsWith(prefix + "/") && (longestMatch == null || prefix.length() > longestMatch.getPrefix().length())) {
+      if (
+        path.startsWith(prefix + "/") &&
+        (longestMatch == null ||
+          prefix.length() > longestMatch.getPrefix().length())
+      ) {
         longestMatch = config;
       }
     }

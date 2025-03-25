@@ -18,5 +18,4 @@ import java.io.Serializable;
  * Therefore, no synchronization is required for access to internal
  * collections.
  */
-public class ActionErrors extends ActionMessages {
-}
+public class ActionErrors extends ActionMessages {}

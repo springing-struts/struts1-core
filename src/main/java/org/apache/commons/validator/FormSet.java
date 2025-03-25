@@ -3,12 +3,11 @@ package org.apache.commons.validator;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
 /**
  * Holds a set of Forms stored associated with a Locale based on the country,
@@ -16,12 +15,13 @@ import java.util.Map;
  * a `formset` xml element.
  */
 public class FormSet {
-  public FormSet() {
-  }
+
+  public FormSet() {}
 
   public ValidatorResources getValidatorResources() {
     return parent;
   }
+
   ValidatorResources parent;
 
   /**
@@ -30,6 +30,7 @@ public class FormSet {
   public String getLanguage() {
     return language;
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "language")
   private String language = "";
 
@@ -39,6 +40,7 @@ public class FormSet {
   public String getCountry() {
     return country;
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "country")
   private String country = "";
 
@@ -48,6 +50,7 @@ public class FormSet {
   public String getVariant() {
     return variant;
   }
+
   @JacksonXmlProperty(isAttribute = true, localName = "variant")
   private String variant = "";
 
@@ -74,6 +77,7 @@ public class FormSet {
       constantMap.put(constant.getName(), constant.getValue());
     }
   }
+
   private final Map<String, String> constantMap = new HashMap<>();
 
   @JacksonXmlProperty(localName = "form")
@@ -84,6 +88,7 @@ public class FormSet {
       formsByName.put(form.getName(), form);
     }
   }
+
   private final Map<String, Form> formsByName = new HashMap<>();
 
   /**

@@ -1,12 +1,11 @@
 package org.apache.struts.taglib.bean;
 
 import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import org.apache.taglibs.standard.tag.common.core.OutSupport;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.JspVariableAware;
 import springing.struts1.taglib.JspVariableReference;
-
-import javax.servlet.jsp.PageContext;
 
 /**
  * Render the value of the specified bean property to the current JspWriter.
@@ -46,6 +45,7 @@ public class WriteTag extends OutSupport implements JspVariableAware {
     locale = null;
     ref = JspVariableReference.create();
   }
+
   private @Nullable String bundle;
   private boolean filter;
   private @Nullable String format;

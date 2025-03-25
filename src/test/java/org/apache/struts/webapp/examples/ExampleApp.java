@@ -6,6 +6,5 @@ import springing.struts1.configuration.StrutsConfiguration;
 import springing.struts1.configuration.WebMvcConfiguration;
 
 @SpringBootApplication
-@Import({StrutsConfiguration.class, WebMvcConfiguration.class})
-public class ExampleApp {
-}
+@Import({ StrutsConfiguration.class, WebMvcConfiguration.class })
+public class ExampleApp {}

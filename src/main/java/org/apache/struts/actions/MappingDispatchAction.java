@@ -107,6 +107,7 @@ package org.apache.struts.actions;
  * is not required to enable selection of the handler method.
  */
 public abstract class MappingDispatchAction extends DispatchAction {
+
   public MappingDispatchAction() {
     dispatcher = new ActionDispatcher(this, ActionDispatcher.MAPPING_FLAVOR);
   }

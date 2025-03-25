@@ -1,13 +1,11 @@
 package org.apache.struts;
 
-
 /**
  * Global manifest constants for the entire Struts Framework.
  */
 public class Globals {
 
   private Globals() {}
-
 
   public static final String ACTION_PACKAGE = "org.apache.struts.action";
 
@@ -73,7 +71,6 @@ public class Globals {
    */
   public static final String SERVLET_KEY = ACTION_PACKAGE + ".SERVLET_MAPPING";
 
-
   /**
    * The base of the context attributes key under which our `ModuleConfig` data
    * structure will be stored. This will be suffixed with the actual module
@@ -89,7 +86,8 @@ public class Globals {
    * The context attributes key under which our `ActionServlet` instance will
    * be stored.
    */
-  public static final String ACTION_SERVLET_KEY = ACTION_PACKAGE + ".ACTION_SERVLET";
+  public static final String ACTION_SERVLET_KEY =
+    ACTION_PACKAGE + ".ACTION_SERVLET";
 
   /**
    * The session attributes key under which our transaction token is stored,
@@ -111,5 +109,4 @@ public class Globals {
    * "true" or "false". When set to true, the html tags output xhtml.
    */
   public static final String XHTML_KEY = GLOBALS_PACKAGE + ".XHTML";
-
 }
