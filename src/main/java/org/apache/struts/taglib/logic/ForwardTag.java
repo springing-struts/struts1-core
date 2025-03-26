@@ -1,6 +1,5 @@
 package org.apache.struts.taglib.logic;
 
-import static java.util.Objects.requireNonNull;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;

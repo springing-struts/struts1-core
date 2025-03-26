@@ -1,7 +1,7 @@
 package springing.struts1.taglib;
 
 import static java.lang.String.format;
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNullElse;
 import static springing.util.StringUtils.normalizeForwardPath;
 
 import java.nio.charset.Charset;

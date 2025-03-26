@@ -1,9 +1,6 @@
 package javax.servlet;
 
-import jakarta.servlet.AsyncContext;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.ServletConnection;
-import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.*;
 import jakarta.servlet.ServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;

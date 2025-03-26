@@ -1,6 +1,6 @@
 package javax.servlet.http;
 
-import jakarta.servlet.*;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;

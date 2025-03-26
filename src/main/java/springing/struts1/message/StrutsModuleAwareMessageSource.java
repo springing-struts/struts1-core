@@ -3,12 +3,10 @@ package springing.struts1.message;
 import java.util.Arrays;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.struts.config.ModuleConfigBean;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 
 /**

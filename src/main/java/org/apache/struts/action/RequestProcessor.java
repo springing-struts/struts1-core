@@ -1,6 +1,6 @@
 package org.apache.struts.action;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 import static springing.util.StringUtils.normalizeForwardPath;
 
 import java.io.IOException;

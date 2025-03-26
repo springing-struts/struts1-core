@@ -1,8 +1,5 @@
 package org.apache.struts.action;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNullElse;
-
 import java.io.Serializable;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.ModuleUtils;

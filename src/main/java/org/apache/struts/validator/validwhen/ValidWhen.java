@@ -1,6 +1,7 @@
 package org.apache.struts.validator.validwhen;
 
-import jakarta.el.*;
+import jakarta.el.BeanNameResolver;
+import jakarta.el.ELProcessor;
 import java.math.BigDecimal;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.Field;

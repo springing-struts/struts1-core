@@ -17,10 +17,10 @@ public class ValidatorResources {
 
   @JacksonXmlProperty(localName = "formset")
   @JacksonXmlElementWrapper(useWrapping = false)
-  private List<FormSet> validationFormSetList = new ArrayList<>();
+  private final List<FormSet> validationFormSetList = new ArrayList<>();
 
   @JacksonXmlProperty(localName = "global")
-  private GlobalDefinitions globalDefinitions = new GlobalDefinitions();
+  private final GlobalDefinitions globalDefinitions = new GlobalDefinitions();
 
   /**
    * Gets a `ValidatorAction` based on its name.

@@ -1,7 +1,6 @@
 package springing.struts1.taglib;
 
 import static java.util.Objects.requireNonNullElse;
-import static org.apache.struts.chain.contexts.ServletActionContext.resolveNestedPath;
 import static org.apache.struts.chain.contexts.ServletActionContext.resolveValueOnScope;
 
 import java.lang.reflect.Field;

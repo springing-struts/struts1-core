@@ -1,7 +1,5 @@
 package org.apache.struts.action;
 
-import java.io.Serializable;
-
 /**
  * A class that encapsulates the error messages being reported by the
  * `validate()` method of an `ActionForm`. Validation errors are either global

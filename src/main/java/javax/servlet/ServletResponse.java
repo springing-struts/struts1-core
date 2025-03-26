@@ -4,7 +4,6 @@ import jakarta.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
-import javax.servlet.http.HttpServletResponse;
 
 public interface ServletResponse extends jakarta.servlet.ServletResponse {
   default jakarta.servlet.ServletResponse unwrap() {

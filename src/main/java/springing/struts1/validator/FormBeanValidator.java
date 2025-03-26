@@ -4,7 +4,6 @@ import org.apache.commons.validator.Form;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.config.FormBeanConfig;
 import org.apache.struts.util.ModuleUtils;
-import org.apache.struts.validator.ValidatorForm;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.Errors;

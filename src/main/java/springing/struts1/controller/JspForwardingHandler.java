@@ -5,12 +5,9 @@ import static java.util.Objects.requireNonNull;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.apache.catalina.Globals;
 import org.apache.catalina.core.RequestWrapper;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;

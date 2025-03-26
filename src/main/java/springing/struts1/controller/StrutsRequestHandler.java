@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.RequestProcessor;
 import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.config.ActionConfig;
-import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.ModuleConfigBean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.web.HttpRequestHandler;

@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static springing.util.ObjectUtils.parseConfigFileAt;
 
 import javax.servlet.ServletException;
-import org.apache.commons.validator.ValidatorResources;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;

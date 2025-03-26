@@ -1,8 +1,6 @@
 package org.apache.struts.taglib.nested.logic;
 
-import jakarta.servlet.jsp.JspException;
 import org.apache.struts.taglib.logic.IterateTag;
-import org.springframework.web.servlet.tags.NestedPathTag;
 
 /**
  * Nested Extension - Repeat the nested body content of this tag over a
