@@ -204,7 +204,8 @@ public class ServletActionContext implements ActionContext {
   private @Nullable ActionMapping actionMapping;
 
   public @Nullable String interpolatePathParams(@Nullable String str) {
-    return getActionMapping().interpolatePathParams(str, getRequest());
+    return getActionMapping()
+      .interpolatePathParams(str, getRequest().getRequestURI());
   }
 
   /**

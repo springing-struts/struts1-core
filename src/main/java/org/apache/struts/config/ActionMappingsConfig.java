@@ -45,16 +45,13 @@ public class ActionMappingsConfig {
 
   private final Class<? extends ActionMapping> actionMappingClass;
 
-  @JsonBackReference
-  private ModuleConfig strutsConfig;
-
-  public ModuleConfig getStrutsConfig() {
-    return strutsConfig;
-  }
-
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "action")
   @JsonManagedReference
+  public void setEntries(List<ActionConfig> entries) {
+    this.entries = entries.reversed();
+  }
+
   private List<ActionConfig> entries = new ArrayList<>();
 
   public List<ActionConfig> getEntries() {

@@ -44,9 +44,9 @@ public interface ModuleConfig {
    * return `null`.
    */
   default @Nullable ActionConfig findActionConfig(String actionPath) {
-    var path = normalizeForwardPath(actionPath);
+    var path = getActionUrl(actionPath);
     for (var actionConfig : findActionConfigs()) {
-      if (path.equals(actionConfig.getPath())) {
+      if (actionConfig.match(path)) {
         return actionConfig;
       }
     }
@@ -54,7 +54,7 @@ public interface ModuleConfig {
   }
 
   default String getActionUrl(String actionPath) {
-    return normalizeForwardPath(getPrefix() + actionPath);
+    return normalizeForwardPath(getPrefix() + "/" + actionPath);
   }
 
   /**

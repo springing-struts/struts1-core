@@ -89,13 +89,13 @@ public class FormTag extends StrutsHtmlElementTagBase {
       this.action = action;
       return;
     }
-    this.action = actionConfig.getActionUrl();
-    var request = getRequest();
-    var formBeanConfig = actionConfig.getFormBeanConfig(request);
+    this.action = moduleConfig.getActionUrl(action);
+    var formBeanConfig = actionConfig.getFormBeanConfig(this.action);
     if (formBeanConfig == null) {
       return;
     }
-    actionConfig.prepareForm(request);
+    var request = getRequest();
+    actionConfig.prepareForm(this.action, request);
     formName = formBeanConfig.getName();
     request.setAttribute(BEAN_KEY, formName);
   }

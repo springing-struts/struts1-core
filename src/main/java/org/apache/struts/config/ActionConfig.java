@@ -23,12 +23,15 @@ import org.apache.struts.chain.contexts.ServletActionContext;
 import org.apache.struts.taglib.html.Constants;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.PathContainer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.BindException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.pattern.PathPattern;
+import org.springframework.web.util.pattern.PathPatternParser;
 import springing.struts1.controller.JspForwardingHandler;
 import springing.struts1.controller.StrutsRequestHandler;
 
@@ -88,7 +91,11 @@ public class ActionConfig {
   }
 
   public @Nullable String getName(HttpServletRequest request) {
-    return interpolatePathParams(getName(), request);
+    return interpolatePathParams(getName(), request.getRequestURI());
+  }
+
+  public @Nullable String getName(String requestUri) {
+    return interpolatePathParams(getName(), requestUri);
   }
 
   @JacksonXmlProperty(localName = "name", isAttribute = true)
@@ -116,10 +123,8 @@ public class ActionConfig {
    * Returns a FormBeanConfig associated with this Action.
    */
   @JsonIgnore
-  public @Nullable FormBeanConfig getFormBeanConfig(
-    HttpServletRequest request
-  ) {
-    var formName = getName(request);
+  public @Nullable FormBeanConfig getFormBeanConfig(String requestUri) {
+    var formName = getName(requestUri);
     if (formName == null) {
       return null;
     }
@@ -178,7 +183,7 @@ public class ActionConfig {
   }
 
   public @Nullable String getForwardPath(HttpServletRequest request) {
-    return interpolatePathParams(forwardPath, request);
+    return interpolatePathParams(forwardPath, request.getRequestURI());
   }
 
   @JacksonXmlProperty(localName = "forward-path", isAttribute = true)
@@ -193,7 +198,7 @@ public class ActionConfig {
   }
 
   public @Nullable String getInclude(HttpServletRequest request) {
-    return interpolatePathParams(include, request);
+    return interpolatePathParams(include, request.getRequestURI());
   }
 
   @JacksonXmlProperty(localName = "include", isAttribute = true)
@@ -249,8 +254,8 @@ public class ActionConfig {
     return getInheritedProperty(String.class, it -> it.type);
   }
 
-  public @Nullable String getType(HttpServletRequest request) {
-    return interpolatePathParams(getType(), request);
+  public @Nullable String getType(String requestUrl) {
+    return interpolatePathParams(getType(), requestUrl);
   }
 
   @JacksonXmlProperty(localName = "type", isAttribute = true)
@@ -299,7 +304,7 @@ public class ActionConfig {
 
   public @Nullable String interpolatePathParams(
     @Nullable String str,
-    HttpServletRequest request
+    String requestUri
   ) {
     if (str == null) {
       return null;
@@ -315,9 +320,7 @@ public class ActionConfig {
         return "{" + i + "}";
       });
     var prefix = moduleConfig.getPrefix();
-    var relPath = normalizeForwardPath(
-      request.getRequestURI().substring(prefix.length())
-    );
+    var relPath = normalizeForwardPath(requestUri).substring(prefix.length());
     var pathParams = new AntPathMatcher()
       .extractUriTemplateVariables(template, relPath);
     var interpolated = PATH_PARAMETER_REFERENCES.matcher(str).replaceAll(m -> {
@@ -343,7 +346,10 @@ public class ActionConfig {
     ServletActionContext actionContext
   ) {
     return doGetActionClass(
-      interpolatePathParams(getType(), actionContext.getRequest())
+      interpolatePathParams(
+        getType(),
+        actionContext.getRequest().getRequestURI()
+      )
     );
   }
 
@@ -392,6 +398,14 @@ public class ActionConfig {
     context.registerBean(actionClass);
   }
 
+  /**
+   * Registers the request mapping for this action within the provided
+   * {@link RequestMappingHandlerMapping}. This method constructs a mapping
+   * based on the action's URL and associates it with a
+   * {@link StrutsRequestHandler} that will handle incoming requests.
+   * The mapping supports both GET and POST methods and produces default
+   * response content types such as HTML, XML, and plain text.
+   */
   public void registerRequestMapping(
     RequestMappingHandlerMapping mappings,
     ServletActionContext actionContext,
@@ -400,25 +414,47 @@ public class ActionConfig {
     GenericApplicationContext applicationContext
   ) {
     registerAction(applicationContext);
-    var actionUrl = getActionUrl().replaceAll("\\*", "{param:[-_a-zA-Z0-9]+}");
-    var mapping = RequestMappingInfo.paths(actionUrl, actionUrl + ".do")
+    var pattern = getPathPattern().getPatternString();
+    var mapping = RequestMappingInfo.paths(pattern, pattern + ".do")
       .methods(GET, POST)
       .produces(DEFAULT_RESPONSE_CONTENT_TYPES)
       .build();
-
+    var handler = new StrutsRequestHandler(
+      this,
+      requireNonNull(moduleConfig),
+      actionContext,
+      requestProcessor,
+      jspResourceHandler,
+      applicationContext
+    );
     mappings.registerMapping(
       mapping,
-      new StrutsRequestHandler(
-        this,
-        requireNonNull(moduleConfig),
-        actionContext,
-        requestProcessor,
-        jspResourceHandler,
-        applicationContext
-      ),
+      handler,
       StrutsRequestHandler.HANDLE_REQUEST
     );
   }
+
+  /**
+   * Whether the provided action path matches the pattern defined for this
+   * action configuration.
+   */
+  public boolean match(String actionPath) {
+    return getPathPattern().matches(PathContainer.parsePath(actionPath));
+  }
+
+  /**
+   * Retrieves the path pattern associated with this action configuration.
+   */
+  public PathPattern getPathPattern() {
+    if (pathPattern != null) {
+      return pathPattern;
+    }
+    var pattern = getActionUrl().replaceAll("\\*", "{param:[-_a-zA-Z0-9]+}");
+    pathPattern = PathPatternParser.defaultInstance.parse(pattern);
+    return pathPattern;
+  }
+
+  private @Nullable PathPattern pathPattern;
 
   private static final String[] DEFAULT_RESPONSE_CONTENT_TYPES = new String[] {
     "text/html",
@@ -511,8 +547,11 @@ public class ActionConfig {
    * @throws ResponseStatusException if binding the request parameters to
    *   the form bean fails, with a {@code BAD_REQUEST} status.
    */
-  public @Nullable ActionForm prepareForm(HttpServletRequest request) {
-    var formBeanConfig = getFormBeanConfig(request);
+  public @Nullable ActionForm prepareForm(
+    String requestUri,
+    HttpServletRequest request
+  ) {
+    var formBeanConfig = getFormBeanConfig(requestUri);
     if (formBeanConfig == null) {
       return getCurrentForm(request);
     }
@@ -531,7 +570,7 @@ public class ActionConfig {
         format(
           "Failed to bind the parameters of the request for [%s] to the form bean [%s].",
           getActionUrl(),
-          getName(request)
+          getName(requestUri)
         ),
         e
       );

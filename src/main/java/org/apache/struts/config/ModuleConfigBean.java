@@ -163,7 +163,6 @@ public class ModuleConfigBean implements ModuleConfig {
   }
 
   @JacksonXmlProperty(localName = "action-mappings")
-  @JsonManagedReference
   private ActionMappingsConfig actionMappings;
 
   /**

@@ -213,7 +213,7 @@ public class RequestProcessor implements ApplicationContextAware {
     HttpServletResponse response,
     ActionMapping mapping
   ) {
-    return mapping.prepareForm(request);
+    return mapping.prepareForm(request.getRequestURI(), request);
   }
 
   /**
