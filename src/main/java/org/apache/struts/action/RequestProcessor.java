@@ -228,6 +228,9 @@ public class RequestProcessor implements ApplicationContextAware {
     @Nullable ActionForm form,
     ActionMapping mapping
   ) throws ServletException {
+    if (form != null) {
+      mapping.bindRequestParamsToForm(request, form);
+    }
     if (request.getParameter(Constants.CANCEL_PROPERTY) != null) {
       request.setAttribute(Globals.CANCEL_KEY, Boolean.TRUE);
     }

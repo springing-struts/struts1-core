@@ -114,7 +114,11 @@ public class JspVariableReference {
 
   private @Nullable String parameterName;
 
-  public void setScope(String scope) {
+  public void setScope(@Nullable String scope) {
+    if (scope == null) {
+      this.scope = null;
+      return;
+    }
     var s = scope.trim().toLowerCase();
     switch (s) {
       case "page" -> {

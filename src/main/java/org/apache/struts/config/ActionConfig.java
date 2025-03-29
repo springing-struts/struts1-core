@@ -325,7 +325,7 @@ public class ActionConfig {
         i.addAndGet(1);
         return "{" + i + "}";
       });
-    var prefix = moduleConfig.getPrefix();
+    var prefix = getModuleConfig().getPrefix();
     var relPath = normalizeForwardPath(requestUri).substring(prefix.length());
     var pathParams = new AntPathMatcher()
       .extractUriTemplateVariables(template, relPath);
@@ -427,7 +427,7 @@ public class ActionConfig {
       .build();
     var handler = new StrutsRequestHandler(
       this,
-      requireNonNull(moduleConfig),
+      getModuleConfig(),
       actionContext,
       requestProcessor,
       jspResourceHandler,
@@ -568,6 +568,19 @@ public class ActionConfig {
       formBeanConfig::createActionForm
     );
     saveForm(request, formBeanName, formBeanScope, formBean);
+    return formBean;
+  }
+
+  /**
+   * Binds the parameters from the provided HTTP request to the specified
+   * {@link ActionForm}.
+   * If the binding fails due to a {@link BindException}, a
+   * {@link ResponseStatusException} with a 400 BAD_REQUEST status is thrown.
+   */
+  public void bindRequestParamsToForm(
+    HttpServletRequest request,
+    ActionForm formBean
+  ) {
     try {
       bindRequest(request, formBean);
     } catch (BindException e) {
@@ -576,12 +589,11 @@ public class ActionConfig {
         format(
           "Failed to bind the parameters of the request for [%s] to the form bean [%s].",
           getActionUrl(),
-          getName(requestUri)
+          getName(request)
         ),
         e
       );
     }
-    return formBean;
   }
 
   private @Nullable ActionForm findForm(
