@@ -12,6 +12,15 @@ import org.apache.catalina.core.RequestWrapper;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
+/**
+ * The {@code JspForwardingHandler} class is an implementation of the
+ * {@link HttpRequestHandler} interface that handles HTTP requests for JSP
+ * resources.
+ * This handler checks if the requested resource is a JSP file. If it is, the
+ * handler forwards the request to the JSP for processing. For non-JSP
+ * resources, it delegates the handling to the
+ * {@link ResourceHttpRequestHandler}.
+ */
 public class JspForwardingHandler implements HttpRequestHandler {
 
   public JspForwardingHandler(

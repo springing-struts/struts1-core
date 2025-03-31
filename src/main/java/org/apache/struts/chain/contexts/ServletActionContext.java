@@ -188,11 +188,12 @@ public class ServletActionContext implements ActionContext {
 
   private @Nullable ForwardConfig forwardConfig;
 
-  public ActionMapping getActionMapping() {
-    return requireNonNull(
-      actionMapping,
-      "The action mapping for the current request has not been initialized yet."
-    );
+  /**
+   * Retrieves the {@link ActionMapping} associated with the current request.
+   * Returns {@code null} if no mapping is associated.
+   */
+  public @Nullable ActionMapping getActionMapping() {
+    return actionMapping;
   }
 
   public void setActionMapping(ActionMapping actionMapping) {
@@ -202,8 +203,13 @@ public class ServletActionContext implements ActionContext {
   private @Nullable ActionMapping actionMapping;
 
   public @Nullable String interpolatePathParams(@Nullable String str) {
-    return getActionMapping()
-      .interpolatePathParams(str, getRequest().getRequestURI());
+    if (actionMapping == null) {
+      return str;
+    }
+    return actionMapping.interpolatePathParams(
+      str,
+      getRequest().getRequestURI()
+    );
   }
 
   /**

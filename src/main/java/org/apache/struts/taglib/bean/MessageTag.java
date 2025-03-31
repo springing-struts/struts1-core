@@ -2,6 +2,8 @@ package org.apache.struts.taglib.bean;
 
 import jakarta.servlet.jsp.JspException;
 import springing.struts1.taglib.DelegatingTagBase;
+import springing.struts1.taglib.JspVariableAware;
+import springing.struts1.taglib.JspVariableReference;
 
 /**
  * Custom tag that retrieves an internationalized messages string
@@ -10,13 +12,27 @@ import springing.struts1.taglib.DelegatingTagBase;
  * implementation.
  */
 public class MessageTag
-  extends DelegatingTagBase<org.springframework.web.servlet.tags.MessageTag> {
+  extends DelegatingTagBase<org.springframework.web.servlet.tags.MessageTag>
+  implements JspVariableAware {
 
   public MessageTag() {
     super(new org.springframework.web.servlet.tags.MessageTag());
+    init();
   }
 
-  private final String[] args = { "", "", "", "", "", "" };
+  @Override
+  public void release() {
+    super.release();
+    init();
+  }
+
+  private void init() {
+    args = new String[] { "", "", "", "", "", "" };
+    ref = JspVariableReference.create();
+  }
+
+  private String[] args;
+  private JspVariableReference ref;
 
   /**
    * The first optional argument.
@@ -67,25 +83,9 @@ public class MessageTag
     getBaseTag().setCode(key);
   }
 
-  /**
-   * Name of the bean that contains the message key.
-   */
-  public void setName(String name) {
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * Name of the property to be accessed on the specified bean.
-   */
-  public void setProperty(String property) {
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * The scope to be searched to retrieve the specified bean.
-   */
-  public void setScope(String scope) {
-    throw new UnsupportedOperationException();
+  @Override
+  public JspVariableReference getReference() {
+    return ref;
   }
 
   @Override

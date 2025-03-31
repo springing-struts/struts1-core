@@ -187,7 +187,10 @@ public class RequestProcessor implements ApplicationContextAware {
   }
 
   private ActionMapping getActionMapping() {
-    return getActionContext().getActionMapping();
+    return requireNonNull(
+      getActionContext().getActionMapping(),
+      "No action mapping is associated with the current request."
+    );
   }
 
   /**

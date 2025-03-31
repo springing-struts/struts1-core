@@ -41,6 +41,7 @@ public interface ActionContext {
    * Get the ActionConfig which contains the details for processing this
    * request.
    */
+  @Nullable
   ActionConfig getActionConfig();
 
   /**
