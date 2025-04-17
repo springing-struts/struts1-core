@@ -86,7 +86,7 @@ public class ActionConfig {
    */
   @JsonIgnore
   public String getActionUrl() {
-    return getModuleConfig().getActionUrl(path);
+    return getModuleConfig().prependModuleBasePath(path);
   }
 
   /**
@@ -116,6 +116,10 @@ public class ActionConfig {
   }
 
   @JacksonXmlProperty(localName = "actionId", isAttribute = true)
+  public void setActionId(String actionId) {
+    this.actionId = actionId;
+  }
+
   private @Nullable String actionId;
 
   /**

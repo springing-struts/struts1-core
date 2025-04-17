@@ -57,6 +57,13 @@ public class PropertyConfig {
       )
     );
     var setter = property.getWriteMethod();
+    if (setter == null) throw new IllegalArgumentException(
+      format(
+        "The property [%s] of the target class [%s] is not writable.",
+        getProperty(),
+        targetClass.getName()
+      )
+    );
     try {
       setter.invoke(target, getValue());
     } catch (InvocationTargetException | IllegalAccessException e) {

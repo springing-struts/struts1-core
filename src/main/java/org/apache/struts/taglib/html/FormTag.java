@@ -4,6 +4,7 @@ import static org.apache.struts.taglib.html.Constants.BEAN_KEY;
 
 import jakarta.servlet.jsp.JspException;
 import java.util.Map;
+import org.apache.struts.config.ActionConfig;
 import org.apache.struts.util.ModuleUtils;
 import org.springframework.lang.Nullable;
 import springing.struts1.taglib.StrutsHtmlElementTagBase;
@@ -84,12 +85,14 @@ public class FormTag extends StrutsHtmlElementTagBase {
    */
   public void setAction(String action) {
     var moduleConfig = ModuleUtils.getCurrent();
-    var actionConfig = moduleConfig.findActionConfig(action);
+    var actionConfig = findActionConfig(action);
     if (actionConfig == null) {
       this.action = action;
       return;
     }
-    this.action = moduleConfig.getActionUrl(action);
+    this.action = moduleConfig.prependModuleBasePath(
+      moduleConfig.evalActionId(action)
+    );
     var formBeanConfig = actionConfig.getFormBeanConfig(this.action);
     if (formBeanConfig == null) {
       return;
@@ -98,6 +101,15 @@ public class FormTag extends StrutsHtmlElementTagBase {
     actionConfig.prepareForm(this.action, request);
     formName = formBeanConfig.getName();
     request.setAttribute(BEAN_KEY, formName);
+  }
+
+  private @Nullable ActionConfig findActionConfig(String action) {
+    var moduleConfig = ModuleUtils.getCurrent();
+    var actionConfig = moduleConfig.findActionConfigId(action);
+    if (actionConfig != null) {
+      return actionConfig;
+    }
+    return moduleConfig.findActionConfig(action);
   }
 
   /**

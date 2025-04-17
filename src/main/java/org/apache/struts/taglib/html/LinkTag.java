@@ -76,7 +76,7 @@ import springing.struts1.taglib.UrlBuilderSupport;
  */
 public class LinkTag
   extends StrutsHtmlElementTagBase
-  implements UrlBuilderSupport {
+  implements UrlBuilderSupport, ParamTagParent {
 
   public LinkTag() {
     init();
@@ -127,5 +127,10 @@ public class LinkTag
     attrs.put("href", href);
     attrs.put("target", target);
     return attrs;
+  }
+
+  @Override
+  public void handleParam(ParamTag param) {
+    addParam(param.getName(), param.getValue());
   }
 }

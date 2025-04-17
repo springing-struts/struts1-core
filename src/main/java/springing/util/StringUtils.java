@@ -63,9 +63,6 @@ public class StringUtils {
 
   public static String normalizeForwardPath(@Nullable String path) {
     return ("/" + (path == null ? "" : path)).replaceAll("/+", "/");
-    //      .replaceAll("/$", "");
-    //      .replaceAll("\\?.+", "")
-    //      .replaceAll("(.)/$", "$1");
   }
 
   public static String getExtensionOf(@Nullable String path) {

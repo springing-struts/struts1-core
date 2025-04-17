@@ -2127,7 +2127,6 @@
       </description>
     </attribute>
   </tag>
-  <!--
   <tag>
     <name>frame</name>
     <tag-class>org.apache.struts.taglib.html.FrameTag</tag-class>
@@ -2591,7 +2590,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <tag>
     <name>hidden</name>
     <tag-class>org.apache.struts.taglib.html.HiddenTag</tag-class>
@@ -5283,7 +5281,6 @@
       </description>
     </attribute>
   </tag>
-  <!--
   <tag>
     <name>param</name>
     <tag-class>org.apache.struts.taglib.html.ParamTag</tag-class>
@@ -5325,7 +5322,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <tag>
     <name>messages</name>
     <tag-class>org.apache.struts.taglib.html.MessagesTag</tag-class>
@@ -7676,7 +7672,6 @@
       </description>
     </attribute>
   </tag>
-  <!--
   <tag>
     <name>rewrite</name>
     <tag-class>org.apache.struts.taglib.html.RewriteTag</tag-class>
@@ -7925,7 +7920,6 @@
       </description>
     </attribute>
   </tag>
-  -->
   <tag>
     <name>select</name>
     <tag-class>org.apache.struts.taglib.html.SelectTag</tag-class>

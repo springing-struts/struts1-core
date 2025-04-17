@@ -1,9 +1,11 @@
 package org.apache.struts.validator;
 
 import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.Arg;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.ValidatorAction;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.util.MessageResources;
 
 /**
@@ -42,5 +44,23 @@ public class Resources {
       .stream()
       .map(Arg::getText)
       .toArray(String[]::new);
+  }
+
+  /**
+   * Gets the `ActionMessage` based on the `ValidatorAction` message and the
+   * Field's arg objects.
+   * **Note**:
+   * This method does not respect bundle information stored with the field's
+   * `msg` or `arg` elements, and localization will not work for alternative
+   * resource bundles. This method is deprecated for this reason, and you
+   * should use `getActionMessage(Validator,HttpServletRequest,ValidatorAction,Field)`
+   * instead.
+   */
+  public static ActionMessage getActionMessage(
+    HttpServletRequest request,
+    ValidatorAction validatorAction,
+    Field field
+  ) {
+    return field.getActionMessageFor(validatorAction);
   }
 }

@@ -1,5 +1,7 @@
 package org.apache.struts.action;
 
+import static java.util.Objects.requireNonNullElse;
+
 import org.apache.struts.config.ActionConfig;
 import org.apache.struts.config.ForwardConfig;
 import org.springframework.lang.Nullable;
@@ -71,7 +73,10 @@ public class ActionMapping extends ActionConfig {
    */
   public @Nullable ActionForward getInputForward() {
     var input = getInput();
-    if (input == null) return null;
-    return findRequiredForward(input);
+    if (input == null) {
+      return findForward("input");
+    }
+    var inputForward = findForward(input);
+    return inputForward != null ? inputForward : new ActionForward(input);
   }
 }

@@ -1,5 +1,6 @@
 package org.apache.struts.config;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 import static javax.xml.stream.XMLStreamConstants.*;
@@ -12,7 +13,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.xml.stream.XMLStreamException;
@@ -143,15 +146,11 @@ public class ModuleConfigBean implements ModuleConfig {
   }
 
   @JacksonXmlElementWrapper(localName = "form-beans")
-  private FormBeansConfig formBeans;
-
-  /**
-   * Returns ActionConfig objects that is to be used to process a request for
-   * a specific module-relative URI.
-   */
-  public List<ActionConfig> getActionConfigs() {
-    return actionMappings.getEntries();
+  public void setFormBeansConfig(FormBeansConfig formBeans) {
+    this.formBeans = formBeans;
   }
+
+  private FormBeansConfig formBeans = new FormBeansConfig(null);
 
   /**
    * Return the action configurations for this module. If there are none,
@@ -159,11 +158,21 @@ public class ModuleConfigBean implements ModuleConfig {
    */
   @Override
   public ActionConfig[] findActionConfigs() {
-    return actionMappings.getEntries().toArray(new ActionConfig[] {});
+    return actionConfigs.toArray(new ActionConfig[0]);
   }
 
   @JacksonXmlProperty(localName = "action-mappings")
-  private ActionMappingsConfig actionMappings;
+  public void setActionMappings(ActionMappingsConfig config) {
+    for (var actionMapping : config.getEntries()) {
+      registerActionMapping(actionMapping);
+    }
+  }
+
+  private void registerActionMapping(ActionConfig mapping) {
+    actionConfigs.add(mapping);
+  }
+
+  private final List<ActionConfig> actionConfigs = new ArrayList<>();
 
   /**
    * Returns the list of ExceptionConfigs which describe a set of exceptions
@@ -297,7 +306,7 @@ public class ModuleConfigBean implements ModuleConfig {
     if (
       !getPrefix().equals(another.getPrefix())
     ) throw new IllegalArgumentException(
-      String.format(
+      format(
         "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
         " because it is from another module.",
         configFilePaths,
@@ -307,7 +316,7 @@ public class ModuleConfigBean implements ModuleConfig {
     if (
       controllerConfig != null && another.controllerConfig != null
     ) throw new RuntimeException(
-      String.format(
+      format(
         "Struts configuration file at [%s] could not be merged with configuration file at [%s]" +
         " because they have conflicting controller settings in a module [%s].",
         configFilePaths,
@@ -315,7 +324,7 @@ public class ModuleConfigBean implements ModuleConfig {
         modulePrefix
       )
     );
-    getActionConfigs().addAll(another.getActionConfigs());
+    another.actionConfigs.forEach(this::registerActionMapping);
     getFormBeanConfigs().addAll(another.getFormBeanConfigs());
     getGlobalForwards().addAll(another.getGlobalForwards());
     getGlobalExceptions().addAll(another.getGlobalExceptions());
@@ -329,8 +338,8 @@ public class ModuleConfigBean implements ModuleConfig {
     updateBackReferences();
   }
 
-  public void updateBackReferences() {
-    getActionConfigs().forEach(it -> it.setModuleConfig(this));
+  private void updateBackReferences() {
+    actionConfigs.forEach(it -> it.setModuleConfig(this));
   }
 
   public static class Visitor {

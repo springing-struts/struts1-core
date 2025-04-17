@@ -150,7 +150,7 @@ public class StrutsConfiguration {
     var webxml = webXml();
     for (var moduleConfig : actionServlet().getStrutsModules()) {
       webxml.registerWelcomeFile(mappings, moduleConfig);
-      for (var actionConfig : moduleConfig.getActionConfigs()) {
+      for (var actionConfig : moduleConfig.findActionConfigs()) {
         actionConfig.registerRequestMapping(
           mappings,
           actionContext,

@@ -136,7 +136,7 @@ public abstract class StrutsHtmlElementTagBase
     for (var entry : getAdditionalAttributes().entrySet()) {
       var key = entry.getKey();
       var value = entry.getValue();
-      if ("href".equals(key)) {
+      if ("href".equals(key) || "src".equals(key)) {
         tagWriter.writeAttribute(key, value);
         continue;
       }

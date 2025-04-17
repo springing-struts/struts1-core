@@ -36,6 +36,13 @@ public class ObjectUtilsTest {
   }
 
   @Test
+  void createInstance_ItCreatesArrays() {
+    var array = createInstanceOf("int[]");
+    assertThat(array.getClass().isArray()).isTrue();
+    assertThat(array.getClass().getName()).isEqualTo("[I");
+  }
+
+  @Test
   void createInstance_ItCorrectlyHandlesCheckboxCancellation()
     throws Exception {
     var props = Map.of("booleanProperty", "on");

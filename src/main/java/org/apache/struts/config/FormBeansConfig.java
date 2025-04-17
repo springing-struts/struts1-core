@@ -1,5 +1,7 @@
 package org.apache.struts.config;
 
+import static springing.util.ObjectUtils.classFor;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -18,11 +20,11 @@ public class FormBeansConfig {
       localName = "type",
       isAttribute = true
     ) @Nullable String type
-  ) throws ClassNotFoundException {
+  ) {
     this.type = type;
     formBeanConfigClass = (type == null)
       ? ActionFormBean.class
-      : (Class<? extends ActionFormBean>) Class.forName(type);
+      : classFor(type);
   }
 
   /**

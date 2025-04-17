@@ -1,6 +1,7 @@
 package springing.struts1.taglib;
 
 import javax.servlet.jsp.PageContext;
+import org.springframework.lang.Nullable;
 
 public interface UrlBuilderSupport {
   default String buildUrl(PageContext context) {
@@ -147,7 +148,7 @@ public interface UrlBuilderSupport {
    * `href`, or `page` attribute must still be specified with the anchor.
    */
   default void setAnchor(String anchor) {
-    throw new UnsupportedOperationException();
+    getUrlBuilder().anchor = anchor;
   }
 
   /**
@@ -203,6 +204,10 @@ public interface UrlBuilderSupport {
 
   default void setAwareNestedTag(boolean awareNestedTag) {
     getUrlBuilder().awareNestedTag = awareNestedTag;
+  }
+
+  default void addParam(String key, @Nullable Object value) {
+    getUrlBuilder().additionalParams.put(key, value);
   }
 
   UrlBuilder getUrlBuilder();

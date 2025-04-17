@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.config.ModuleConfigBean;
 import org.apache.struts.webapp.examples.CustomActionMapping;
 import org.apache.struts.webapp.examples.CustomFormBean;
@@ -17,9 +16,9 @@ public class StrutsConfigurationTest {
     var config = ModuleConfigBean.loadFrom("/WEB-INF/struts-config.xml", "");
     assertNotNull(config);
 
-    var actions = config.getActionConfigs();
-    assertEquals(1, actions.size());
-    var actionConfig = actions.getFirst();
+    var actions = config.findActionConfigs();
+    assertEquals(1, actions.length);
+    var actionConfig = actions[0];
     var actionMapping = (ActionMapping) actionConfig;
     assertEquals(CustomActionMapping.class, actionMapping.getClass());
     var customMapping = (CustomActionMapping) actionMapping;

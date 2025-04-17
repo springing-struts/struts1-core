@@ -6,6 +6,7 @@ import static springing.util.ObjectUtils.retrieveValue;
 
 import jakarta.servlet.jsp.JspException;
 import java.util.Iterator;
+import java.util.Objects;
 import org.apache.struts.taglib.html.Constants;
 import org.apache.struts.taglib.html.SelectTag;
 import org.springframework.lang.Nullable;
@@ -48,8 +49,7 @@ public abstract class StrutsOptionsTagBase extends StrutsHtmlElementTagBase {
     if (optionValues == null) {
       return;
     }
-    var optionLabels = requireNonNullElse(getOptionLabels(), optionValues);
-    writeOptionsWithValues(selectTag, optionValues, optionLabels);
+    writeOptionsWithValues(selectTag, optionValues, getOptionLabels());
   }
 
   protected abstract @Nullable String getValuePropertyName();
@@ -73,26 +73,30 @@ public abstract class StrutsOptionsTagBase extends StrutsHtmlElementTagBase {
       if (bean == null) {
         continue;
       }
-      var value = (String) retrieveValue(bean, valuePropName);
+      var value = retrieveValue(bean, valuePropName);
       if (value == null) {
         continue;
       }
       var label = getLabelPropertyName() == null
         ? value
-        : (String) retrieveValue(bean, labelPropName);
-      writeOptionTag(selectTag, value, label);
+        : retrieveValue(bean, labelPropName);
+      writeOptionTag(
+        selectTag,
+        Objects.toString(value, ""),
+        Objects.toString(label, "")
+      );
     }
   }
 
   private void writeOptionsWithValues(
     SelectTag selectTag,
     Iterator<?> optionValues,
-    Iterator<?> optionLabels
+    @Nullable Iterator<?> optionLabels
   ) throws JspException {
     while (optionValues.hasNext()) {
       var value = optionValues.next();
-      var label = optionLabels.next();
       if (value == null) continue;
+      var label = (optionLabels == null) ? value : optionLabels.next();
       writeOptionTag(selectTag, value, label);
     }
   }

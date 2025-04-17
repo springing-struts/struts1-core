@@ -80,9 +80,23 @@ public class ObjectUtils {
   public static <T> T createInstanceOf(
     Class<T> clazz,
     List<Class<?>> constructorArgTypes,
-    List<Object> constructorArgs,
+    List<?> constructorArgs,
     @Nullable Map<String, ?> props
   ) {
+    var componentType = clazz.getComponentType();
+    if (int.class.equals(componentType)) {
+      int[] array = new int[constructorArgs.size()];
+      for (int i = 0; i < constructorArgs.size(); i++) {
+        var v = constructorArgs.get(i);
+        int item = (v == null)
+          ? 0
+          : (v instanceof Number n)
+            ? n.intValue()
+            : Integer.parseInt(Objects.toString(v));
+        array[i] = item;
+      }
+      return (T) array;
+    }
     try {
       var constructor = clazz.getDeclaredConstructor(
         constructorArgTypes.toArray(new Class[0])
@@ -166,11 +180,58 @@ public class ObjectUtils {
   public static <T> Class<T> classFor(String fqn) {
     var classLoader = Thread.currentThread().getContextClassLoader();
     try {
-      return (Class<T>) Class.forName(fqn, true, classLoader);
+      return (Class<T>) Class.forName(
+        fixArrayClassName(fqn),
+        true,
+        classLoader
+      );
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
+
+  private static String fixArrayClassName(String fqn) {
+    var m = ARRAY_TYPE_SUFFIX.matcher(fqn);
+    if (!m.matches()) {
+      return fqn;
+    }
+    var contentType = m.group(1);
+    int dimension = m.group(2).length() / 2;
+    var prefix = "[".repeat(dimension);
+    switch (contentType) {
+      case "boolean" -> {
+        return prefix + "Z";
+      }
+      case "byte" -> {
+        return prefix + "B";
+      }
+      case "char" -> {
+        return prefix + "C";
+      }
+      case "double" -> {
+        return prefix + "D";
+      }
+      case "float" -> {
+        return prefix + "F";
+      }
+      case "int" -> {
+        return prefix + "I";
+      }
+      case "long" -> {
+        return prefix + "J";
+      }
+      case "short" -> {
+        return prefix + "S";
+      }
+      default -> {
+        return prefix + "L" + contentType + ";";
+      }
+    }
+  }
+
+  private static final Pattern ARRAY_TYPE_SUFFIX = Pattern.compile(
+    "^([_a-zA-Z0-9.]+)((\\[])+)$"
+  );
 
   public static @Nullable Object retrieveValue(
     @Nullable Object bean,
@@ -236,6 +297,9 @@ public class ObjectUtils {
         }
       }
       var accessor = getAccessor(bean, name);
+      if (accessor == null) {
+        return null;
+      }
       var propValue = accessor.invoke(bean);
       return isIndexed ? getAt(propValue, index) : propValue;
     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -243,20 +307,27 @@ public class ObjectUtils {
     }
   }
 
-  private static Method getAccessor(Object bean, String name) {
+  private static @Nullable Method getAccessor(Object bean, String name) {
     var propDesc = BeanUtils.getPropertyDescriptor(bean.getClass(), name);
-    if (propDesc == null) throw new IllegalArgumentException(
-      format(
-        "Unknown property [%s] of the bean class [%s].",
-        name,
-        bean.getClass().getName()
-      )
-    );
-    return propDesc.getReadMethod();
+    if (propDesc == null) {
+      return null;
+    }
+    var getter = propDesc.getReadMethod();
+    getter.setAccessible(true);
+    return getter;
   }
 
-  private static @Nullable Method getIndexedAccessor(Object bean, String name) {
-    var accessorName = lowerCamelize("get", name);
+  /**
+   * Retrieves the read accessor for the indexed property of the given bean.
+   * The accessor is an instance method of the bean with the following signature:
+   * `get[propertyName](int index)`
+   * Returns null if the bean does not have such a method.
+   */
+  private static @Nullable Method getIndexedAccessor(
+    Object bean,
+    String propertyName
+  ) {
+    var accessorName = lowerCamelize("get", propertyName);
     try {
       var accessor = bean.getClass().getMethod(accessorName, Integer.TYPE);
       accessor.setAccessible(true);
@@ -297,6 +368,11 @@ public class ObjectUtils {
     );
   }
 
+  /**
+   * Determines whether the given value is empty.
+   * Returns true if the value is null, an empty String, or an empty Array or
+   * Collection.
+   */
   public static boolean isEmpty(@Nullable Object value) {
     if (value == null) {
       return true;
@@ -378,6 +454,13 @@ public class ObjectUtils {
       }
       case Enumeration<?> enumeration -> {
         return subIterator(enumeration.asIterator(), from, to);
+      }
+      case Map<?, ?> map -> {
+        return subIterator(
+          map.entrySet().stream().map(AbstractMap.SimpleEntry::new).iterator(),
+          from,
+          to
+        );
       }
       case Object[] array -> {
         var lastIndex = Math.min(array.length, to);
